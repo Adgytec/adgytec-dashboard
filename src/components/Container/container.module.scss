@@ -1,0 +1,37 @@
+@use "/src/styles/abstract" as ab;
+
+.normal {
+	width: min(90%, var(--max-width));
+	margin-inline: auto;
+}
+
+.wide {
+	width: min(90%, var(--max-width-wide));
+	margin-inline: auto;
+}
+
+.full {
+	width: min(100%, calc(100 * var(--vw)));
+	margin-inline: auto;
+}
+
+.sm_full {
+	width: min(100%, var(--max-width));
+	margin-inline: auto;
+}
+
+.lg_full {
+	--_w: 90%;
+
+	width: var(--_w);
+	margin-inline: auto;
+
+	@include ab.screen-48 {
+		--_w: 100%;
+	}
+}
+
+.sm_full_wide {
+	width: min(100%, var(--max-width-wide));
+	margin-inline: auto;
+}
