@@ -12,8 +12,9 @@ const adminPassword = " 3U~=BlF@}6";
 
 const Page = () => {
 	const [token, setToken] = useState<string>("");
+	const [nonToken, setNonToken] = useState<string>("");
 
-	const handleLogin = async (superadmin = true) => {
+	const handleLogin = async () => {
 		const { user, error } = await signin(email, password, remember);
 
 		if (error) {
@@ -27,16 +28,34 @@ const Page = () => {
 		setToken(token);
 	};
 
+	const handleLoginNonAdmin = async () => {
+		const { user, error } = await signin(
+			adminEmail,
+			adminPassword,
+			remember
+		);
+
+		if (error) {
+			console.error(error.message);
+			return;
+		}
+
+		if (!user) return;
+
+		const token = await user.user.getIdToken();
+		setNonToken(token);
+	};
+
 	return (
 		<div>
 			{/* Adgytec-Dashboard */}
-			<button onClick={() => handleLogin()}>Get id token</button>
+			<button onClick={handleLogin}>Get id token</button>
+			<p>{token}</p>
 
-			<button onClick={() => handleLogin(false)}>
+			<button onClick={handleLoginNonAdmin}>
 				Get id token non-superadmin
 			</button>
-
-			<p>{token}</p>
+			<p></p>
 		</div>
 	);
 };
