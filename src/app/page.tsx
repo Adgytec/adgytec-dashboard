@@ -8,7 +8,7 @@ const password = "{ui}Py3F49";
 const remember = false;
 
 const adminEmail = "vermarohan031@gmail.com";
-const adminPassword = " 3U~=BlF@}6";
+const adminPassword = "3U~=BlF@}6";
 
 const Page = () => {
 	const [token, setToken] = useState<string>("");
@@ -55,7 +55,7 @@ const Page = () => {
 			<button onClick={handleLoginNonAdmin}>
 				Get id token non-superadmin
 			</button>
-			<p></p>
+			<p>{nonToken}</p>
 		</div>
 	);
 };
