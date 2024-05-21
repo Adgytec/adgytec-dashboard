@@ -8,6 +8,7 @@ import {
 	signOut,
 	updatePassword,
 	browserLocalPersistence,
+	connectAuthEmulator,
 } from "firebase/auth";
 import firebaseApp from "../config";
 import {
@@ -21,6 +22,9 @@ import {
 import { FirebaseError } from "firebase/app";
 
 export const auth = getAuth(firebaseApp);
+if (process.env.NEXT_PUBLIC_ENV === "DEV") {
+	connectAuthEmulator(auth, "http://127.0.0.1:9099");
+}
 
 export const getUser: GetUser = () => {
 	return auth.currentUser;

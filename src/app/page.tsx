@@ -4,11 +4,11 @@ import { signin } from "@/firebase/auth/auth";
 import React, { useState } from "react";
 
 const email = "rohanverma031@gmail.com";
-const password = "{ui}Py3F49";
+const password = "Y_U+uv}JYC";
 const remember = false;
 
 const adminEmail = "vermarohan031@gmail.com";
-const adminPassword = "3U~=BlF@}6";
+const adminPassword = "TxQ8-at6<^";
 
 const Page = () => {
 	const [token, setToken] = useState<string>("");
@@ -50,12 +50,24 @@ const Page = () => {
 		<div>
 			{/* Adgytec-Dashboard */}
 			<button onClick={handleLogin}>Get id token</button>
-			<p>{token}</p>
+			<p
+				style={{
+					wordBreak: "break-all",
+				}}
+			>
+				{token}
+			</p>
 
 			<button onClick={handleLoginNonAdmin}>
 				Get id token non-superadmin
 			</button>
-			<p>{nonToken}</p>
+			<p
+				style={{
+					wordBreak: "break-all",
+				}}
+			>
+				{nonToken}
+			</p>
 		</div>
 	);
 };
