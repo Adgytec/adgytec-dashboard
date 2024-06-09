@@ -15,9 +15,6 @@
 	@include ab.screen-64 {
 		background-image: url("../../../public/login.png");
 		background-position: left center;
-	}
-
-	@include ab.screen-64 {
 		place-items: center end;
 
 		&_modal {
