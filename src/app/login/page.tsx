@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import EmailConfirmModal from "./components/EmailConfirmModal";
 import ForgotPasswordModal from "./components/ForgotPasswordModal";
 import Image from "next/image";
+import { handleModalClose, lightDismiss } from "@/helpers/modal";
 
 const inputReset = {
 	email: "",
@@ -36,7 +37,6 @@ const Login = () => {
 
 	useEffect(() => {
 		const authState = onAuthStateChanged(auth, async (user) => {
-			// if user exists
 			if (user) {
 				if (!user.emailVerified) {
 					await resendEmailVerification();
@@ -122,28 +122,26 @@ const Login = () => {
 		);
 	}
 
-	const handleEmailModalClose = () => {
-		emailConfirmRef.current?.close();
-	};
-
-	const handleForgotPassModalClose = () => {
-		forgotPasswordRef.current?.close();
-	};
-
 	return (
 		<>
 			<dialog
+				onClick={(e) => lightDismiss(e)}
 				ref={emailConfirmRef}
 				className={styles.modal_emailVerification}
 			>
-				<EmailConfirmModal handleClose={handleEmailModalClose} />
+				<EmailConfirmModal
+					handleClose={() => handleModalClose(emailConfirmRef)}
+				/>
 			</dialog>
 
 			<dialog
+				onClick={(e) => lightDismiss(e)}
 				ref={forgotPasswordRef}
 				className={styles.modal_forgotPassword}
 			>
-				<ForgotPasswordModal handleClose={handleForgotPassModalClose} />
+				<ForgotPasswordModal
+					handleClose={() => handleModalClose(forgotPasswordRef)}
+				/>
 			</dialog>
 
 			<div className={styles.login}>
