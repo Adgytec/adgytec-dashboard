@@ -12,7 +12,7 @@
 	background-size: cover;
 	background-position: center top;
 
-	@include ab.screen-48 {
+	@include ab.screen-64 {
 		background-image: url("../../../public/login.png");
 		background-position: left center;
 	}
