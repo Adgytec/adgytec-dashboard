@@ -3,4 +3,195 @@
 :root {
 	--max-width: 70em;
 	--max-width-wide: 90em;
+
+	// colors
+	--dark: hsl(0, 0%, 6%);
+	--white: hsl(26, 100%, 97%);
+	--yellow: hsl(51, 100%, 50%);
+	--blue: hsl(194, 69%, 65%);
+
+	--success: #22bb33;
+	--error: #cf0a0a;
+	--disabled: #7d7c7c;
+
+	// background
+	--bg-800: var(--dark);
+	--bg-600: hsl(0, 0%, 12%);
+	--bg-400: hsl(0, 0%, 18%);
+	--bg-200: hsl(0, 0%, 24%);
+
+	// text
+	--text: var(--white);
+
+	// accent 1
+	--accent-primary: var(--yellow);
+	--accent-primary-hover: hsl(51, 100%, 65%);
+	--accent-primary-active: hsl(51, 100%, 40%);
+
+	// accent-2
+	--accent-secondary: var(--blue);
+	--accent-secondary-hover: hsl(194, 69%, 75%);
+	--accent-secondary-active: hsl(194, 69%, 55%);
+
+	color-scheme: dark;
+	accent-color: var(--accent-secondary);
+}
+
+body {
+	background-color: var(--bg-800);
+}
+
+// button
+[data-type="button"] {
+	padding: 0;
+	border-radius: 0.5rem;
+	border: 0;
+
+	padding-inline: 1em;
+	padding-block: 0.2em;
+	font-weight: 500;
+
+	background-color: var(--_bg);
+	color: var(--dark);
+	transition: background-color 300ms ease;
+
+	display: inline-block;
+	font-size: clamp(1rem, 1.5vi, 1.25rem);
+
+	&:is(a) {
+		text-decoration-color: transparent;
+	}
+
+	&[data-variant="primary"] {
+		--_bg: var(--accent-primary);
+
+		&:hover,
+		&:focus-visible {
+			--_bg: var(--accent-primary-hover);
+		}
+
+		&:active {
+			--_bg: var(--accent-primary-active);
+		}
+	}
+
+	&[data-variant="secondary"] {
+		--_bg: var(--accent-secondary);
+
+		&:hover,
+		&:focus-visible {
+			--_bg: var(--accent-secondary-hover);
+		}
+
+		&:active {
+			--_bg: var(--accent-secondary-active);
+		}
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		// filter: grayscale(1);
+
+		--_bg: var(--disabled);
+		width: 4.65em;
+		height: 2em;
+
+		&:hover,
+		&:focus-visible {
+			--_bg: var(--disabled);
+		}
+
+		&:active {
+			--_bg: var(--disabled);
+		}
+	}
+}
+
+// link
+[data-type="link"] {
+	color: var(--_color);
+	text-decoration-color: transparent;
+
+	transition: color 300ms ease, text-decoration-color 300ms ease;
+
+	&:is(button) {
+		background-color: transparent;
+		border: 0;
+		padding: 0;
+
+		text-decoration: underline transparent;
+		cursor: pointer;
+	}
+
+	&:is(button:disabled) {
+		cursor: not-allowed;
+	}
+
+	&[data-variant="primary"] {
+		--_color: var(--accent-primary);
+
+		&:hover,
+		&:focus-visible {
+			--_color: var(--accent-primary-hover);
+		}
+
+		&:active {
+			--_color: var(--accent-primary-active);
+		}
+	}
+
+	&[data-variant="secondary"] {
+		--_color: var(--accent-secondary);
+
+		&:hover,
+		&:focus-visible {
+			--_color: var(--accent-secondary-hover);
+		}
+
+		&:active {
+			--_color: var(--accent-secondary-active);
+		}
+	}
+
+	&:hover,
+	&:focus-visible,
+	&:active {
+		text-decoration-color: currentColor;
+	}
+}
+
+input:user-invalid {
+	border-color: var(--error);
+	outline-color: var(--error);
+}
+
+.error {
+	font-size: 0.8rem;
+	color: var(--error);
+
+	text-align: center;
+}
+
+.message {
+	font-size: 0.8rem;
+	color: var(--success);
+
+	text-align: center;
+}
+
+dialog {
+	outline: none;
+	border: none;
+
+	background-color: var(--bg-600);
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+	width: min(90%, var(--_w));
+	padding: clamp(1em, 1.75vi, 1.5em);
+
+	&::backdrop {
+		background-color: hsla(0, 0, 0, 0.5);
+		backdrop-filter: blur(7.5px);
+	}
 }

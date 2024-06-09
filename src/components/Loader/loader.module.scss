@@ -1,0 +1,52 @@
+.loader {
+	--_w: 3rem;
+	--_h: 3rem;
+
+	&[data-variant="small"] {
+		--_w: 1.5rem;
+		--_h: 1.5rem;
+	}
+
+	width: var(--_w);
+	height: var(--_h);
+	display: block;
+	position: relative;
+	color: var(--accent-secondary);
+	box-sizing: border-box;
+	animation: rotation 1s linear infinite;
+	margin: auto;
+}
+
+.loader::after,
+.loader::before {
+	content: "";
+	box-sizing: border-box;
+	position: absolute;
+	width: calc(var(--_w) / 2);
+	height: calc(var(--_h) / 2);
+	top: 50%;
+	left: 50%;
+	transform: scale(0.5) translate(0, 0);
+	background-color: var(--accent-secondary);
+	border-radius: 50%;
+	animation: animloader 1s infinite ease-in-out;
+}
+
+.loader::before {
+	background-color: var(--accent-primary);
+	transform: scale(0.5) translate(calc(var(--_w) * -1), calc(var(--_h) * -1));
+}
+
+@keyframes rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes animloader {
+	50% {
+		transform: scale(1) translate(-50%, -50%);
+	}
+}
