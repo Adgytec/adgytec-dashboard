@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-import { UserProps } from "../type";
 import styles from "./login.module.scss";
 import Loader from "@/components/Loader/Loader";
 import { validateEmail } from "@/helpers/validation";
@@ -16,6 +15,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import EmailConfirmModal from "./components/EmailConfirmModal";
 import ForgotPasswordModal from "./components/ForgotPasswordModal";
+import Image from "next/image";
 
 const inputReset = {
 	email: "",
@@ -23,7 +23,7 @@ const inputReset = {
 	remember: false,
 };
 
-const Login = ({ user }: UserProps) => {
+const Login = () => {
 	const [errMessage, setErrMessage] = useState<string | null>(null);
 	const [userInput, setUserInput] = useState(inputReset);
 	const [signingIn, setSigningIn] = useState<boolean>(false);
@@ -51,7 +51,7 @@ const Login = ({ user }: UserProps) => {
 		});
 
 		return () => authState();
-	}, []);
+	}, [router]);
 
 	const handleInputValidation = (email: string, password: string) => {
 		if (!email || !validateEmail(email)) {
@@ -150,7 +150,7 @@ const Login = ({ user }: UserProps) => {
 				<div className={styles.login_modal}>
 					<div className={styles.logo}>
 						<a href="https://adgytec.in" target="_blank">
-							<img
+							<Image
 								src="/logo.svg"
 								alt="adgytec"
 								width="250"

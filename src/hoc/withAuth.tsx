@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 
 import { auth, signoutUser } from "@/firebase/auth/auth";
@@ -28,7 +28,7 @@ const withAuth = (Component: any) => {
 			});
 
 			return () => authState();
-		}, []);
+		}, [router]);
 
 		if (loading) {
 			return (

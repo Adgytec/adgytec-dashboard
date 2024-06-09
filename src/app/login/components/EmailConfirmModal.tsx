@@ -12,7 +12,7 @@ const EmailConfirmModal = ({ handleClose }: EmailConfirmModalProps) => {
 			<p>
 				A verification email has been sent to your email address. To
 				complete your registration, please check your inbox and follow
-				the instructions to verify your email. If you don't see the
+				the instructions to verify your email. If you don&apos;t see the
 				email within a few minutes, check your spam or junk folder.
 				<br />
 				For further assistance, please contact support.
