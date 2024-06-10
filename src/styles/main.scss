@@ -95,13 +95,15 @@ body {
 		}
 	}
 
+	&[data-load="true"] {
+		width: 4.65em;
+		height: 2em;
+	}
 	&:disabled {
 		cursor: not-allowed;
 		// filter: grayscale(1);
 
 		--_bg: var(--disabled);
-		width: 4.65em;
-		height: 2em;
 
 		&:hover,
 		&:focus-visible {
@@ -215,6 +217,16 @@ dialog {
 dialog[open] {
 	@include ab.motion {
 		animation: appear 500ms;
+	}
+
+	.modal-menu {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		button {
+			font-size: 1.5rem;
+		}
 	}
 }
 

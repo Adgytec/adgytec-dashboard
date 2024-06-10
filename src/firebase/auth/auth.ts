@@ -104,5 +104,5 @@ export const changePassword: ChangePassword = async (password) => {
 		error = err as FirebaseError;
 	}
 
-	return null;
+	return error;
 };

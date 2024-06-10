@@ -205,6 +205,7 @@ const Login = () => {
 									data-variant="secondary"
 									disabled={signingIn}
 									type="submit"
+									data-load={signingIn ? "true" : "false"}
 								>
 									{signingIn ? (
 										<Loader variant="small" />

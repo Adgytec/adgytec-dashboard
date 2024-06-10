@@ -1,5 +1,75 @@
 @use "/src/styles/abstract" as ab;
 
 .profile {
-	outline: 2px solid red;
+	height: 100%;
+
+	.container {
+		display: grid;
+		gap: 1em;
+		border-radius: 0.75em;
+
+		padding: clamp(1em, 2.5vi, 2em);
+
+		background-color: var(--bg-600);
+		overflow: hidden;
+	}
+
+	.table {
+		--_space: 1em;
+
+		border-spacing: var(--_space);
+		translate: calc(-1 * var(--_space));
+
+		td {
+			word-break: break-word;
+
+			input {
+				width: min(100%, 15rem);
+			}
+		}
+
+		th {
+			text-align: left;
+		}
+	}
+}
+
+.modal_changePassword {
+	--_w: 30rem;
+
+	.modal {
+		display: grid;
+		gap: 1em;
+	}
+
+	.form {
+		display: grid;
+		gap: 1.5em;
+
+		.input {
+			display: grid;
+			gap: 0.25em;
+
+			label {
+				font-size: clamp(1rem, 1.5vi, 1.25rem);
+			}
+
+			input {
+				font-size: 1.25rem;
+				padding-inline: 0.5em 0.25em;
+				padding-block: 0.15em;
+
+				border-radius: 0.3em;
+				border-style: solid;
+
+				width: 100%;
+			}
+		}
+
+		.button {
+			display: flex;
+			justify-content: flex-end;
+			gap: 1.5em;
+		}
+	}
 }

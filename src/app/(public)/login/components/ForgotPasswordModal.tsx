@@ -48,7 +48,7 @@ const ForgotPasswordModal = ({ handleClose }: ForgotPasswordModalProps) => {
 
 	return (
 		<div className={styles.container}>
-			<div className={styles.menu}>
+			<div className="modal-menu">
 				<h2>Reset Password</h2>
 
 				<button data-type="link" onClick={handleClose} title="close">
@@ -80,6 +80,7 @@ const ForgotPasswordModal = ({ handleClose }: ForgotPasswordModalProps) => {
 						data-variant="secondary"
 						type="submit"
 						disabled={sending}
+						data-load={sending ? "true" : "false"}
 					>
 						{sending ? <Loader variant="small" /> : "Reset"}
 					</button>
