@@ -125,7 +125,7 @@ const Login = () => {
 	return (
 		<>
 			<dialog
-				onClick={(e) => lightDismiss(e)}
+				onClick={lightDismiss}
 				ref={emailConfirmRef}
 				className={styles.modal_emailVerification}
 			>
@@ -135,7 +135,7 @@ const Login = () => {
 			</dialog>
 
 			<dialog
-				onClick={(e) => lightDismiss(e)}
+				onClick={lightDismiss}
 				ref={forgotPasswordRef}
 				className={styles.modal_forgotPassword}
 			>

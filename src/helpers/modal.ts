@@ -11,3 +11,7 @@ export const handleModalClose = (
 ) => {
 	ref.current?.close();
 };
+
+export const handleEscModal = (e: React.KeyboardEvent<HTMLDialogElement>) => {
+	if (e.code === "Escape") e.preventDefault();
+};

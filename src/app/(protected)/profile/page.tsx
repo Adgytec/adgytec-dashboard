@@ -5,11 +5,10 @@ import React, { useContext, useRef, useState } from "react";
 import styles from "./profile.module.scss";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Container from "@/components/Container/Container";
-import { changePassword } from "@/firebase/auth/auth";
 import Loader from "@/components/Loader/Loader";
 import { validateName } from "@/helpers/validation";
 import ChangePassword from "./component/ChangePassword";
-import { handleModalClose } from "@/helpers/modal";
+import { handleModalClose, lightDismiss } from "@/helpers/modal";
 
 function Profile() {
 	const user = useContext(UserContext);
@@ -74,6 +73,7 @@ function Profile() {
 			<dialog
 				ref={changePasswordRef}
 				className={styles.modal_changePassword}
+				onClick={lightDismiss}
 			>
 				<ChangePassword
 					handleClose={() => handleModalClose(changePasswordRef)}

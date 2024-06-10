@@ -1,4 +1,5 @@
 @use "./abstract/reset";
+@use "./abstract/modal";
 @use "./abstract" as ab;
 
 :root {
@@ -186,75 +187,6 @@ input:user-invalid {
 	color: var(--success);
 
 	text-align: center;
-}
-
-dialog {
-	inset: 0;
-	@include ab.motion {
-		animation: vanish 500ms;
-	}
-
-	outline: none;
-	border: none;
-
-	background-color: var(--bg-600);
-	border-radius: 0.75rem;
-	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-
-	width: min(90%, var(--_w));
-	padding: 0;
-
-	> * {
-		padding: clamp(1em, 1.75vi, 1.5em);
-	}
-
-	&::backdrop {
-		background-color: hsla(0, 0, 0, 0.5);
-		backdrop-filter: blur(7.5px);
-	}
-}
-
-dialog[open] {
-	@include ab.motion {
-		animation: appear 500ms;
-	}
-
-	.modal-menu {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		button {
-			font-size: 1.5rem;
-		}
-	}
-}
-
-@keyframes appear {
-	from {
-		opacity: 0;
-		translate: 0 -25vb;
-		scale: 0.5;
-	}
-	to {
-		opacity: 1;
-		translate: 0 0;
-		scale: 1;
-	}
-}
-
-@keyframes vanish {
-	from {
-		display: block;
-		opacity: 1;
-		translate: 0 0;
-	}
-	to {
-		display: none;
-		opacity: 0;
-		translate: 0 25vb;
-		scale: 0.5;
-	}
 }
 
 .firebase-emulator-warning {
