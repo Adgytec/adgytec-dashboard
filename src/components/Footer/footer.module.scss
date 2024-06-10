@@ -1,0 +1,9 @@
+@use "/src/styles/abstract" as ab;
+
+.footer {
+	padding-block: 1em;
+
+	.text {
+		text-align: center;
+	}
+}
