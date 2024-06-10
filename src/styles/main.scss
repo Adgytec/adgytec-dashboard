@@ -12,7 +12,7 @@
 	--blue: hsl(194, 69%, 65%);
 
 	--success: #22bb33;
-	--error: #cf0a0a;
+	--error: #dc0000;
 	--disabled: #7d7c7c;
 
 	// background
@@ -23,6 +23,10 @@
 
 	// text
 	--text: var(--white);
+
+	// error
+	--error-hover: hsl(0, 100%, 53%);
+	--error-active: hsl(0, 100%, 33%);
 
 	// accent 1
 	--accent-primary: var(--yellow);
@@ -44,6 +48,8 @@ body {
 
 // button
 [data-type="button"] {
+	--_c: var(--dark);
+
 	padding: 0;
 	border-radius: 0.5rem;
 	border: 0;
@@ -53,7 +59,7 @@ body {
 	font-weight: 500;
 
 	background-color: var(--_bg);
-	color: var(--dark);
+	color: var(--_c);
 	transition: background-color 300ms ease;
 
 	display: inline-block;
@@ -110,7 +116,7 @@ body {
 
 // link
 [data-type="link"] {
-	color: var(--_color);
+	color: var(--_c);
 	text-decoration-color: transparent;
 
 	transition: color 300ms ease, text-decoration-color 300ms ease;
@@ -129,28 +135,28 @@ body {
 	}
 
 	&[data-variant="primary"] {
-		--_color: var(--accent-primary);
+		--_c: var(--accent-primary);
 
 		&:hover,
 		&:focus-visible {
-			--_color: var(--accent-primary-hover);
+			--_c: var(--accent-primary-hover);
 		}
 
 		&:active {
-			--_color: var(--accent-primary-active);
+			--_c: var(--accent-primary-active);
 		}
 	}
 
 	&[data-variant="secondary"] {
-		--_color: var(--accent-secondary);
+		--_c: var(--accent-secondary);
 
 		&:hover,
 		&:focus-visible {
-			--_color: var(--accent-secondary-hover);
+			--_c: var(--accent-secondary-hover);
 		}
 
 		&:active {
-			--_color: var(--accent-secondary-active);
+			--_c: var(--accent-secondary-active);
 		}
 	}
 

@@ -1,5 +1,73 @@
 @use "/src/styles/abstract" as ab;
 
 .nav {
-	outline: 2px solid coral;
+	padding-block: 1em;
+	background-color: var(--bg-600);
+
+	.container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.trigger {
+		width: 2.5rem;
+		aspect-ratio: 1;
+		padding: 0;
+
+		font-weight: 600;
+		font-size: 1.25rem;
+
+		border-radius: 50%;
+		box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+	}
+}
+
+.content {
+	--_w: 15em;
+
+	border-radius: 0.75em;
+
+	padding-inline: 1em;
+	padding-block: 1em;
+
+	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+		rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+	background-color: var(--bg-200);
+
+	max-width: var(--_w);
+
+	&[data-state="open"] {
+		transform-origin: top center;
+		animation: appear 300ms;
+
+		display: grid;
+		gap: 1em;
+
+		font-size: 1.25rem;
+	}
+
+	button {
+		--_c: var(--error);
+
+		&:hover,
+		&:focus-visible {
+			--_c: var(--error-hover);
+		}
+
+		&:active {
+			--_c: var(--error-active);
+		}
+	}
+}
+
+@keyframes appear {
+	from {
+		opacity: 0;
+		scale: 0.5;
+	}
+	to {
+		opacity: 1;
+		scale: 1;
+	}
 }

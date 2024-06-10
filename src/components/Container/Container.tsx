@@ -4,9 +4,10 @@ import styles from "./container.module.scss";
 interface ContainerProps {
 	type: "normal" | "wide" | "full" | "sm-full" | "lg-full" | "sm-full-wide";
 	children: React.ReactNode;
+	className: string;
 }
 
-const Container = ({ type, children }: ContainerProps) => {
+const Container = ({ type, children, className }: ContainerProps) => {
 	const getClassname = (type: string) => {
 		switch (type) {
 			case "normal":
@@ -24,7 +25,9 @@ const Container = ({ type, children }: ContainerProps) => {
 		}
 	};
 
-	return <div className={getClassname(type)}>{children}</div>;
+	return (
+		<div className={`${getClassname(type)} ${className}`}>{children}</div>
+	);
 };
 
 export default Container;
