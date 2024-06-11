@@ -1,4 +1,4 @@
-import { ValdiateRole, ValidateEmail, ValidateName } from "./type";
+import { userRoles, ValdiateRole, ValidateEmail, ValidateName } from "./type";
 
 export const validateEmail: ValidateEmail = (email) => {
 	const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -12,9 +12,9 @@ export const validateName: ValidateName = (fullName) => {
 };
 
 export const validateRole: ValdiateRole = (role) => {
-	const superAdmin = "super_admin",
-		admin = "admin",
-		user = "user";
-
-	return role === superAdmin || role === admin || role === user;
+	return (
+		role === userRoles.superAdmin ||
+		role === userRoles.admin ||
+		role === userRoles.user
+	);
 };

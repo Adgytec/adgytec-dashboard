@@ -10,6 +10,7 @@ import {
 	validateName,
 	validateRole,
 } from "@/helpers/validation";
+import { userRoles } from "@/helpers/type";
 
 const defaultInputValues = {
 	name: "",
@@ -19,15 +20,15 @@ const defaultInputValues = {
 
 const roles = [
 	{
-		key: "user",
+		key: userRoles.user,
 		displayValue: "User",
 	},
 	{
-		key: "admin",
+		key: userRoles.admin,
 		displayValue: "Admin",
 	},
 	{
-		key: "super_admin",
+		key: userRoles.superAdmin,
 		displayValue: "Super Admin",
 	},
 ];
@@ -176,11 +177,11 @@ const CreateUser = () => {
 
 							{roles.map((val) => {
 								let disabled =
-									role === "super_admin"
+									role === userRoles.superAdmin
 										? false
 										: role === val.key
 										? true
-										: val.key === "super_admin";
+										: val.key === userRoles.superAdmin;
 
 								return (
 									<option

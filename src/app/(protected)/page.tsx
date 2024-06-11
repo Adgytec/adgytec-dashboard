@@ -5,6 +5,7 @@ import Link from "next/link";
 import { UserContext } from "@/components/AuthContext/authContext";
 import styles from "./home.module.scss";
 import Container from "@/components/Container/Container";
+import { userRoles } from "@/helpers/type";
 
 const AdminLinks = () => {
 	return (
@@ -27,11 +28,11 @@ const Home = () => {
 	// 0->super_admin, 1->admin, 2->user, 3->pending
 	const roleEnum = () => {
 		switch (role) {
-			case "super_admin":
+			case userRoles.superAdmin:
 				return 0;
-			case "admin":
+			case userRoles.admin:
 				return 1;
-			case "user":
+			case userRoles.user:
 				return 2;
 			default:
 				return 2;

@@ -1,0 +1,18 @@
+@use "/src/styles/abstract" as ab;
+
+.container {
+	display: grid;
+	gap: 2em;
+
+	.user_list {
+		display: grid;
+		gap: 2em;
+
+		&[data-load="true"],
+		&[data-empty="true"] {
+			min-height: 20rem;
+			display: grid;
+			place-items: center;
+		}
+	}
+}
