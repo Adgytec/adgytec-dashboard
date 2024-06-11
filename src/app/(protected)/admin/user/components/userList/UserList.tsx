@@ -20,7 +20,6 @@ const UserList = () => {
 	const role = userWithRole ? userWithRole.role : null;
 
 	const [search, setSearch] = useState("");
-	const [error, setError] = useState<string | null>(null);
 	const [users, setUsers] = useState<userObj[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 
@@ -42,13 +41,13 @@ const UserList = () => {
 					setUsers(res.data);
 				})
 				.catch((err) => {
-					setError(err.message);
+					console.error(err.message);
 				})
 				.finally(() => {
 					setLoading(false);
 				});
 		})();
-	}, [userWithRole]);
+	}, [userWithRole, user]);
 
 	let elements: React.JSX.Element[] = [];
 	users.forEach((user) => {

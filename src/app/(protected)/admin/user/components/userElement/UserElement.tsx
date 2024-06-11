@@ -188,8 +188,9 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 						</p>
 
 						<p>
-							If you are sure you want to proceed, click "Delete".
-							Otherwise, click "Cancel" to return.
+							If you are sure you want to proceed, click
+							&quot;Delete&quot;. Otherwise, click
+							&quot;Cancel&quot; to return.
 						</p>
 					</div>
 
