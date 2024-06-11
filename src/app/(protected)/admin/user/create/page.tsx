@@ -178,7 +178,9 @@ const CreateUser = () => {
 								let disabled =
 									role === "super_admin"
 										? false
-										: role === val.key;
+										: role === val.key
+										? true
+										: val.key === "super_admin";
 
 								return (
 									<option
