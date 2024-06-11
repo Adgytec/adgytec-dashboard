@@ -21,19 +21,8 @@ const AdminLinks = () => {
 };
 
 const Home = () => {
-	const user = useContext(UserContext);
-	const [role, setRole] = useState<string>("");
-
-	useEffect(() => {
-		(async function getRole() {
-			const idResult = await user?.getIdTokenResult();
-			let role = idResult?.claims.role;
-
-			if (!role) return;
-
-			setRole(role as string);
-		})();
-	}, [user]);
+	const userWithRole = useContext(UserContext);
+	const role = userWithRole?.role;
 
 	// 0->super_admin, 1->admin, 2->user, 3->pending
 	const roleEnum = () => {

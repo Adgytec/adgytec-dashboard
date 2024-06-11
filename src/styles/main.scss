@@ -102,7 +102,6 @@ body {
 	}
 	&:disabled {
 		cursor: not-allowed;
-		// filter: grayscale(1);
 
 		--_bg: var(--disabled);
 
@@ -131,10 +130,6 @@ body {
 
 		text-decoration: underline transparent;
 		cursor: pointer;
-	}
-
-	&:is(button:disabled) {
-		cursor: not-allowed;
 	}
 
 	&[data-variant="primary"] {
@@ -167,6 +162,11 @@ body {
 	&:focus-visible,
 	&:active {
 		text-decoration-color: currentColor;
+	}
+
+	&:is(button:disabled) {
+		cursor: not-allowed;
+		text-decoration-color: transparent;
 	}
 }
 

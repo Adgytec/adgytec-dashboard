@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { UserContext } from "./authContext";
+import { UserContext, UserWithRole } from "./authContext";
 import { auth, signoutUser } from "@/firebase/auth/auth";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ interface AuthProviderProps {
 }
 
 function AuthProvider({ children }: AuthProviderProps) {
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<UserWithRole | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const router = useRouter();
@@ -27,7 +27,14 @@ function AuthProvider({ children }: AuthProviderProps) {
 					return;
 				} else {
 					setLoading(false);
-					setUser(user);
+
+					let idTokenResult = await user.getIdTokenResult();
+					let role = idTokenResult?.claims.role;
+
+					setUser({
+						user,
+						role: role as string,
+					});
 				}
 			}
 		});

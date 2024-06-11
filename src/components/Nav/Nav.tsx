@@ -54,7 +54,8 @@ const UserPopover = ({ user }: UserPopoverProps) => {
 };
 
 const Nav = () => {
-	const user = useContext(UserContext);
+	const userWithRole = useContext(UserContext);
+	const user = userWithRole ? userWithRole.user : null;
 
 	return (
 		<nav className={styles.nav}>

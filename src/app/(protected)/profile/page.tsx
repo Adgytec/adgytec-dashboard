@@ -11,7 +11,8 @@ import ChangePassword from "./component/ChangePassword";
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
 
 function Profile() {
-	const user = useContext(UserContext);
+	const userWithRole = useContext(UserContext);
+	const user = userWithRole?.user;
 
 	const [edit, setEdit] = useState<boolean>(false);
 	const [name, setName] = useState(() => {

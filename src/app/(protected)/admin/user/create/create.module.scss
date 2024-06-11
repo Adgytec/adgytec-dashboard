@@ -1,0 +1,37 @@
+@use "/src/styles/abstract" as ab;
+
+.create_user {
+	background-color: var(--bg-600);
+	border-radius: 0.75em;
+
+	padding: clamp(1em, 1.75vi, 1.5em);
+
+	display: grid;
+	gap: 1em;
+
+	.form {
+		display: grid;
+		gap: 1em;
+
+		form {
+			display: grid;
+			gap: 1em;
+		}
+
+		.input {
+			display: grid;
+			gap: 0.5em;
+		}
+
+		.select {
+			display: grid;
+			gap: 0.5em;
+		}
+
+		.button {
+			display: flex;
+			justify-content: flex-end;
+			gap: 2em;
+		}
+	}
+}

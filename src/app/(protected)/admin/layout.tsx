@@ -9,22 +9,8 @@ interface AdminLayoutProps {
 	children: React.ReactNode;
 }
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-	const user = useContext(UserContext);
-	const [role, setRole] = useState<string>("");
-
-	useEffect(() => {
-		(async function getRole() {
-			const idResult = await user?.getIdTokenResult();
-			let role = idResult?.claims.role;
-
-			if (!role) {
-				setRole("");
-				return;
-			}
-
-			setRole(role as string);
-		})();
-	}, [user]);
+	const userWithRole = useContext(UserContext);
+	const role = userWithRole?.role;
 
 	if (role === "") {
 		return (
