@@ -1,0 +1,17 @@
+@use "/src/styles/abstract" as ab;
+
+.home {
+	.container {
+		background-color: var(--bg-600);
+		border-radius: 0.75em;
+
+		padding: clamp(1em, 1.75vi, 1.5rem);
+		display: grid;
+		gap: 2em;
+	}
+
+	.link {
+		display: grid;
+		gap: 1em;
+	}
+}

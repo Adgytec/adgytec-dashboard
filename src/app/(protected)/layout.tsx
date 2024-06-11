@@ -21,6 +21,7 @@ export default function ProtectedLayout({
 				<main
 					style={{
 						flexGrow: "1",
+						position: "relative",
 					}}
 				>
 					{children}

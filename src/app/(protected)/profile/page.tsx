@@ -53,12 +53,12 @@ function Profile() {
 			}),
 		})
 			.then((res) => res.json())
-			.then((res) => {
+			.then(async (res) => {
 				if (res.error) {
 					throw new Error(res.message);
 				}
 
-				user?.reload();
+				await user?.reload();
 				setMessage("User updated successfully");
 				setEdit(false);
 			})

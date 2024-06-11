@@ -5,9 +5,10 @@ interface ContainerProps {
 	type: "normal" | "wide" | "full" | "sm-full" | "lg-full" | "sm-full-wide";
 	children: React.ReactNode;
 	className?: string;
+	style?: React.CSSProperties;
 }
 
-const Container = ({ type, children, className }: ContainerProps) => {
+const Container = ({ type, children, className, style }: ContainerProps) => {
 	const getClassname = (type: string) => {
 		switch (type) {
 			case "normal":
@@ -26,7 +27,9 @@ const Container = ({ type, children, className }: ContainerProps) => {
 	};
 
 	return (
-		<div className={`${getClassname(type)} ${className}`}>{children}</div>
+		<div className={`${getClassname(type)} ${className}`} style={style}>
+			{children}
+		</div>
 	);
 };
 
