@@ -1,4 +1,10 @@
-import { userRoles, ValdiateRole, ValidateEmail, ValidateName } from "./type";
+import {
+	userRoles,
+	ValdiateRole,
+	ValidateEmail,
+	ValidateName,
+	ValidateProjectName,
+} from "./type";
 
 export const validateEmail: ValidateEmail = (email) => {
 	const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -17,4 +23,9 @@ export const validateRole: ValdiateRole = (role) => {
 		role === userRoles.admin ||
 		role === userRoles.user
 	);
+};
+
+export const validateProjectName: ValidateProjectName = (projectName) => {
+	const regex = /^\b[A-Za-z0-9_]+(?:\s+[A-Za-z0-9_]+)*\b$/;
+	return projectName.length >= 3 && regex.test(projectName);
 };

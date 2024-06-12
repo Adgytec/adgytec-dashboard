@@ -1,0 +1,39 @@
+@use "/src/styles/abstract" as ab;
+
+.project {
+	background-color: var(--bg-600);
+	display: grid;
+	gap: 3em;
+
+	padding: clamp(1em, 1.75vi, 1.5em);
+	border-radius: 0.75em;
+
+	.project_list {
+		outline: 2px solid lightpink;
+	}
+}
+
+.modal_create {
+	--_w: 32em;
+
+	.container {
+		display: grid;
+		gap: 1.5em;
+	}
+
+	.form {
+		display: grid;
+		gap: 1.5em;
+
+		.input {
+			display: grid;
+			gap: 0.5em;
+		}
+
+		.action {
+			display: flex;
+			gap: 2em;
+			justify-content: flex-end;
+		}
+	}
+}
