@@ -4,6 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "@/components/Loader/Loader";
 import { changePassword } from "@/firebase/auth/auth";
+import { toast } from "react-toastify";
 
 interface ChangePasswordProps {
 	handleClose: () => void;
@@ -32,20 +33,19 @@ const ChangePassword = ({ handleClose }: ChangePasswordProps) => {
 		setUpdating(false);
 
 		if (err) {
-			setMessage(null);
+			// setMessage(null);
 			setError(err.message);
-			setUpdating(false);
 			return;
 		}
 
-		setMessage("Password changed successfully");
+		toast.success("Password changed successfully");
 		setUserinput({
 			password: "",
 			confirm: "",
 		});
-		setTimeout(() => {
-			setMessage(null);
-		}, 6000);
+		// setTimeout(() => {
+		// 	setMessage(null);
+		// }, 6000);
 	};
 
 	const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {

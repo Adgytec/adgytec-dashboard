@@ -9,6 +9,7 @@ import Loader from "@/components/Loader/Loader";
 import { validateName } from "@/helpers/validation";
 import ChangePassword from "./component/ChangePassword";
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
+import { toast } from "react-toastify";
 
 function Profile() {
 	const userWithRole = useContext(UserContext);
@@ -28,19 +29,20 @@ function Profile() {
 
 	const handleUpdate = async () => {
 		if (!validateName(name)) {
-			setError("invalid name");
+			toast.error("invalid name");
+
 			return;
 		}
 
 		let uid = user?.uid;
 		if (!uid || !user) {
-			setError("The user is invalid.");
+			toast.error("The user is invalid.");
 			return;
 		}
 
 		setUpdating(true);
-		setError(null);
-		setMessage(null);
+		// setError(null);
+		// setMessage(null);
 		let url = `${process.env.NEXT_PUBLIC_API}/user/${uid}`;
 		let token = await user.getIdToken();
 		fetch(url, {
@@ -60,11 +62,11 @@ function Profile() {
 				}
 
 				await user?.reload();
-				setMessage("User updated successfully");
+				toast.success("User updated successfully");
 				setEdit(false);
 			})
 			.catch((err) => {
-				setError(err.message);
+				toast.error(err.message);
 			})
 			.finally(() => setUpdating(false));
 	};

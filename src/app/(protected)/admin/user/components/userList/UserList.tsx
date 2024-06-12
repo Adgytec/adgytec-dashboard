@@ -61,25 +61,13 @@ const UserList = () => {
 			return;
 		}
 
-		if (userId.includes(search)) {
+		if (
+			userId.toLowerCase().includes(search.toLowerCase()) ||
+			email.toLowerCase().includes(search.toLowerCase()) ||
+			name.toLowerCase().includes(search.toLowerCase()) ||
+			userRole.toLowerCase().includes(search.toLowerCase())
+		)
 			elements.push(element);
-			return;
-		}
-
-		if (email.includes(search)) {
-			elements.push(element);
-			return;
-		}
-
-		if (name.includes(search)) {
-			elements.push(element);
-			return;
-		}
-
-		if (userRole.includes(search)) {
-			elements.push(element);
-			return;
-		}
 	});
 
 	return (

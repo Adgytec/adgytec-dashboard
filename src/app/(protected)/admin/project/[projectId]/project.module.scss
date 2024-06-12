@@ -1,0 +1,48 @@
+@use "/src/styles/abstract" as ab;
+
+.detail {
+	padding: clamp(0.75em, 1.5vi, 1.25em);
+	background-color: var(--bg-600);
+
+	border-radius: 0.75em;
+	display: grid;
+	gap: 1em;
+
+	.table {
+		table {
+			--_space: 1em;
+
+			border-spacing: var(--_space);
+			translate: calc(-1 * var(--_space));
+
+			td {
+				word-break: break-word;
+
+				input {
+					width: min(100%, 15rem);
+				}
+			}
+
+			th {
+				text-align: left;
+			}
+		}
+	}
+
+	.users {
+		display: grid;
+		gap: 1.5em;
+
+		> div {
+			background-color: var(--bg-400);
+			padding: 1em;
+			display: grid;
+			gap: 1em;
+
+			border-radius: 0.75em;
+		}
+	}
+
+	.action {
+	}
+}

@@ -11,6 +11,7 @@ import {
 	validateRole,
 } from "@/helpers/validation";
 import { userRoles } from "@/helpers/type";
+import { toast } from "react-toastify";
 
 const defaultInputValues = {
 	name: "",
@@ -73,13 +74,14 @@ const CreateUser = () => {
 
 		const { name, email, role } = userInput;
 		if (!validateInput(name, email, role)) {
-			setError("Invalid input values");
-			setMessage(null);
+			// setError("Invalid input values");
+			// setMessage(null);
+			toast.error("Invalid input values");
 			return;
 		}
 
-		setError(null);
-		setMessage(null);
+		// setError(null);
+		// setMessage(null);
 		setCreating(true);
 		const url = `${process.env.NEXT_PUBLIC_API}/user`;
 		const token = await user?.getIdToken();
@@ -104,11 +106,12 @@ const CreateUser = () => {
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
 
-				setMessage("Successfully created new user");
+				toast.success("Successfully created new user");
 				handleReset();
 			})
 			.catch((err) => {
-				setError(err.message);
+				// setError(err.message);
+				toast.error(err.message);
 			})
 			.finally(() => {
 				setCreating(false);

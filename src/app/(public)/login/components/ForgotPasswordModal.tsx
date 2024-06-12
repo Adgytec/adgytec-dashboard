@@ -5,6 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Loader from "@/components/Loader/Loader";
 import { validateEmail } from "@/helpers/validation";
 import { forgotPassword } from "@/firebase/auth/auth";
+import { toast } from "react-toastify";
 
 interface ForgotPasswordModalProps {
 	handleClose: () => void;
@@ -19,31 +20,31 @@ const ForgotPasswordModal = ({ handleClose }: ForgotPasswordModalProps) => {
 	const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		setSending(true);
 		if (!validateEmail(email)) {
 			setError("The email address provided is not valid.");
-			setMessage(null);
-			setSending(false);
+			// setMessage(null);
+			// setSending(false);
 			return;
 		}
 
+		setSending(true);
 		const err = await forgotPassword(email);
 		setSending(false);
 		if (err) {
 			setError(err.message);
-			setMessage(null);
+			// setMessage(null);
 			return;
 		}
 
 		setEmail("");
-		setMessage(
+		toast.success(
 			"Password reset email sent. Please check your inbox and follow the instructions to reset your password."
 		);
-		setError(null);
+		// setError(null);
 
-		setTimeout(() => {
-			setMessage(null);
-		}, 6000);
+		// setTimeout(() => {
+		// 	setMessage(null);
+		// }, 6000);
 	};
 
 	return (

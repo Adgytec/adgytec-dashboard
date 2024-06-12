@@ -8,8 +8,27 @@
 	padding: clamp(1em, 1.75vi, 1.5em);
 	border-radius: 0.75em;
 
+	.create {
+		display: flex;
+		justify-content: space-between;
+		gap: 2em;
+	}
+
+	.project_details {
+		display: grid;
+		gap: 1.5em;
+	}
+
 	.project_list {
-		outline: 2px solid lightpink;
+		display: grid;
+		gap: 1em;
+
+		&[data-load="true"],
+		&[data-empty="true"] {
+			min-height: 20rem;
+
+			place-items: center;
+		}
 	}
 }
 

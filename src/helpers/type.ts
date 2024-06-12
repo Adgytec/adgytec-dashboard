@@ -11,3 +11,5 @@ export type ValidateName = (fullName: string) => boolean;
 export type ValdiateRole = (role: string) => boolean;
 
 export type ValidateProjectName = (projectName: string) => boolean;
+
+export type CopyToClipboard = (text: string) => void;

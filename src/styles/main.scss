@@ -96,6 +96,20 @@ body {
 		}
 	}
 
+	&[data-variant="error"] {
+		--_bg: var(--error);
+		--_c: var(--white);
+
+		&:hover,
+		&:focus-visible {
+			--_bg: var(--error-hover);
+		}
+
+		&:active {
+			--_bg: var(--error-active);
+		}
+	}
+
 	&[data-load="true"] {
 		width: 4.65em;
 		height: 2em;
@@ -155,6 +169,19 @@ body {
 
 		&:active {
 			--_c: var(--accent-secondary-active);
+		}
+	}
+
+	&[data-variant="error"] {
+		--_c: var(--error);
+
+		&:hover,
+		&:focus-visible {
+			--_c: var(--error-hover);
+		}
+
+		&:active {
+			--_c: var(--error-active);
 		}
 	}
 

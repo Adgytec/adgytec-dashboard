@@ -46,19 +46,6 @@
 
 		font-size: 1.25rem;
 	}
-
-	button {
-		--_c: var(--error);
-
-		&:hover,
-		&:focus-visible {
-			--_c: var(--error-hover);
-		}
-
-		&:active {
-			--_c: var(--error-active);
-		}
-	}
 }
 
 @keyframes appear {

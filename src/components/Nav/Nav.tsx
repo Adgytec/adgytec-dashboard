@@ -43,7 +43,11 @@ const UserPopover = ({ user }: UserPopoverProps) => {
 					</div>
 
 					<div>
-						<button data-type="link" onClick={handleSignout}>
+						<button
+							data-type="link"
+							data-variant="error"
+							onClick={handleSignout}
+						>
 							Sign out
 						</button>
 					</div>

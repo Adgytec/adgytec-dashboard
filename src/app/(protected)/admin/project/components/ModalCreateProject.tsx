@@ -5,12 +5,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "@/components/Loader/Loader";
 import { validateProjectName } from "@/helpers/validation";
 import { UserContext } from "@/components/AuthContext/authContext";
+import { toast } from "react-toastify";
 
 interface ModalCreateProjectProps {
 	handleClose: () => void;
+	handleRefresh: () => void;
 }
 
-const ModalCreateProject = ({ handleClose }: ModalCreateProjectProps) => {
+const ModalCreateProject = ({
+	handleClose,
+	handleRefresh,
+}: ModalCreateProjectProps) => {
 	const userWithRole = useContext(UserContext);
 	const user = userWithRole ? userWithRole.user : null;
 
@@ -21,7 +26,7 @@ const ModalCreateProject = ({ handleClose }: ModalCreateProjectProps) => {
 
 	const handleReset = () => {
 		setError(null);
-		setMessage(null);
+		// setMessage(null);
 		setProject("");
 	};
 
@@ -35,12 +40,13 @@ const ModalCreateProject = ({ handleClose }: ModalCreateProjectProps) => {
 
 		if (!validateProjectName(project)) {
 			setError("Invalid project name");
-			setMessage(null);
+			// setMessage(null);
+			// toast.error("Invalid project name");
 			return;
 		}
 
 		setError(null);
-		setMessage(null);
+		// setMessage(null);
 		setCreating(true);
 
 		const url = `${process.env.NEXT_PUBLIC_API}/project`;
@@ -61,11 +67,14 @@ const ModalCreateProject = ({ handleClose }: ModalCreateProjectProps) => {
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
-				setMessage("Successfully created new project");
-				setProject("");
+				// setMessage("Successfully created new project");
+				toast.success("Successfully created new project");
+				handleRefresh();
+				handleCancel();
 			})
 			.catch((err) => {
 				setError(err.message);
+				// toast.error(err.message);
 			})
 			.finally(() => {
 				setCreating(false);

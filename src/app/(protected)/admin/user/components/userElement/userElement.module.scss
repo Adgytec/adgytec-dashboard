@@ -21,33 +21,6 @@
 	}
 }
 
-.delete {
-	--_bg: var(--error);
-	--_c: var(--white);
-
-	&:hover,
-	&:focus-visible {
-		--_bg: var(--error-hover);
-	}
-
-	&:active {
-		--_bg: var(--error-active);
-	}
-
-	&[data-type="link"] {
-		--_c: var(--error);
-
-		&:hover,
-		&:focus-visible {
-			--_c: var(--error-hover);
-		}
-
-		&:active {
-			--_c: var(--error-active);
-		}
-	}
-}
-
 .deleteConfirm {
 	--_w: 35em;
 

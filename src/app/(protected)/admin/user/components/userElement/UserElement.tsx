@@ -10,6 +10,7 @@ import Loader from "@/components/Loader/Loader";
 import { userRoles } from "@/helpers/type";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { validateName, validateRole } from "@/helpers/validation";
+import { toast } from "react-toastify";
 
 interface UserElementProps {
 	user: userObj;
@@ -69,14 +70,17 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 
 				setUsers((prev) => {
 					let temp = prev;
+
 					return temp.toSpliced(
 						temp.findIndex((u) => u.userId === user.userId),
 						1
 					);
 				});
+				toast.success("successfully deleted user");
 			})
 			.catch((err) => {
 				setError(err.message);
+				// toast.error(err.message);
 			})
 			.finally(() => setDeleting(false));
 	};
@@ -116,14 +120,14 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 	const handleUpdate = async () => {
 		const { name, role } = userInput;
 		if (!validateInput(name, role)) {
-			setError("invalid input");
-			setMessage(null);
+			// setError("invalid input");
+			// setMessage(null);
 			return;
 		}
 
 		setUpdating(true);
-		setError(null);
-		setMessage(null);
+		// setError(null);
+		// setMessage(null);
 
 		const url = `${process.env.NEXT_PUBLIC_API}/user/${user.userId}`;
 		const token = await myUser?.getIdToken();
@@ -141,7 +145,8 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
 
-				setMessage("user updated");
+				// setMessage("user updated");
+				toast.success("user updated");
 				setUsers((prev) => {
 					return prev.map((u) =>
 						u.userId === user.userId ? { ...u, name, role } : u
@@ -151,6 +156,7 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 			})
 			.catch((err) => {
 				setError(err.message);
+				// toast.error(err.message);
 			})
 			.finally(() => {
 				setUpdating(false);
@@ -211,6 +217,7 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 							disabled={deleting}
 							data-load={deleting}
 							onClick={handleDelete}
+							data-variant="error"
 						>
 							{deleting ? <Loader variant="small" /> : "Delete"}
 						</button>
@@ -303,6 +310,7 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 
 					<button
 						data-type="link"
+						data-variant="error"
 						className={styles.delete}
 						onClick={() => deleteConfirmRef.current?.showModal()}
 						disabled={actionDisabled() || updating}
