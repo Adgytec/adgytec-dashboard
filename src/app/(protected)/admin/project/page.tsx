@@ -8,6 +8,7 @@ import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import Loader from "@/components/Loader/Loader";
 import { UserContext } from "@/components/AuthContext/authContext";
 import ProjectElement from "./components/ProjectElement/ProjectElement";
+import { toast } from "react-toastify";
 
 export interface Project {
 	projectId: string;
@@ -31,6 +32,7 @@ const ProjectAdmin = () => {
 
 	const getAllProjects = async () => {
 		setLoading(true);
+		setProjects([]);
 		const url = `${process.env.NEXT_PUBLIC_API}/projects`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -48,7 +50,7 @@ const ProjectAdmin = () => {
 				setProjects(res.data);
 			})
 			.catch((err) => {
-				console.error(err.message);
+				toast.error(err.message);
 			})
 			.finally(() => {
 				setLoading(false);
@@ -61,10 +63,6 @@ const ProjectAdmin = () => {
 		let element = (
 			<ProjectElement key={project.projectId} project={project} />
 		);
-
-		if (ind == 4) {
-			console.log(project.createdAt);
-		}
 
 		if (search.length === 0) {
 			elements.push(element);

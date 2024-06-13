@@ -95,8 +95,6 @@ const CreateUser = () => {
 			"Content-Type": "application/json",
 		};
 
-		console.log(headers);
-
 		fetch(url, {
 			method: "POST",
 			headers,

@@ -82,7 +82,6 @@ const Login = () => {
 		setSigningIn(false);
 
 		if (error) {
-			console.log(error.code);
 			if (
 				error.code === "auth/wrong-password" ||
 				error.code === "auth/user-not-found"

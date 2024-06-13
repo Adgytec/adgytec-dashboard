@@ -168,9 +168,9 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 			<dialog
 				onKeyDown={handleEscModal}
 				ref={deleteConfirmRef}
-				className={styles.deleteConfirm}
+				className="delete-confirm"
 			>
-				<div className={styles.modal}>
+				<div className="delete-modal">
 					<div className="modal-menu">
 						<h2>Confirm User Deletion</h2>
 
@@ -184,7 +184,7 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 						</button>
 					</div>
 
-					<div className={styles.content}>
+					<div className="delete-content">
 						<p>Are you sure you want to delete this user?</p>
 
 						<p>
@@ -192,17 +192,11 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 							account and all associated data. This action cannot
 							be undone.
 						</p>
-
-						<p>
-							If you are sure you want to proceed, click
-							&quot;Delete&quot;. Otherwise, click
-							&quot;Cancel&quot; to return.
-						</p>
 					</div>
 
 					{error && <p className="error">{error}</p>}
 
-					<div className={styles.action}>
+					<div className="delete-action">
 						<button
 							data-type="link"
 							disabled={deleting}

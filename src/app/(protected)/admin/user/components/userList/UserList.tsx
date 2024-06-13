@@ -5,6 +5,7 @@ import styles from "./UserList.module.scss";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import UserElement from "../userElement/UserElement";
+import { toast } from "react-toastify";
 
 export interface userObj {
 	name: string;
@@ -41,7 +42,8 @@ const UserList = () => {
 					setUsers(res.data);
 				})
 				.catch((err) => {
-					console.error(err.message);
+					// console.error(err.message);
+					toast.error(err.message);
 				})
 				.finally(() => {
 					setLoading(false);

@@ -83,3 +83,23 @@ dialog[open] {
 		opacity: 1;
 	}
 }
+
+.delete-confirm {
+	--_w: 35em;
+
+	.delete-modal {
+		display: grid;
+		gap: 1em;
+	}
+
+	.delete-content {
+		display: grid;
+		gap: 0.5em;
+	}
+
+	.delete-action {
+		display: flex;
+		gap: 2em;
+		justify-content: flex-end;
+	}
+}
