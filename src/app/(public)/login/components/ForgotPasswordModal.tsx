@@ -40,6 +40,7 @@ const ForgotPasswordModal = ({ handleClose }: ForgotPasswordModalProps) => {
 		toast.success(
 			"Password reset email sent. Please check your inbox and follow the instructions to reset your password."
 		);
+		handleClose();
 		// setError(null);
 
 		// setTimeout(() => {
