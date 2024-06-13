@@ -79,10 +79,9 @@ const Login = () => {
 
 		setErrMessage(null);
 		let { error } = await signin(email, password, remember);
-		setSigningIn(false);
 
 		if (error) {
-			console.error(error);
+			setSigningIn(false);
 			if (error.code === "auth/invalid-credential") {
 				setErrMessage(
 					"The email or password you entered is incorrect. Please try again."
