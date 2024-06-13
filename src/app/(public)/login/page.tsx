@@ -82,10 +82,8 @@ const Login = () => {
 		setSigningIn(false);
 
 		if (error) {
-			if (
-				error.code === "auth/wrong-password" ||
-				error.code === "auth/user-not-found"
-			) {
+			console.error(error);
+			if (error.code === "auth/invalid-credential") {
 				setErrMessage(
 					"The email or password you entered is incorrect. Please try again."
 				);
