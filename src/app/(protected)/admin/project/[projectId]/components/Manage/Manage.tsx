@@ -53,7 +53,11 @@ const Manage = ({
 							/>
 						</Tabs.Content>
 						<Tabs.Content value="services">
-							<Service />
+							<Service
+								addedServices={services}
+								getProjectDetail={getProjectDetail}
+								user={user}
+							/>
 						</Tabs.Content>
 					</div>
 				</Tabs.Root>

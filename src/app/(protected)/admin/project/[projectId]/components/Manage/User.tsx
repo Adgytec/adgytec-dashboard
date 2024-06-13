@@ -238,7 +238,11 @@ const User = ({ user, addedUsers, getProjectDetail }: UserProps) => {
 				</div>
 
 				<div className={styles.users_list}>
-					{elements.length > 0 ? <>{elements}</> : <p>No users</p>}
+					{elements.length > 0 ? (
+						<>{elements}</>
+					) : (
+						<p>No users to add</p>
+					)}
 				</div>
 			</div>
 		</div>
