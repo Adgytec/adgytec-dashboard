@@ -90,7 +90,6 @@ const Login = () => {
 					"The email or password you entered is incorrect. Please try again."
 				);
 			} else {
-				console.error(error.message);
 				setErrMessage(
 					"We encountered an unexpected error on our end. Please try refreshing the page or come back later. "
 				);
