@@ -1,0 +1,16 @@
+@use "/src/styles/abstract" as ab;
+
+.project {
+	background-color: var(--bg-600);
+	padding: clamp(1em, 1.75vi, 1.5em);
+	border-radius: 0.75em;
+
+	display: grid;
+	gap: 1em;
+
+	.nav {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+}
