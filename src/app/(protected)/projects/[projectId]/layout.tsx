@@ -7,6 +7,7 @@ import styles from "./projectId.module.scss";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 interface ProjectObj {
 	projectName: string;
@@ -97,7 +98,12 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<Container type="normal" className={styles.project}>
 			<div className={styles.nav}>
-				<h3>{project.projectName}</h3>
+				<div className={styles.bread_crumb}>
+					<p>
+						<Link href="/projects">Projects</Link> /{" "}
+						{project.projectName}
+					</p>
+				</div>
 
 				{project.services.length > 0 && (
 					<select
