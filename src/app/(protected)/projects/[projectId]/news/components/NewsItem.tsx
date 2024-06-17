@@ -5,7 +5,6 @@ import Loader from "@/components/Loader/Loader";
 import { handleModalClose, handleEscModal } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { error } from "console";
 import { useParams } from "next/navigation";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
@@ -13,10 +12,10 @@ import { validateString, validateURL } from "@/helpers/validation";
 
 interface NewsItemProps {
 	news: NewsObj;
-	fetchNews: () => void;
+	setNews: React.Dispatch<React.SetStateAction<NewsObj[]>>;
 }
 
-const NewsItem = ({ news, fetchNews }: NewsItemProps) => {
+const NewsItem = ({ news, setNews }: NewsItemProps) => {
 	const userWithRole = useContext(UserContext);
 	const user = userWithRole ? userWithRole.user : null;
 
@@ -73,6 +72,14 @@ const NewsItem = ({ news, fetchNews }: NewsItemProps) => {
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
 
+				setNews((prev) => {
+					let temp = prev;
+
+					return temp.toSpliced(
+						temp.findIndex((n) => n.id === news.id),
+						1
+					);
+				});
 				toast.success("successfully deleted news item");
 			})
 			.catch((err) => {

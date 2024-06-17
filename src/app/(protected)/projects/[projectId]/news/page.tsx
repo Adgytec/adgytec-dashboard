@@ -87,11 +87,7 @@ const News = () => {
 				) : (
 					news.map((n) => {
 						return (
-							<NewsItem
-								key={n.id}
-								news={n}
-								fetchNews={getAllNews}
-							/>
+							<NewsItem key={n.id} news={n} setNews={setNews} />
 						);
 					})
 				)}
