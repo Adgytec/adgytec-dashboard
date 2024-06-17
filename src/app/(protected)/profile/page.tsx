@@ -22,6 +22,7 @@ function Profile() {
 	const [updating, setUpdating] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
+
 	const changePasswordRef = useRef<HTMLDialogElement | null>(null);
 
 	let d = new Date();
