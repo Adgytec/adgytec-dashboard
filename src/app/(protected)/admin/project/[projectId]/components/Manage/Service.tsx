@@ -19,7 +19,7 @@ interface ServiceObj {
 
 const Service = ({ addedServices, getProjectDetail, user }: ServiceProps) => {
 	const [services, setServices] = useState<ServiceObj[]>([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
 	const [adding, setAdding] = useState(false);
 	const [removing, setRemoving] = useState("");
