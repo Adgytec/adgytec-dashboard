@@ -14,5 +14,14 @@
 		align-items: center;
 
 		margin-block-end: 1em;
+
+		.bread_crumb {
+			display: flex;
+			gap: 0.25em;
+
+			p {
+				user-select: none;
+			}
+		}
 	}
 }

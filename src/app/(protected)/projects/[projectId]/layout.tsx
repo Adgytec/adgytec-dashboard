@@ -61,10 +61,6 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 				if (res.error) throw new Error(res.message);
 
 				setProject(res.data);
-				if (res.data.services.length > 0) {
-					// const service = res.data.services[0].name;
-					// router.replace(`/projects/${params.projectId}/${service}`);
-				}
 			})
 			.catch((err) => {
 				toast.error(err.message);
@@ -111,14 +107,57 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 		router.push(`/projects/${params.projectId}/${service}`);
 	};
 
+	const createLink = (ind: number) => {
+		let url = "/projects";
+		if (ind == 1) {
+			return url;
+		}
+
+		url = url + `/${params.projectId}`;
+		if (ind == 2) {
+			return url;
+		}
+
+		url = url + `/${activePath}`;
+		if (ind == 3) {
+			return url;
+		}
+
+		return "/projects";
+	};
+
+	let breadCrumbItems: React.JSX.Element[] = [];
+	paths.forEach((path, ind) => {
+		if (path === "") return;
+
+		const link = createLink(ind);
+		let element = (
+			<Link href={link} key={`path-${path}`} className={styles.item}>
+				{ind === 2 ? project.projectName : path}
+			</Link>
+		);
+
+		if (ind !== 4) breadCrumbItems.push(element);
+		if (ind !== paths.length - 1) breadCrumbItems.push(<p> / </p>);
+
+		if (ind === 4) {
+			breadCrumbItems.push(
+				<p key={`path-${path}`} className={styles.item}>
+					create
+				</p>
+			);
+		}
+	});
+
 	return (
 		<Container type="normal" className={styles.project}>
 			<div className={styles.nav}>
 				<div className={styles.bread_crumb}>
-					<p>
-						<Link href="/projects">Projects</Link> /{" "}
-						{project.projectName}
-					</p>
+					{/* <p> */}
+					{/* <Link href="/projects">Projects</Link> /{" "}
+						{project.projectName} / {activePath} */}
+					{breadCrumbItems}
+					{/* </p> */}
 				</div>
 
 				{project.services.length > 0 && (
