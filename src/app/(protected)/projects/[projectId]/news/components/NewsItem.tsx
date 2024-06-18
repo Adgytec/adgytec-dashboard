@@ -110,7 +110,7 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
 	};
 
 	const handleUpdate = async () => {
-		if (!validateInput) return;
+		if (!validateInput()) return;
 
 		const url = `${process.env.NEXT_PUBLIC_API}/services/news/${params.projectId}/${news.id}`;
 		const token = await user?.getIdToken();
