@@ -32,7 +32,6 @@ const News = () => {
 
 	const getAllNews = async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/services/news/${params.projectId}`;
-		console.log(url);
 		const token = await user?.getIdToken();
 		const headers = {
 			Authorization: `Bearer ${token}`,

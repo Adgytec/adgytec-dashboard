@@ -5,7 +5,10 @@ import React from "react";
 const Project = ({ params }: { params: { projectId: string } }) => {
 	return (
 		<div>
-			<h3>There are no services in this project</h3>
+			<h3>
+				Select a service to proceed. If there are no service please
+				contact us at adgytec
+			</h3>
 		</div>
 	);
 };

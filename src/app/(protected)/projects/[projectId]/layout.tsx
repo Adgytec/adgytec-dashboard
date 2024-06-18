@@ -1,7 +1,7 @@
 "use client";
 
 import Container from "@/components/Container/Container";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./projectId.module.scss";
 import { UserContext } from "@/components/AuthContext/authContext";
@@ -23,12 +23,27 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 
 	const params = useParams<{ projectId: string }>();
 	const router = useRouter();
+
+	const pathName = usePathname();
+	const paths = pathName.split("/");
+
 	const [project, setProject] = useState<ProjectObj>();
 	const [loading, setLoading] = useState(true);
+	const [activePath, setActivePath] = useState<string>("");
 
 	useEffect(() => {
 		getServicesByProjectId();
 	}, []);
+
+	useEffect(() => {
+		const services = project?.services;
+		if (!services) return;
+
+		services.forEach((service) => {
+			let active = paths.includes(service.name);
+			if (active) setActivePath(service.name);
+		});
+	}, [project]);
 
 	const getServicesByProjectId = async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/client/projects/${params.projectId}/services`;
@@ -47,8 +62,8 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 
 				setProject(res.data);
 				if (res.data.services.length > 0) {
-					const service = res.data.services[0].name;
-					router.replace(`/projects/${params.projectId}/${service}`);
+					// const service = res.data.services[0].name;
+					// router.replace(`/projects/${params.projectId}/${service}`);
 				}
 			})
 			.catch((err) => {
@@ -92,6 +107,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 
 	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const service = e.target.value;
+		setActivePath(service);
 		router.push(`/projects/${params.projectId}/${service}`);
 	};
 
@@ -106,10 +122,13 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 				</div>
 
 				{project.services.length > 0 && (
-					<select
-						onChange={handleChange}
-						defaultValue={project.services[0].name}
-					>
+					<select onChange={handleChange} value={activePath}>
+						<option value="">
+							{project.services.length === 0
+								? "No services in this project"
+								: "Select a service"}
+						</option>
+
 						{project.services.map((service) => {
 							return (
 								<option key={service.id} value={service.name}>
