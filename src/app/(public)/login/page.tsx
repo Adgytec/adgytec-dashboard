@@ -42,6 +42,7 @@ const Login = () => {
 					await resendEmailVerification();
 					emailConfirmRef.current?.showModal();
 					await signoutUser();
+     setLoading(false);
 					return;
 				}
 				router.push("/");
