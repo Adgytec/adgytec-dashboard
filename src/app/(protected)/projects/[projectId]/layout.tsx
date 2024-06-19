@@ -144,7 +144,7 @@ breadCrumbItems.push(<p> / </p>);}
 else {
 			breadCrumbItems.push(
 				<p key={`path-${path}`} className={styles.item}>
-					{project.projectName}
+					{ind === 2 ? project.projectName : path}}
 				</p>
 			);
 		}
