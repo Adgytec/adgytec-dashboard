@@ -144,7 +144,7 @@ breadCrumbItems.push(<p> / </p>);}
 else {
 			breadCrumbItems.push(
 				<p key={`path-${path}`} className={styles.item}>
-					create
+					{project.projectName}
 				</p>
 			);
 		}
