@@ -137,10 +137,11 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 			</Link>
 		);
 
-		if (ind !== 4) breadCrumbItems.push(element);
-		if (ind !== paths.length - 1) breadCrumbItems.push(<p> / </p>);
-
-		if (ind === 4) {
+		// if (ind !== 4) 
+		if (ind !== paths.length - 1){ 
+breadCrumbItems.push(element);
+breadCrumbItems.push(<p> / </p>);}
+else {
 			breadCrumbItems.push(
 				<p key={`path-${path}`} className={styles.item}>
 					create
