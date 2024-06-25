@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import styles from "../../project.module.scss";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Services, Users } from "../../page";
@@ -20,7 +20,10 @@ const Manage = ({
 	services,
 }: ManageProps) => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const user = useMemo(
+		() => (userWithRole ? userWithRole.user : null),
+		[userWithRole]
+	);
 
 	return (
 		<div className={styles.manage}>

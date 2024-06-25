@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../project.module.scss";
 import { Services } from "../../page";
 import { User as AuthUser } from "firebase/auth";
@@ -28,11 +28,7 @@ const Service = ({ addedServices, getProjectDetail, user }: ServiceProps) => {
 
 	const params = useParams<{ projectId: string }>();
 
-	useEffect(() => {
-		getAllServices();
-	}, []);
-
-	const getAllServices = async () => {
+	const getAllServices = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/services`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -55,7 +51,11 @@ const Service = ({ addedServices, getProjectDetail, user }: ServiceProps) => {
 			.finally(() => {
 				setLoading(false);
 			});
-	};
+	}, [user]);
+
+	useEffect(() => {
+		getAllServices();
+	}, [getAllServices]);
 
 	if (loading) {
 		return (

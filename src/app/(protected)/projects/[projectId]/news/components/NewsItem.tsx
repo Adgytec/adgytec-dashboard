@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
 import { validateString, validateURL } from "@/helpers/validation";
+import Image from "next/image";
 
 interface NewsItemProps {
 	news: NewsObj;
@@ -202,7 +203,16 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
 			</dialog>
 			<div className={styles.item}>
 				<div className={styles.item_image}>
-					<img src={news.image} alt={userShow.title} />
+					<Image
+						width={2}
+						height={1}
+						sizes="100vw"
+						style={{ width: "100%", height: "auto" }}
+						src={news.image}
+						alt={userShow.title}
+						placeholder="blur"
+						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="
+					/>
 				</div>
 
 				{!editable ? (

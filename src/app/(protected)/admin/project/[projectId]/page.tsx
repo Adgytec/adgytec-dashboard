@@ -2,7 +2,14 @@
 
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Details from "./components/Details/Details";
@@ -35,7 +42,10 @@ export interface ProjectDetails {
 
 const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const user = useMemo(
+		() => (userWithRole ? userWithRole.user : null),
+		[userWithRole]
+	);
 
 	const router = useRouter();
 
@@ -43,11 +53,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 	const [loading, setLoading] = useState(true);
 	const [manage, setManage] = useState(false);
 
-	useEffect(() => {
-		getProjectDetail();
-	}, [userWithRole, user]);
-
-	const getProjectDetail = async () => {
+	const getProjectDetail = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -76,7 +82,11 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 			.finally(() => {
 				setLoading(false);
 			});
-	};
+	}, [user, router, params.projectId]);
+
+	useEffect(() => {
+		getProjectDetail();
+	}, [getProjectDetail]);
 
 	if (loading) {
 		return (

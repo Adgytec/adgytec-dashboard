@@ -7,6 +7,7 @@ import { validateString, validateURL } from "@/helpers/validation";
 import Loader from "@/components/Loader/Loader";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 
 type ValidateInput = (title: string, text: string, link: string) => boolean;
 
@@ -155,7 +156,12 @@ const CreateNews = () => {
 
 					{filePreview && (
 						<div className={styles.image_preview}>
-							<img src={filePreview} alt="preview" />
+							<Image
+								src={filePreview}
+								alt="preview"
+								width={100}
+								height={100}
+							/>
 						</div>
 					)}
 				</div>

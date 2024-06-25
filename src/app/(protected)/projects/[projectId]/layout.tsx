@@ -2,7 +2,13 @@
 
 import Container from "@/components/Container/Container";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import styles from "./projectId.module.scss";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
@@ -19,33 +25,22 @@ interface ProjectObj {
 
 const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const user = useMemo(
+		() => (userWithRole ? userWithRole.user : null),
+		[userWithRole]
+	);
 
 	const params = useParams<{ projectId: string }>();
 	const router = useRouter();
 
 	const pathName = usePathname();
-	const paths = pathName.split("/");
+	const paths = useMemo(() => pathName.split("/"), [pathName]);
 
 	const [project, setProject] = useState<ProjectObj>();
 	const [loading, setLoading] = useState(true);
 	const [activePath, setActivePath] = useState<string>("");
 
-	useEffect(() => {
-		getServicesByProjectId();
-	}, []);
-
-	useEffect(() => {
-		const services = project?.services;
-		if (!services) return;
-
-		services.forEach((service) => {
-			let active = paths.includes(service.name);
-			if (active) setActivePath(service.name);
-		});
-	}, [project]);
-
-	const getServicesByProjectId = async () => {
+	const getServicesByProjectId = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/client/projects/${params.projectId}/services`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -66,7 +61,21 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 				toast.error(err.message);
 			})
 			.finally(() => setLoading(false));
-	};
+	}, [user, params.projectId]);
+
+	useEffect(() => {
+		getServicesByProjectId();
+	}, [getServicesByProjectId]);
+
+	useEffect(() => {
+		const services = project?.services;
+		if (!services) return;
+
+		services.forEach((service) => {
+			let active = paths.includes(service.name);
+			if (active) setActivePath(service.name);
+		});
+	}, [project, paths]);
 
 	if (loading) {
 		return (
@@ -137,11 +146,11 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 			</Link>
 		);
 
-		// if (ind !== 4) 
-		if (ind !== paths.length - 1){ 
-breadCrumbItems.push(element);
-breadCrumbItems.push(<p> / </p>);}
-else {
+		// if (ind !== 4)
+		if (ind !== paths.length - 1) {
+			breadCrumbItems.push(element);
+			breadCrumbItems.push(<p> / </p>);
+		} else {
 			breadCrumbItems.push(
 				<p key={`path-${path}`} className={styles.item}>
 					{ind === 2 ? project.projectName : path}

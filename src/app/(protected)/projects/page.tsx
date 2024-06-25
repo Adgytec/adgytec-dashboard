@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import styles from "./project.module.scss";
 import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
@@ -16,17 +22,16 @@ export interface ProjectObj {
 
 const Project = () => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const user = useMemo(
+		() => (userWithRole ? userWithRole.user : null),
+		[userWithRole]
+	);
 
 	const [projects, setProjects] = useState<ProjectObj[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [search, setSearch] = useState("");
 
-	useEffect(() => {
-		fetchAllProjectForUser();
-	}, []);
-
-	const fetchAllProjectForUser = async () => {
+	const fetchAllProjectForUser = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/client/projects`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -49,7 +54,11 @@ const Project = () => {
 			.finally(() => {
 				setLoading(false);
 			});
-	};
+	}, [user]);
+
+	useEffect(() => {
+		fetchAllProjectForUser();
+	}, [fetchAllProjectForUser]);
 
 	if (loading) {
 		return (

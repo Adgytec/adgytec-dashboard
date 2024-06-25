@@ -1,7 +1,13 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import styles from "./news.module.scss";
 import Link from "next/link";
 import Loader from "@/components/Loader/Loader";
@@ -20,17 +26,16 @@ export interface NewsObj {
 
 const News = () => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const user = useMemo(
+		() => (userWithRole ? userWithRole.user : null),
+		[userWithRole]
+	);
 
 	const params = useParams<{ projectId: string }>();
 	const [loading, setLoading] = useState(true);
 	const [news, setNews] = useState<NewsObj[]>([]);
 
-	useEffect(() => {
-		getAllNews();
-	}, []);
-
-	const getAllNews = async () => {
+	const getAllNews = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/services/news/${params.projectId}`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -51,7 +56,11 @@ const News = () => {
 				toast.error(err.message);
 			})
 			.finally(() => setLoading(false));
-	};
+	}, [user, params.projectId]);
+
+	useEffect(() => {
+		getAllNews();
+	}, [getAllNews]);
 
 	if (loading) {
 		return (

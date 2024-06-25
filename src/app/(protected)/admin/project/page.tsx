@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import styles from "./project.module.scss";
 import Container from "@/components/Container/Container";
 import ModalCreateProject from "./components/ModalCreateProject";
@@ -18,7 +25,10 @@ export interface Project {
 
 const ProjectAdmin = () => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const user = useMemo(
+		() => (userWithRole ? userWithRole.user : null),
+		[userWithRole]
+	);
 
 	const createProjectRef = useRef<HTMLDialogElement | null>(null);
 
@@ -26,13 +36,10 @@ const ProjectAdmin = () => {
 	const [loading, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
 
-	useEffect(() => {
-		getAllProjects();
-	}, [userWithRole, user]);
-
-	const getAllProjects = async () => {
+	const getAllProjects = useCallback(async () => {
 		setLoading(true);
 		setProjects([]);
+
 		const url = `${process.env.NEXT_PUBLIC_API}/projects`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -55,7 +62,11 @@ const ProjectAdmin = () => {
 			.finally(() => {
 				setLoading(false);
 			});
-	};
+	}, [user]);
+
+	useEffect(() => {
+		getAllProjects();
+	}, [getAllProjects]);
 
 	let elements: React.JSX.Element[] = [];
 	projects.forEach((project, ind) => {
