@@ -139,20 +139,24 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	paths.forEach((path, ind) => {
 		if (path === "") return;
 
-		const link = createLink(ind);
-		let element = (
-			<Link href={link} key={`path-${path}`} className={styles.item}>
-				{ind === 2 ? project.projectName : path}
-			</Link>
-		);
+		const url = createLink(ind);
 
-		// if (ind !== 4)
 		if (ind !== paths.length - 1) {
+			let element = (
+				<Link
+					href={url}
+					className={styles.item}
+					key={`path-${path}-index-${ind}`}
+				>
+					{ind === 2 ? project.projectName : path}
+				</Link>
+			);
+
 			breadCrumbItems.push(element);
-			breadCrumbItems.push(<p> / </p>);
+			breadCrumbItems.push(<p key={`seperator-${ind}`}> / </p>);
 		} else {
 			breadCrumbItems.push(
-				<p key={`path-${path}`} className={styles.item}>
+				<p key={`path-${path}-index-${ind}`} className={styles.item}>
 					{ind === 2 ? project.projectName : path}
 				</p>
 			);
@@ -162,13 +166,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<Container type="normal" className={styles.project}>
 			<div className={styles.nav}>
-				<div className={styles.bread_crumb}>
-					{/* <p> */}
-					{/* <Link href="/projects">Projects</Link> /{" "}
-						{project.projectName} / {activePath} */}
-					{breadCrumbItems}
-					{/* </p> */}
-				</div>
+				<div className={styles.bread_crumb}>{breadCrumbItems}</div>
 
 				{project.services.length > 0 && (
 					<select onChange={handleChange} value={activePath}>
