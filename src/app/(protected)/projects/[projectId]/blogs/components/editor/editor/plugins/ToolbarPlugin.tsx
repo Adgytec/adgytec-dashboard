@@ -1,6 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
 	Dispatch,
+	MutableRefObject,
 	SetStateAction,
 	useCallback,
 	useContext,
@@ -54,6 +55,8 @@ import { INSERT_IMAGE_COMMAND } from "../nodes/ImageNode";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { NewImages } from "../Editor";
+import { generateRandomString } from "@/helpers/helpers";
 
 const LowPriority = 1;
 
@@ -457,10 +460,14 @@ function BlockOptionsDropdownList({
 }
 
 interface ToolbarPluginProps {
-	setNewImages: Dispatch<SetStateAction<string[]>>;
+	setNewImages: Dispatch<SetStateAction<NewImages[]>>;
+	uuidRef: MutableRefObject<string | null>;
 }
-export default function ToolbarPlugin({ setNewImages }: ToolbarPluginProps) {
-	const userWithRole = useContext(UserContext);
+
+export default function ToolbarPlugin({
+	setNewImages,
+	uuidRef,
+}: ToolbarPluginProps) {
 	const params = useParams<{ projectId: string }>();
 
 	const [editor] = useLexicalComposerContext();
@@ -601,33 +608,29 @@ export default function ToolbarPlugin({ setNewImages }: ToolbarPluginProps) {
 			const files = e.target.files;
 			if (!files) return;
 
-			// const src = URL.createObjectURL(files[0]);
+			let extension = files[0].type;
+			extension = extension.replace(/(.*)\//g, "");
 
-			const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/random-id`;
-			const token = await userWithRole?.user.getIdToken();
-			const headers = {
-				Authorization: `Bearer ${token}`,
-			};
+			const src = URL.createObjectURL(files[0]);
+			let path = `services/blogs/${params.projectId}/${
+				uuidRef.current
+			}/${generateRandomString()}.${extension}`;
+			if (process.env.NEXT_PUBLIC_ENV === "DEV") {
+				path = "dev/" + path;
+			}
 
-			const formData = new FormData();
-			formData.append("image", files[0]);
-			// fetch(url, {
-			// 	method: "POST",
-			// 	headers,
-			// 	body: formData,
-			// })
-			// 	.then((res) => res.json())
-			// 	.then((res) => {
-			// 		if (res.error) throw new Error(res.message);
-
-			// 		toast.success("Successfully added media item");
-			// 		editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-			// 			src: res.data.image,
-			// 			path: res.data.path,
-			// 		});
-			// 		setNewImages((prev) => [...prev, res.data.path]);
-			// 	})
-			// 	.catch((err) => toast.error(err.message));
+			editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+				src,
+				path,
+			});
+			setNewImages((prev) => [
+				...prev,
+				{
+					path,
+					file: files[0],
+					isRemoved: false,
+				},
+			]);
 		},
 		[editor]
 	);

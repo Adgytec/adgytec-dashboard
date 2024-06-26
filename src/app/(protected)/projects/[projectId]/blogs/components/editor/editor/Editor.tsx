@@ -25,12 +25,20 @@ import ImagePlugin from "./plugins/ImagePlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { LexicalEditor } from "lexical";
+import { EditorThemeClassName, LexicalEditor } from "lexical";
 import { $getRoot, $insertNodes } from "lexical";
 import NodeChangePlugin from "./plugins/NodeChangePlugin";
 
 import "../../../../../../../../styles/abstract/_lexical.scss";
-import { useContext, useState } from "react";
+import {
+	MutableRefObject,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -119,42 +127,48 @@ function Trial() {
 	);
 }
 
-export default function Editor() {
-	const userWithRole = useContext(UserContext);
+export interface NewImages {
+	path: string;
+	file: File;
+	isRemoved: boolean;
+}
+
+interface EditorProps {
+	uuidRef: MutableRefObject<string | null>;
+}
+
+export default function Editor({ uuidRef }: EditorProps) {
 	const params = useParams<{ projectId: string }>();
 
-	const [newImages, setNewImages] = useState<string[]>([]);
-	const [removedImages, setRemovedImages] = useState<string[]>([]);
+	const [newImages, setNewImages] = useState<NewImages[]>([]);
 
-	console.log(removedImages);
+	// const handleRemove = async () => {
+	// 	const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/random-id/clean-up`;
+	// 	const token = await userWithRole?.user.getIdToken();
+	// 	const headers = {
+	// 		Authorization: `Bearer ${token}`,
+	// 		"Content-Type": "application/json",
+	// 	};
 
-	const handleRemove = async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/random-id/clean-up`;
-		const token = await userWithRole?.user.getIdToken();
-		const headers = {
-			Authorization: `Bearer ${token}`,
-			"Content-Type": "application/json",
-		};
+	// 	const body = JSON.stringify({
+	// 		paths: newImages,
+	// 	});
 
-		const body = JSON.stringify({
-			paths: newImages,
-		});
+	// 	fetch(url, {
+	// 		method: "DELETE",
+	// 		headers,
+	// 		body,
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((res) => {
+	// 			if (res.error) throw new Error(res.message);
 
-		fetch(url, {
-			method: "DELETE",
-			headers,
-			body,
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				if (res.error) throw new Error(res.message);
-
-				toast.success(res.message);
-			})
-			.catch((err) => {
-				toast.error(err.message);
-			});
-	};
+	// 			toast.success(res.message);
+	// 		})
+	// 		.catch((err) => {
+	// 			toast.error(err.message);
+	// 		});
+	// };
 
 	return (
 		<LexicalComposer initialConfig={editorConfig}>
@@ -164,7 +178,7 @@ export default function Editor() {
 					marginBlockEnd: "3em",
 				}}
 			>
-				<ToolbarPlugin setNewImages={setNewImages} />
+				<ToolbarPlugin setNewImages={setNewImages} uuidRef={uuidRef} />
 
 				<div className="editor-inner">
 					<RichTextPlugin
@@ -184,7 +198,7 @@ export default function Editor() {
 					<MarkdownShortcutPlugin transformers={TRANSFORMERS} />
 					<FloatingTextFormatToolbarPlugin />
 					<ImagePlugin />
-					<NodeChangePlugin setRemovedImages={setRemovedImages} />
+					<NodeChangePlugin setNewImages={setNewImages} />
 					{/* <Trial />
 					<button onClick={handleRemove}>remove</button> */}
 				</div>

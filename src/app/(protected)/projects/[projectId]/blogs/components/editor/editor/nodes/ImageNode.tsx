@@ -64,6 +64,8 @@ class ImageNode extends DecoratorNode<JSX.Element> {
 		img.setAttribute("alt", "blog-image");
 		img.setAttribute("data-path", this.__path);
 		img.setAttribute("class", "editor-image");
+		img.setAttribute("width", "200");
+		img.setAttribute("height", "100");
 		return { element: img };
 	}
 
@@ -89,7 +91,16 @@ class ImageNode extends DecoratorNode<JSX.Element> {
 	}
 
 	decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
-		return <img src={this.__src} data-key={this.__path} alt="blog-image" />;
+		return (
+			<img
+				src={this.__src}
+				data-key={this.__path}
+				alt="blog-image"
+				width="500"
+				height="250"
+				className="editor-image"
+			/>
+		);
 	}
 }
 

@@ -2,12 +2,13 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { $getNodeByKey, NodeMutation, NodeKey } from "lexical";
 import ImageNode from "../nodes/ImageNode";
+import { NewImages } from "../Editor";
 
 interface NodeChangePluginProps {
-	setRemovedImages: Dispatch<SetStateAction<string[]>>;
+	setNewImages: Dispatch<SetStateAction<NewImages[]>>;
 }
 
-function NodeChangePlugin({ setRemovedImages }: NodeChangePluginProps): null {
+function NodeChangePlugin({ setNewImages }: NodeChangePluginProps): null {
 	const [editor] = useLexicalComposerContext();
 	const imagesRef = useRef<Map<string, string>>(new Map());
 
@@ -21,19 +22,33 @@ function NodeChangePlugin({ setRemovedImages }: NodeChangePluginProps): null {
 						const path = node.getPath();
 						imagesRef.current.set(nodeKey, path);
 
-						setRemovedImages((prev) => {
-							let ind = prev.indexOf(path);
-							if (ind === -1) return prev;
+						setNewImages((prev) => {
+							return prev.map((element) => {
+								if (element.path === path) {
+									return {
+										...element,
+										isRemoved: false,
+									};
+								}
 
-							return prev.toSpliced(ind, 1);
+								return element;
+							});
 						});
 					} else if (mutation === "destroyed") {
-						setRemovedImages((prev) => {
-							let path = imagesRef.current.get(nodeKey);
-							console.log(path);
+						let path = imagesRef.current.get(nodeKey);
+						if (!path) return;
 
-							if (!path) return prev;
-							return [...prev, path];
+						setNewImages((prev) => {
+							return prev.map((element) => {
+								if (element.path === path) {
+									return {
+										...element,
+										isRemoved: true,
+									};
+								}
+
+								return element;
+							});
 						});
 					}
 				});

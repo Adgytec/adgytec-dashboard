@@ -123,6 +123,10 @@
 	text-decoration: underline line-through;
 }
 
+.editor-image {
+	object-fit: cover;
+}
+
 // code when from toolbar
 .editor-text-code {
 	background-color: rgb(240, 242, 245);
