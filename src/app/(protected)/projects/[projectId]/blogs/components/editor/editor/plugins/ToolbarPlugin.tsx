@@ -644,6 +644,7 @@ export default function ToolbarPlugin({ setNewImages }: ToolbarPluginProps) {
 			>
 				<i className="format undo" />
 			</button>
+
 			<button
 				disabled={!canRedo}
 				onClick={() => {
@@ -654,6 +655,7 @@ export default function ToolbarPlugin({ setNewImages }: ToolbarPluginProps) {
 			>
 				<i className="format redo" />
 			</button>
+
 			<Divider />
 			{supportedBlockTypes.has(blockType) && (
 				<>

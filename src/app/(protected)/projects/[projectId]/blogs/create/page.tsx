@@ -6,11 +6,10 @@ import Editor from "../components/editor/editor/Editor";
 
 const CreateBlog = () => {
 	return (
-		<div>
-			CreateBlog
+		<div className={styles.editorParent}>
 			<Editor />
 		</div>
 	);
 };
-
+5;
 export default CreateBlog;

@@ -149,24 +149,24 @@ function TextFormatFloatingToolbar({
 
 	return (
 		<div
-			style={{
-				display: "flex",
-				background: "#fff",
-				padding: 4,
-				verticalAlign: "middle",
-				position: "absolute",
-				top: 0,
-				left: 0,
-				zIndex: 10,
-				opacity: 0,
-				backgroundColor: "#fff",
-				boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.3)",
-				borderRadius: 8,
-				transition: "opacity 0.5s",
-				height: 35,
-				willChange: "transform",
-			}}
-			className="toolbar"
+			// style={{
+			// 	display: "flex",
+			// 	background: "#fff",
+			// 	padding: 4,
+			// 	verticalAlign: "middle",
+			// 	position: "absolute",
+			// 	top: 0,
+			// 	left: 0,
+			// 	zIndex: 10,
+			// 	opacity: 0,
+			// 	backgroundColor: "#fff",
+			// 	boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.3)",
+			// 	borderRadius: 8,
+			// 	transition: "opacity 0.5s",
+			// 	height: 35,
+			// 	willChange: "transform",
+			// }}
+			className="toolbar floating-toolbar"
 			ref={popupCharStylesEditorRef}
 		>
 			{editor.isEditable() && (

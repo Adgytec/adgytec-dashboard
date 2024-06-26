@@ -9,11 +9,17 @@
 	gap: 1em;
 
 	.nav {
-		display: flex;
 		justify-content: space-between;
 		align-items: center;
 
 		margin-block-end: 1em;
+
+		display: grid;
+		gap: 1em;
+
+		@include ab.screen-40 {
+			display: flex;
+		}
 
 		.bread_crumb {
 			display: flex;

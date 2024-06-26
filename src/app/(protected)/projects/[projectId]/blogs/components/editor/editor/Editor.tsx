@@ -165,6 +165,7 @@ export default function Editor() {
 				}}
 			>
 				<ToolbarPlugin setNewImages={setNewImages} />
+
 				<div className="editor-inner">
 					<RichTextPlugin
 						contentEditable={
