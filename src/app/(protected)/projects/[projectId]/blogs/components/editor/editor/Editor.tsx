@@ -42,7 +42,7 @@ function Placeholder() {
 }
 
 const editorConfig = {
-	namespace: "my editor",
+	namespace: "blog editor",
 	// The editor theme
 	theme: EditorTheme,
 	// Handling of errors during update
@@ -184,8 +184,8 @@ export default function Editor() {
 					<FloatingTextFormatToolbarPlugin />
 					<ImagePlugin />
 					<NodeChangePlugin setRemovedImages={setRemovedImages} />
-					<Trial />
-					<button onClick={handleRemove}>remove</button>
+					{/* <Trial />
+					<button onClick={handleRemove}>remove</button> */}
 				</div>
 			</div>
 		</LexicalComposer>

@@ -611,23 +611,23 @@ export default function ToolbarPlugin({ setNewImages }: ToolbarPluginProps) {
 
 			const formData = new FormData();
 			formData.append("image", files[0]);
-			fetch(url, {
-				method: "POST",
-				headers,
-				body: formData,
-			})
-				.then((res) => res.json())
-				.then((res) => {
-					if (res.error) throw new Error(res.message);
+			// fetch(url, {
+			// 	method: "POST",
+			// 	headers,
+			// 	body: formData,
+			// })
+			// 	.then((res) => res.json())
+			// 	.then((res) => {
+			// 		if (res.error) throw new Error(res.message);
 
-					toast.success("Successfully added media item");
-					editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-						src: res.data.image,
-						path: res.data.path,
-					});
-					setNewImages((prev) => [...prev, res.data.path]);
-				})
-				.catch((err) => toast.error(err.message));
+			// 		toast.success("Successfully added media item");
+			// 		editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+			// 			src: res.data.image,
+			// 			path: res.data.path,
+			// 		});
+			// 		setNewImages((prev) => [...prev, res.data.path]);
+			// 	})
+			// 	.catch((err) => toast.error(err.message));
 		},
 		[editor]
 	);
