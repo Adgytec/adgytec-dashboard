@@ -1,8 +1,10 @@
 @use "/src/styles/abstract" as ab;
 
-.blogEditor {
+.blog {
 	overflow: hidden;
+}
 
+.blogEditor {
 	&[data-hidden="true"] {
 		display: none;
 	}
@@ -19,6 +21,7 @@
 	}
 
 	.preview {
+		display: none;
 		--_w: 60em;
 
 		.content {

@@ -90,7 +90,6 @@ const CreateBlog = () => {
 				<Editor
 					uuidRef={uuidRef}
 					handleNext={handleNext}
-					blogDetails={blogDetails}
 					setBlogDetails={setBlogDetails}
 					newImagesRef={newImagesRef}
 					setDeletedImages={setDeletedImages}

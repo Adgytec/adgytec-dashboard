@@ -58,6 +58,8 @@
 	border-radius: 1em;
 	color: var(--text);
 	width: min(var(--_w), 100%);
+
+	overflow: hidden;
 }
 
 // editor input container
@@ -70,7 +72,7 @@
 	border-bottom-left-radius: var(--_radius);
 	border-bottom-right-radius: var(--_radius);
 
-	min-height: 50vb;
+	// min-height: 50vb;
 }
 
 // editor input
@@ -88,10 +90,14 @@
 	// rohan
 	caret-color: var(--accent-secondary);
 	font-size: 1rem;
-	padding-inline: 2em;
-	padding-block: 1.5em;
-	overflow-y: scroll;
+
+	padding-inline: 1.5rem;
+	padding-block: 1.25rem;
+
+	overflow: auto;
 	max-height: 70vb;
+
+	min-height: 50vb;
 }
 
 // place holder text
@@ -100,12 +106,16 @@
 	overflow: hidden;
 	position: absolute;
 	text-overflow: ellipsis;
-	top: 15px;
-	left: 10px;
+	// top: 15px;
+	// left: 10px;
 	font-size: 15px;
 	user-select: none;
 	display: inline-block;
 	pointer-events: none;
+
+	// rohan
+	left: 1.5rem;
+	top: 1.25rem;
 }
 
 .editor-text-bold {

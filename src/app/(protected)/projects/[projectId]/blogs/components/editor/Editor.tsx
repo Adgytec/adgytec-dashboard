@@ -210,7 +210,6 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 interface EditorProps {
 	uuidRef: MutableRefObject<string | null>;
 	handleNext: () => void;
-	blogDetails: BlogDetails;
 	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
 	newImagesRef: MutableRefObject<NewImages[]>;
 	setDeletedImages: Dispatch<SetStateAction<string[]>>;
@@ -219,13 +218,10 @@ interface EditorProps {
 export default function Editor({
 	uuidRef,
 	handleNext,
-	blogDetails,
 	setBlogDetails,
 	newImagesRef,
 	setDeletedImages,
 }: EditorProps) {
-	const params = useParams<{ projectId: string }>();
-
 	return (
 		<LexicalComposer initialConfig={editorConfig}>
 			<div className={`editor-container ${styles.container}`}>
