@@ -140,7 +140,7 @@
 
 .editor-image {
 	object-fit: cover;
-	margin-inline: auto;
+	display: inline;
 }
 
 // code when from toolbar
@@ -149,6 +149,10 @@
 	padding: 1px 0.25rem;
 	font-family: Menlo, Consolas, Monaco, monospace;
 	font-size: 94%;
+
+	// rohan
+	background-color: var(--bg-200);
+	padding-block: 0.25rem;
 }
 
 .editor-link {
@@ -159,21 +163,21 @@
 	color: var(--_link);
 }
 
-// .tree-view-output {
-// 	display: block;
-// 	background: #222;
-// 	color: #fff;
-// 	padding: 5px;
-// 	font-size: 12px;
-// 	white-space: pre-wrap;
-// 	margin: 1px auto 10px auto;
-// 	max-height: 250px;
-// 	position: relative;
-// 	border-bottom-left-radius: 10px;
-// 	border-bottom-right-radius: 10px;
-// 	overflow: auto;
-// 	line-height: 14px;
-// }
+.tree-view-output {
+	display: block;
+	background: #222;
+	color: #fff;
+	padding: 5px;
+	font-size: 12px;
+	white-space: pre-wrap;
+	margin: 1px auto 10px auto;
+	max-height: 250px;
+	position: relative;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	overflow: auto;
+	line-height: 14px;
+}
 
 // code when seleting from dropdown
 .editor-code {
@@ -921,6 +925,8 @@ i.justify-align {
 	background-color: var(--_bg-select);
 	gap: 0.25em;
 	padding: 0.25em;
+
+	border: 0;
 }
 
 .toolbar-item {

@@ -24,8 +24,6 @@ const Details = ({
 	newImagesRef,
 	deletedImages,
 }: DetailsProps) => {
-	const [filePreview, setFilepreview] = useState<string | null>(null);
-
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files;
 		if (!files) {
@@ -38,9 +36,9 @@ const Details = ({
 			return {
 				...prev,
 				cover: files[0],
+				imagePreview: url,
 			};
 		});
-		setFilepreview(url);
 	};
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,7 +67,10 @@ const Details = ({
 	};
 
 	let isCreateDisabled =
-		!blogDetails.title || !blogDetails.content || !blogDetails.cover;
+		!blogDetails.title ||
+		!blogDetails.content ||
+		!blogDetails.cover ||
+		!blogDetails.author;
 
 	return (
 		<div className={styles.details}>
@@ -78,10 +79,22 @@ const Details = ({
 					<label>Title</label>
 					<input
 						type="text"
-						placeholder="Title for your blog..."
+						placeholder="Title for the blog..."
 						value={blogDetails.title}
 						onChange={handleInputChange}
 						name="title"
+						required
+					/>
+				</div>
+
+				<div className={styles.input}>
+					<label>Author</label>
+					<input
+						type="text"
+						placeholder="Author for the blog..."
+						value={blogDetails.author}
+						onChange={handleInputChange}
+						name="author"
 						required
 					/>
 				</div>
@@ -92,7 +105,7 @@ const Details = ({
 						name="summary"
 						value={blogDetails.summary}
 						onChange={handleInputChange}
-						placeholder="Summary for your blog..."
+						placeholder="Summary for the blog..."
 					/>
 				</div>
 
@@ -108,10 +121,10 @@ const Details = ({
 						onChange={handleImageChange}
 					/>
 
-					{filePreview && (
+					{blogDetails.imagePreview && (
 						<div className={styles.image_preview}>
 							<Image
-								src={filePreview}
+								src={blogDetails.imagePreview}
 								alt="preview"
 								width={250}
 								height={125}

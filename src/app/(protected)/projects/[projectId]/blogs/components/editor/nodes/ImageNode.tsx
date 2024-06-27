@@ -126,26 +126,30 @@ class ImageNode extends DecoratorNode<JSX.Element> {
 	}
 
 	decorate(editor: LexicalEditor, config: EditorConfig): JSX.Element {
-		return (
-			<img
-				src={this.__src}
-				data-key={this.__path}
-				alt="blog-image"
-				width={this.__width}
-				height={this.__height}
-				className="editor-image"
-			/>
-		);
-
 		// return (
-		// 	<Image
+		// 	<img
 		// 		src={this.__src}
-		// 		path={this.__path}
+		// 		data-path={this.__path}
+		// 		alt="blog-image"
 		// 		width={this.__width}
 		// 		height={this.__height}
-		// 		key={this.getKey()}
+		// 		className="editor-image"
 		// 	/>
 		// );
+
+		return (
+			<Image
+				src={this.__src}
+				path={this.__path}
+				width={this.__width}
+				height={this.__height}
+				nodeKey={this.getKey()}
+			/>
+		);
+	}
+
+	isSelectable(): boolean {
+		return true;
 	}
 }
 
@@ -165,4 +169,8 @@ export default ImageNode;
 
 export function $createImageNode({ src, path }: { src: string; path: string }) {
 	return $applyNodeReplacement(new ImageNode(src, path, "500", "250"));
+}
+
+export function $isImageNode(node: LexicalNode): boolean {
+	return node instanceof ImageNode;
 }

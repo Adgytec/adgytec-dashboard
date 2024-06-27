@@ -19,6 +19,8 @@ export type BlogDetails = {
 	summary: string;
 	cover: File | null;
 	content: string;
+	author: string;
+	imagePreview: string;
 };
 
 export interface NewImages {
@@ -40,6 +42,8 @@ const CreateBlog = () => {
 		summary: "",
 		content: "",
 		cover: null,
+		author: "",
+		imagePreview: "",
 	});
 
 	const newImagesRef = useRef<NewImages[]>([]);
@@ -93,15 +97,17 @@ const CreateBlog = () => {
 				/>
 			</div>
 
-			<div className={styles.blogDetails} data-hidden={step !== 2}>
-				<Details
-					handlePrevious={handlePrevious}
-					blogDetails={blogDetails}
-					setBlogDetails={setBlogDetails}
-					newImagesRef={newImagesRef}
-					deletedImages={deletedImages}
-				/>
-			</div>
+			{step === 2 && (
+				<div className={styles.blogDetails}>
+					<Details
+						handlePrevious={handlePrevious}
+						blogDetails={blogDetails}
+						setBlogDetails={setBlogDetails}
+						newImagesRef={newImagesRef}
+						deletedImages={deletedImages}
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

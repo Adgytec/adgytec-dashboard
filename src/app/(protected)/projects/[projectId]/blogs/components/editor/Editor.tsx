@@ -20,12 +20,11 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatPlugin";
-import ImageNode, { INSERT_IMAGE_COMMAND } from "./nodes/ImageNode";
+import ImageNode from "./nodes/ImageNode";
 import ImagePlugin from "./plugins/ImagePlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { EditorThemeClassName, LexicalEditor } from "lexical";
 import { $getRoot, $insertNodes } from "lexical";
 import NodeChangePlugin from "./plugins/NodeChangePlugin";
 
@@ -34,16 +33,9 @@ import {
 	Dispatch,
 	MutableRefObject,
 	SetStateAction,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
 	useRef,
 	useState,
 } from "react";
-import { UserContext } from "@/components/AuthContext/authContext";
-import { useParams } from "next/navigation";
-import { toast } from "react-toastify";
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 
 import styles from "../../create/create.module.scss";
@@ -51,6 +43,7 @@ import { BlogDetails, NewImages } from "../../create/page";
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { TreeView } from "@lexical/react/LexicalTreeView";
 
 function Placeholder() {
 	return (
@@ -98,7 +91,9 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 	const isEmpty = useLexicalIsTextContentEmpty(editor);
 
 	const previewRef = useRef<HTMLDialogElement | null>(null);
-	const [previewContent, setPreviewContent] = useState<string>();
+	const [previewContent, setPreviewContent] = useState<string>(
+		"<p>No content to preview</p>"
+	);
 
 	const handlePopulate = () => {
 		editor.update(() => {
@@ -120,11 +115,6 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 	};
 
 	const handleEditorContent = () => {
-		if (isEmpty) {
-			toast.error("No content to preview");
-			return;
-		}
-
 		editor.getEditorState().read(() => {
 			const htmlString = $generateHtmlFromNodes(editor, null);
 
@@ -144,19 +134,13 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 			const htmlString = $generateHtmlFromNodes(editor, null);
 			setPreviewContent(htmlString);
 			previewRef.current?.showModal();
+			console.log(htmlString);
 		});
 	};
 
-	let obj;
-	if (isEmpty || !previewContent) {
-		obj = {
-			__html: "<p>No content to preview</p>",
-		};
-	} else {
-		obj = {
-			__html: previewContent,
-		};
-	}
+	let obj = {
+		__html: previewContent,
+	};
 
 	return (
 		<>
@@ -184,11 +168,10 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 					></div>
 				</div>
 			</dialog>
-
 			<div className={styles.action}>
 				<button
 					data-type="link"
-					disabled={isEmpty}
+					// disabled={isEmpty}
 					onClick={handlePreview}
 				>
 					Preview
@@ -203,6 +186,16 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 					Next
 				</button>
 			</div>
+
+			<TreeView
+				viewClassName="tree-view-output"
+				timeTravelPanelClassName="debug-timetravel-panel"
+				timeTravelButtonClassName="debug-timetravel-button"
+				timeTravelPanelSliderClassName="debug-timetravel-panel-slider"
+				timeTravelPanelButtonClassName="debug-timetravel-panel-button"
+				treeTypeButtonClassName=""
+				editor={editor}
+			/>
 		</>
 	);
 }

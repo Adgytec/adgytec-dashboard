@@ -7,6 +7,7 @@ import {
 	$isRangeSelection,
 	$isTextNode,
 	COMMAND_PRIORITY_LOW,
+	FORMAT_ELEMENT_COMMAND,
 	FORMAT_TEXT_COMMAND,
 	LexicalEditor,
 	SELECTION_CHANGE_COMMAND,
@@ -17,6 +18,7 @@ import { createPortal } from "react-dom";
 import { getDOMRangeRect } from "./utils/getDOMRangeRect";
 import { getSelectedNode } from "./utils/getSelectNode";
 import { setFloatingElemPosition } from "./utils/setFloatingElemPosition";
+import { Divider } from "./ToolbarPlugin";
 
 interface TextFromatFloatingToolbarProps {
 	editor: LexicalEditor;
@@ -37,7 +39,9 @@ function TextFormatFloatingToolbar({
 	isLink,
 	isBold,
 	isItalic,
+	isStrikethrough,
 	isUnderline,
+	isCode,
 }: TextFromatFloatingToolbarProps) {
 	const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
@@ -217,26 +221,31 @@ function TextFormatFloatingToolbar({
 						<i className="format underline" />
 					</button>
 
-					{/* <button
+					<button
 						onClick={() => {
 							editor.dispatchCommand(
 								FORMAT_TEXT_COMMAND,
 								"strikethrough"
 							);
 						}}
-						color={isStrikethrough ? "secondary" : undefined}
+						className={
+							"toolbar-item spaced " +
+							(isStrikethrough ? "active" : "")
+						}
 					>
-						<StrikethroughSOutlinedIcon />
-					</button> */}
+						<i className="format strikethrough" />
+					</button>
 
-					{/* <button
+					<button
 						onClick={() => {
 							editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
 						}}
-						color={isCode ? "secondary" : undefined}
+						className={
+							"toolbar-item spaced " + (isCode ? "active" : "")
+						}
 					>
-						<CodeIcon />
-					</button> */}
+						<i className="format code" />
+					</button>
 
 					<button
 						style={{ alignItems: "center" }}
@@ -247,6 +256,56 @@ function TextFormatFloatingToolbar({
 						aria-label="Insert Link"
 					>
 						<i className="format link" />
+					</button>
+
+					<Divider />
+					<button
+						onClick={() => {
+							editor.dispatchCommand(
+								FORMAT_ELEMENT_COMMAND,
+								"left"
+							);
+						}}
+						className="toolbar-item spaced"
+						aria-label="Left Align"
+					>
+						<i className="format left-align" />
+					</button>
+					<button
+						onClick={() => {
+							editor.dispatchCommand(
+								FORMAT_ELEMENT_COMMAND,
+								"center"
+							);
+						}}
+						className="toolbar-item spaced"
+						aria-label="Center Align"
+					>
+						<i className="format center-align" />
+					</button>
+					<button
+						onClick={() => {
+							editor.dispatchCommand(
+								FORMAT_ELEMENT_COMMAND,
+								"right"
+							);
+						}}
+						className="toolbar-item spaced"
+						aria-label="Right Align"
+					>
+						<i className="format right-align" />
+					</button>
+					<button
+						onClick={() => {
+							editor.dispatchCommand(
+								FORMAT_ELEMENT_COMMAND,
+								"justify"
+							);
+						}}
+						className="toolbar-item"
+						aria-label="Justify Align"
+					>
+						<i className="format justify-align" />
 					</button>
 				</>
 			)}

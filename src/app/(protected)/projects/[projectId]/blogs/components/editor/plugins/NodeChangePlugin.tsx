@@ -27,6 +27,7 @@ function NodeChangePlugin({
 			mutations.forEach((mutation, nodeKey) => {
 				editor.getEditorState().read(() => {
 					const node: ImageNode | null = $getNodeByKey(nodeKey);
+					console.log(mutation);
 
 					if (mutation === "created" && node) {
 						const path = node.getPath();
@@ -49,12 +50,15 @@ function NodeChangePlugin({
 									return element;
 								}
 							);
+
+							console.log(newImagesRef.current);
 						} else {
 							setDeletedImages((prev) =>
 								prev.filter((el) => el !== path)
 							);
 						}
-					} else if (mutation === "destroyed") {
+					}
+					if (mutation === "destroyed") {
 						let path = imagesRef.current.get(nodeKey);
 						if (!path) return;
 
@@ -77,6 +81,8 @@ function NodeChangePlugin({
 						} else {
 							setDeletedImages((prev) => [...prev, path]);
 						}
+
+						console.log("destroyed: ", newImagesRef.current);
 					}
 				});
 			});

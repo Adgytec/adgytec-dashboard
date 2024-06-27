@@ -83,7 +83,7 @@ const blockTypeToBlockName = {
 	ul: "Bulleted List",
 };
 
-function Divider() {
+export function Divider() {
 	return <div className="divider" />;
 }
 
@@ -846,7 +846,7 @@ export default function ToolbarPlugin({
 						aria-label="Justify Align"
 					>
 						<i className="format justify-align" />
-					</button>{" "}
+					</button>
 				</>
 			)}
 		</div>
