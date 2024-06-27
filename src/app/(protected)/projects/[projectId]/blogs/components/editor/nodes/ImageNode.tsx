@@ -144,6 +144,7 @@ class ImageNode extends DecoratorNode<JSX.Element> {
 				width={this.__width}
 				height={this.__height}
 				nodeKey={this.getKey()}
+				alt="blog-image"
 			/>
 		);
 	}

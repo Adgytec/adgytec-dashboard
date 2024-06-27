@@ -31,9 +31,17 @@ interface ImageProps {
 	width: string;
 	height: string;
 	nodeKey: string;
+	alt: string;
 }
 
-export const Image = ({ src, path, width, height, nodeKey }: ImageProps) => {
+export const Image = ({
+	src,
+	path,
+	width,
+	height,
+	nodeKey,
+	alt,
+}: ImageProps) => {
 	const [editor] = useLexicalComposerContext();
 	const imageRef = useRef<HTMLImageElement | null>(null);
 	const [isSelected, setSelected, clearSelection] =
@@ -76,7 +84,7 @@ export const Image = ({ src, path, width, height, nodeKey }: ImageProps) => {
 
 			return false;
 		},
-		[isSelected]
+		[isSelected, nodeKey]
 	);
 
 	useEffect(() => {
@@ -157,7 +165,7 @@ export const Image = ({ src, path, width, height, nodeKey }: ImageProps) => {
 			data-path={path}
 			width={width}
 			height={height}
-			alt="blog-image"
+			alt={alt}
 			className="editor-image"
 			ref={imageRef}
 		/>

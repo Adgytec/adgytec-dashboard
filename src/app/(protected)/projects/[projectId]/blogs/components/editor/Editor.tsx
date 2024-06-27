@@ -187,7 +187,7 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 				</button>
 			</div>
 
-			<TreeView
+			{/* <TreeView
 				viewClassName="tree-view-output"
 				timeTravelPanelClassName="debug-timetravel-panel"
 				timeTravelButtonClassName="debug-timetravel-button"
@@ -195,7 +195,7 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 				timeTravelPanelButtonClassName="debug-timetravel-panel-button"
 				treeTypeButtonClassName=""
 				editor={editor}
-			/>
+			/> */}
 		</>
 	);
 }
