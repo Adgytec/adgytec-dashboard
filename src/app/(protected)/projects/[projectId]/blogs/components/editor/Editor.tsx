@@ -134,7 +134,6 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 			const htmlString = $generateHtmlFromNodes(editor, null);
 			setPreviewContent(htmlString);
 			previewRef.current?.showModal();
-			console.log(htmlString);
 		});
 	};
 

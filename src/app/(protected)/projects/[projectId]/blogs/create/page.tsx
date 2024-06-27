@@ -20,7 +20,6 @@ export type BlogDetails = {
 	cover: File | null;
 	content: string;
 	author: string;
-	imagePreview: string;
 };
 
 export interface NewImages {
@@ -43,7 +42,6 @@ const CreateBlog = () => {
 		content: "",
 		cover: null,
 		author: "",
-		imagePreview: "",
 	});
 
 	const newImagesRef = useRef<NewImages[]>([]);
@@ -100,6 +98,7 @@ const CreateBlog = () => {
 			{step === 2 && (
 				<div className={styles.blogDetails}>
 					<Details
+						uuidRef={uuidRef}
 						handlePrevious={handlePrevious}
 						blogDetails={blogDetails}
 						setBlogDetails={setBlogDetails}
