@@ -29,9 +29,11 @@ import { EditorThemeClassName, LexicalEditor } from "lexical";
 import { $getRoot, $insertNodes } from "lexical";
 import NodeChangePlugin from "./plugins/NodeChangePlugin";
 
-import "../../../../../../../../styles/abstract/_lexical.scss";
+import "../../../../../../../styles/abstract/_lexical.scss";
 import {
+	Dispatch,
 	MutableRefObject,
+	SetStateAction,
 	useCallback,
 	useContext,
 	useEffect,
@@ -42,6 +44,10 @@ import {
 import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
+
+import styles from "../../create/create.module.scss";
+import { BlogDetails, NewImages } from "../../create/page";
 
 function Placeholder() {
 	return (
@@ -80,11 +86,21 @@ const htmlstring =
 const another =
 	'<pre class="editor-code" spellcheck="false" data-highlight-language="javascript"><span style="white-space: pre-wrap;">#include </span><span class="editor-tokenOperator" style="white-space: pre-wrap;">&lt;</span><span style="white-space: pre-wrap;">iostream</span><span class="editor-tokenOperator" style="white-space: pre-wrap;">&gt;</span><br><br><span style="white-space: pre-wrap;">int </span><span class="editor-tokenFunction" style="white-space: pre-wrap;">main</span><span class="editor-tokenPunctuation" style="white-space: pre-wrap;">(</span><span class="editor-tokenPunctuation" style="white-space: pre-wrap;">)</span><span style="white-space: pre-wrap;"> </span><span class="editor-tokenPunctuation" style="white-space: pre-wrap;">{</span><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">cout</span><span class="editor-tokenOperator" style="white-space: pre-wrap;">&lt;&lt;</span><span class="editor-tokenSelector" style="white-space: pre-wrap;">"rohan"</span><br><span class="editor-tokenPunctuation" style="white-space: pre-wrap;">}</span></pre>';
 
-function Trial() {
+interface EditorActionsProps {
+	handleNext: () => void;
+	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
+}
+function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 	const [editor] = useLexicalComposerContext();
+	const isEmpty = useLexicalIsTextContentEmpty(editor);
 
 	const handleGenerate = () => {
 		editor.update(() => {
+			if (isEmpty) {
+				console.log("empty");
+				return;
+			}
+
 			const editorState = editor.getEditorState();
 			const jsonString = JSON.stringify(editorState);
 			console.log("jsonString", jsonString);
@@ -113,72 +129,72 @@ function Trial() {
 		});
 	};
 
+	const handleEditorContent = () => {
+		if (isEmpty) {
+			toast.error("No content to preview");
+			return;
+		}
+
+		editor.getEditorState().read(() => {
+			const htmlString = $generateHtmlFromNodes(editor, null);
+
+			setBlogDetails((prev) => {
+				return {
+					...prev,
+					content: htmlString,
+				};
+			});
+			// console.log(JSON.stringify(htmlString));
+
+			handleNext();
+		});
+	};
+
 	return (
-		<div
-			style={{
-				outline: "2px solid red",
-				position: "relative",
-				bottom: "-3em",
-			}}
-		>
-			<button onClick={handleGenerate}>Show HTML</button>;
-			<button onClick={handlePopulate}>Populate</button>
+		<div className={styles.action}>
+			{/* <button onClick={handleGenerate} disabled={isEmpty}>
+				Show HTML
+			</button>
+			<button onClick={handlePopulate}>Populate</button> */}
+			<button data-type="link" disabled={isEmpty}>
+				Preview
+			</button>
+
+			<button
+				data-type="button"
+				data-variant="secondary"
+				disabled={isEmpty}
+				onClick={handleEditorContent}
+			>
+				Next
+			</button>
 		</div>
 	);
 }
 
-export interface NewImages {
-	path: string;
-	file: File;
-	isRemoved: boolean;
-}
-
 interface EditorProps {
 	uuidRef: MutableRefObject<string | null>;
+	handleNext: () => void;
+	blogDetails: BlogDetails;
+	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
+	newImagesRef: MutableRefObject<NewImages[]>;
+	setDeletedImages: Dispatch<SetStateAction<string[]>>;
 }
 
-export default function Editor({ uuidRef }: EditorProps) {
+export default function Editor({
+	uuidRef,
+	handleNext,
+	blogDetails,
+	setBlogDetails,
+	newImagesRef,
+	setDeletedImages,
+}: EditorProps) {
 	const params = useParams<{ projectId: string }>();
-
-	const [newImages, setNewImages] = useState<NewImages[]>([]);
-
-	// const handleRemove = async () => {
-	// 	const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/random-id/clean-up`;
-	// 	const token = await userWithRole?.user.getIdToken();
-	// 	const headers = {
-	// 		Authorization: `Bearer ${token}`,
-	// 		"Content-Type": "application/json",
-	// 	};
-
-	// 	const body = JSON.stringify({
-	// 		paths: newImages,
-	// 	});
-
-	// 	fetch(url, {
-	// 		method: "DELETE",
-	// 		headers,
-	// 		body,
-	// 	})
-	// 		.then((res) => res.json())
-	// 		.then((res) => {
-	// 			if (res.error) throw new Error(res.message);
-
-	// 			toast.success(res.message);
-	// 		})
-	// 		.catch((err) => {
-	// 			toast.error(err.message);
-	// 		});
-	// };
 
 	return (
 		<LexicalComposer initialConfig={editorConfig}>
-			<div
-				className="editor-container"
-				style={{
-					marginBlockEnd: "3em",
-				}}
-			>
-				<ToolbarPlugin setNewImages={setNewImages} uuidRef={uuidRef} />
+			<div className={`editor-container ${styles.container}`}>
+				<ToolbarPlugin uuidRef={uuidRef} newImagesRef={newImagesRef} />
 
 				<div className="editor-inner">
 					<RichTextPlugin
@@ -198,10 +214,16 @@ export default function Editor({ uuidRef }: EditorProps) {
 					<MarkdownShortcutPlugin transformers={TRANSFORMERS} />
 					<FloatingTextFormatToolbarPlugin />
 					<ImagePlugin />
-					<NodeChangePlugin setNewImages={setNewImages} />
-					{/* <Trial />
-					<button onClick={handleRemove}>remove</button> */}
+					<NodeChangePlugin
+						setDeletedImages={setDeletedImages}
+						newImagesRef={newImagesRef}
+					/>
 				</div>
+
+				<EditorActions
+					setBlogDetails={setBlogDetails}
+					handleNext={handleNext}
+				/>
 			</div>
 		</LexicalComposer>
 	);

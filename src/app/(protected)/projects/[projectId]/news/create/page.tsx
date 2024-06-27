@@ -72,7 +72,7 @@ const CreateNews = () => {
 		const form = e.target;
 
 		if (!(form instanceof HTMLFormElement)) {
-			return toast.error("Something is woring in our end");
+			return toast.error("Something is wrong from our end");
 		}
 
 		const formData = new FormData(form);
@@ -159,8 +159,8 @@ const CreateNews = () => {
 							<Image
 								src={filePreview}
 								alt="preview"
-								width={100}
-								height={100}
+								width={250}
+								height={125}
 							/>
 						</div>
 					)}

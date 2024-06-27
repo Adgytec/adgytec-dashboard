@@ -1,0 +1,26 @@
+@use "/src/styles/abstract" as ab;
+
+.blogEditor {
+	overflow: hidden;
+
+	&[data-hidden="true"] {
+		display: none;
+	}
+
+	.container {
+	}
+
+	.action {
+		margin-block-start: 1.25em;
+
+		display: flex;
+		justify-content: space-between;
+		padding-inline-start: 1em;
+	}
+}
+
+.blogDetails {
+	&[data-hidden="true"] {
+		display: none;
+	}
+}

@@ -6,17 +6,44 @@ import React, {
 	useEffect,
 	useMemo,
 	useRef,
+	useState,
 } from "react";
-import styles from "../blogs.module.scss";
-import Editor from "../components/editor/editor/Editor";
+import styles from "./create.module.scss";
+import Editor from "../components/editor/Editor";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
+import Details from "../components/details/Details";
+
+export type BlogDetails = {
+	title: string;
+	summary: string;
+	cover: File | null;
+	content: string;
+};
+
+export interface NewImages {
+	path: string;
+	file: File;
+	isRemoved: boolean;
+}
 
 const CreateBlog = () => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(() => {
 		return userWithRole ? userWithRole.user : null;
 	}, [userWithRole]);
+
+	// multi-step blog
+	const [step, setStep] = useState<number>(2);
+	const [blogDetails, setBlogDetails] = useState<BlogDetails>({
+		title: "",
+		summary: "",
+		content: "",
+		cover: null,
+	});
+
+	const newImagesRef = useRef<NewImages[]>([]);
+	const [deletedImages, setDeletedImages] = useState<string[]>([]); // used when editing existing blog
 
 	const uuidRef = useRef<string | null>(null);
 
@@ -48,9 +75,37 @@ const CreateBlog = () => {
 		generateUUID();
 	}, [generateUUID]);
 
+	const handleNext = () => {
+		setStep(2);
+	};
+	const handlePrevious = () => {
+		setStep(1);
+	};
+
+	console.log(blogDetails);
+
 	return (
-		<div className={styles.editorParent}>
-			<Editor uuidRef={uuidRef} />
+		<div className={styles.blog}>
+			<div className={styles.blogEditor} data-hidden={step !== 1}>
+				<Editor
+					uuidRef={uuidRef}
+					handleNext={handleNext}
+					blogDetails={blogDetails}
+					setBlogDetails={setBlogDetails}
+					newImagesRef={newImagesRef}
+					setDeletedImages={setDeletedImages}
+				/>
+			</div>
+
+			<div className={styles.blogDetails} data-hidden={step !== 2}>
+				<Details
+					handlePrevious={handlePrevious}
+					blogDetails={blogDetails}
+					setBlogDetails={setBlogDetails}
+					newImagesRef={newImagesRef}
+					deletedImages={deletedImages}
+				/>
+			</div>
 		</div>
 	);
 };

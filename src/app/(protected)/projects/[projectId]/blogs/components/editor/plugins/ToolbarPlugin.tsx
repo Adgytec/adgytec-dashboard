@@ -460,13 +460,13 @@ function BlockOptionsDropdownList({
 }
 
 interface ToolbarPluginProps {
-	setNewImages: Dispatch<SetStateAction<NewImages[]>>;
 	uuidRef: MutableRefObject<string | null>;
+	newImagesRef: MutableRefObject<NewImages[]>;
 }
 
 export default function ToolbarPlugin({
-	setNewImages,
 	uuidRef,
+	newImagesRef,
 }: ToolbarPluginProps) {
 	const params = useParams<{ projectId: string }>();
 
@@ -603,8 +603,6 @@ export default function ToolbarPlugin({
 
 	const insertMedia = useCallback(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			// create helper function to manage image upload
-			// rohan
 			const files = e.target.files;
 			if (!files) return;
 
@@ -623,14 +621,12 @@ export default function ToolbarPlugin({
 				src,
 				path,
 			});
-			setNewImages((prev) => [
-				...prev,
-				{
-					path,
-					file: files[0],
-					isRemoved: false,
-				},
-			]);
+
+			newImagesRef.current.push({
+				path,
+				file: files[0],
+				isRemoved: false,
+			});
 		},
 		[editor]
 	);
