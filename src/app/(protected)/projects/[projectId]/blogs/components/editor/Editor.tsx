@@ -48,6 +48,9 @@ import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextCon
 
 import styles from "../../create/create.module.scss";
 import { BlogDetails, NewImages } from "../../create/page";
+import { handleModalClose, lightDismiss } from "@/helpers/modal";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Placeholder() {
 	return (
@@ -94,21 +97,8 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 	const [editor] = useLexicalComposerContext();
 	const isEmpty = useLexicalIsTextContentEmpty(editor);
 
-	const handleGenerate = () => {
-		editor.update(() => {
-			if (isEmpty) {
-				console.log("empty");
-				return;
-			}
-
-			const editorState = editor.getEditorState();
-			const jsonString = JSON.stringify(editorState);
-			console.log("jsonString", jsonString);
-
-			const htmlString = $generateHtmlFromNodes(editor, null);
-			console.log(JSON.stringify(htmlString));
-		});
-	};
+	const previewRef = useRef<HTMLDialogElement | null>(null);
+	const [previewContent, setPreviewContent] = useState<string>();
 
 	const handlePopulate = () => {
 		editor.update(() => {
@@ -144,31 +134,76 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 					content: htmlString,
 				};
 			});
-			// console.log(JSON.stringify(htmlString));
 
 			handleNext();
 		});
 	};
 
-	return (
-		<div className={styles.action}>
-			{/* <button onClick={handleGenerate} disabled={isEmpty}>
-				Show HTML
-			</button>
-			<button onClick={handlePopulate}>Populate</button> */}
-			<button data-type="link" disabled={isEmpty}>
-				Preview
-			</button>
+	const handlePreview = () => {
+		editor.getEditorState().read(() => {
+			const htmlString = $generateHtmlFromNodes(editor, null);
+			setPreviewContent(htmlString);
+			previewRef.current?.showModal();
+		});
+	};
 
-			<button
-				data-type="button"
-				data-variant="secondary"
-				disabled={isEmpty}
-				onClick={handleEditorContent}
+	let obj;
+	if (isEmpty || !previewContent) {
+		obj = {
+			__html: "<p>No content to preview</p>",
+		};
+	} else {
+		obj = {
+			__html: previewContent,
+		};
+	}
+
+	return (
+		<>
+			<dialog
+				ref={previewRef}
+				onClick={lightDismiss}
+				className={styles.preview}
 			>
-				Next
-			</button>
-		</div>
+				<div className={styles.content}>
+					<div className={`modal-menu ${styles.menu}`}>
+						<h2>Blog Preview</h2>
+
+						<button
+							data-type="link"
+							onClick={() => handleModalClose(previewRef)}
+							title="close"
+						>
+							<FontAwesomeIcon icon={faXmark} />
+						</button>
+					</div>
+
+					<div
+						dangerouslySetInnerHTML={obj}
+						className={styles.previewBody}
+					></div>
+				</div>
+			</dialog>
+
+			<div className={styles.action}>
+				<button
+					data-type="link"
+					// disabled={isEmpty}
+					onClick={handlePreview}
+				>
+					Preview
+				</button>
+
+				<button
+					data-type="button"
+					data-variant="secondary"
+					disabled={isEmpty}
+					onClick={handleEditorContent}
+				>
+					Next
+				</button>
+			</div>
+		</>
 	);
 }
 

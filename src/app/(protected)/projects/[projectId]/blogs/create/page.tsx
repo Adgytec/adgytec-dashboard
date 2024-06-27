@@ -34,7 +34,7 @@ const CreateBlog = () => {
 	}, [userWithRole]);
 
 	// multi-step blog
-	const [step, setStep] = useState<number>(2);
+	const [step, setStep] = useState<number>(1);
 	const [blogDetails, setBlogDetails] = useState<BlogDetails>({
 		title: "",
 		summary: "",

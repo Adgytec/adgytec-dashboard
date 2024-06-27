@@ -17,6 +17,32 @@
 		justify-content: space-between;
 		padding-inline-start: 1em;
 	}
+
+	.preview {
+		--_w: 60em;
+
+		.content {
+			display: grid;
+			// gap: 1em;
+		}
+
+		.menu {
+			position: sticky;
+			top: 0;
+
+			background-color: var(--bg-600);
+			padding-block: 1em 1.5em;
+			z-index: 11;
+			box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+
+			mask-image: linear-gradient(black 85%, transparent);
+		}
+
+		.previewBody {
+			padding: 2em 1em;
+			background-color: var(--bg-400);
+		}
+	}
 }
 
 .blogDetails {

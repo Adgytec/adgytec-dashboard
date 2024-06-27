@@ -2,6 +2,7 @@
 	--_radius: 0.8em;
 	--_bg-select: var(--bg-200);
 	--_link: var(--accent-secondary);
+	--_w: 60em;
 }
 
 // .other h2 {
@@ -56,7 +57,7 @@
 	// rohan
 	border-radius: 1em;
 	color: var(--text);
-	width: 100%;
+	width: min(var(--_w), 100%);
 }
 
 // editor input container
@@ -87,6 +88,10 @@
 	// rohan
 	caret-color: var(--accent-secondary);
 	font-size: 1rem;
+	padding-inline: 2em;
+	padding-block: 1.5em;
+	overflow-y: scroll;
+	max-height: 70vb;
 }
 
 // place holder text
@@ -276,6 +281,8 @@
 	color: var(--text);
 	font-weight: 800;
 	font-size: 2rem;
+
+	margin-block-end: 1.5rem;
 }
 
 .editor-heading-h2 {
@@ -292,6 +299,7 @@
 	color: var(--text);
 	font-weight: 800;
 	font-size: 1.5rem;
+	margin-block: 1rem 0.75rem;
 }
 
 .editor-quote {
