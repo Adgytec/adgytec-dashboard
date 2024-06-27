@@ -62,7 +62,6 @@ const CreateBlog = () => {
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
 				if (!uuidRef.current) {
-					console.log(res.data.uuid);
 					uuidRef.current = res.data.uuid;
 				}
 			})
@@ -81,8 +80,6 @@ const CreateBlog = () => {
 	const handlePrevious = () => {
 		setStep(1);
 	};
-
-	console.log(blogDetails);
 
 	return (
 		<div className={styles.blog}>

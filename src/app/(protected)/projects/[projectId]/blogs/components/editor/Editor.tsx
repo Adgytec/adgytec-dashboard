@@ -188,7 +188,7 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 			<div className={styles.action}>
 				<button
 					data-type="link"
-					// disabled={isEmpty}
+					disabled={isEmpty}
 					onClick={handlePreview}
 				>
 					Preview
