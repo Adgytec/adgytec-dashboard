@@ -8,7 +8,7 @@ import {
 } from "react";
 import { $getNodeByKey, NodeMutation, NodeKey } from "lexical";
 import ImageNode from "../nodes/ImageNode";
-import { NewImages } from "../Editor";
+import { NewImages } from "../../../create/page";
 
 interface NodeChangePluginProps {
 	setDeletedImages: Dispatch<SetStateAction<string[]>>;
@@ -90,7 +90,7 @@ function NodeChangePlugin({
 		return () => {
 			unregisterMutationListener();
 		};
-	}, [editor]);
+	}, [editor, setDeletedImages, newImagesRef]);
 
 	return null;
 }

@@ -55,7 +55,7 @@ import { INSERT_IMAGE_COMMAND } from "../nodes/ImageNode";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { NewImages } from "../Editor";
+import { NewImages } from "../../../create/page";
 import { generateRandomString } from "@/helpers/helpers";
 
 const LowPriority = 1;
@@ -628,7 +628,7 @@ export default function ToolbarPlugin({
 				isRemoved: false,
 			});
 		},
-		[editor]
+		[editor, newImagesRef, params.projectId, uuidRef]
 	);
 
 	return (
