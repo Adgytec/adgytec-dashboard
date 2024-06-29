@@ -12,7 +12,7 @@ import Image from "next/image";
 import { BlogDetails, NewImages } from "../../create/page";
 import { validateString } from "@/helpers/validation";
 import { UserContext } from "@/components/AuthContext/authContext";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 
 interface DetailsProps {
@@ -41,6 +41,8 @@ const Details = ({
 
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [creating, setCreating] = useState<boolean>(false);
+
+	const router = useRouter();
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files;
@@ -83,6 +85,40 @@ const Details = ({
 		return true;
 	};
 
+	const createBlog = async () => {
+		if (!blogDetails.cover) return;
+
+		const token = await user?.getIdToken();
+		const headers = {
+			Authorization: `Bearer ${token}`,
+		};
+
+		const blogData = new FormData();
+		blogData.append("title", blogDetails.title);
+		blogData.append("cover", blogDetails.cover);
+		blogData.append("summary", blogDetails.summary);
+		blogData.append("author", blogDetails.author);
+		blogData.append("content", blogDetails.content);
+
+		const createBlogURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}`;
+		fetch(createBlogURL, {
+			method: "POST",
+			headers,
+			body: blogData,
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				if (res.error) throw new Error(res.message);
+
+				toast.success("Successfully created blog");
+				router.push(`/projects/${params.projectId}/blogs`);
+			})
+			.catch((err) => {
+				toast.error(err.message);
+			})
+			.finally(() => setCreating(false));
+	};
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
@@ -106,6 +142,11 @@ const Details = ({
 		const validNewFiles = newImagesRef.current.filter(
 			(img) => !img.isRemoved
 		);
+
+		if (validNewFiles.length === 0) {
+			createBlog();
+			return;
+		}
 
 		const formData = new FormData();
 		const metaData = validNewFiles.map(({ path }) => {
@@ -161,31 +202,8 @@ const Details = ({
 						});
 				}
 
-				if (!blogDetails.cover) return;
-
-				const blogData = new FormData();
-				blogData.append("title", blogDetails.title);
-				blogData.append("cover", blogDetails.cover);
-				blogData.append("summary", blogDetails.summary);
-				blogData.append("author", blogDetails.author);
-				blogData.append("content", blogDetails.content);
-
-				const createBlogURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}`;
-				fetch(createBlogURL, {
-					method: "POST",
-					headers,
-					body: blogData,
-				})
-					.then((res) => res.json())
-					.then((res) => {
-						if (res.error) throw new Error(res.message);
-
-						toast.success("Successfully created blog");
-					})
-					.catch((err) => {
-						toast.error(err.message);
-					})
-					.finally(() => setCreating(false));
+				// if (!blogDetails.cover) return;
+				createBlog();
 			})
 			.catch((err) => {
 				toast.error(err.message);
@@ -216,39 +234,42 @@ const Details = ({
 		<div className={styles.details}>
 			<form className={styles.form} onSubmit={handleSubmit}>
 				<div className={styles.input}>
-					<label>Title</label>
+					<label htmlFor="title">Title</label>
 					<input
 						type="text"
 						placeholder="Title for the blog..."
 						value={blogDetails.title}
 						onChange={handleInputChange}
 						name="title"
+						id="title"
 						required
 						disabled={creating}
 					/>
 				</div>
 
 				<div className={styles.input}>
-					<label>Author</label>
+					<label htmlFor="author">Author</label>
 					<input
 						type="text"
 						placeholder="Author for the blog..."
 						value={blogDetails.author}
 						onChange={handleInputChange}
 						name="author"
+						id="author"
 						required
 						disabled={creating}
 					/>
 				</div>
 
 				<div className={styles.input}>
-					<label>Summary</label>
+					<label htmlFor="summary">Summary</label>
 					<textarea
 						name="summary"
 						value={blogDetails.summary}
 						onChange={handleInputChange}
 						placeholder="Summary for the blog..."
 						disabled={creating}
+						id="summary"
 					/>
 				</div>
 

@@ -8,11 +8,11 @@
 		display: grid;
 		gap: 2em;
 
-		&[data-load="true"],
-		&[data-empty="true"] {
-			min-height: 20rem;
-			display: grid;
-			place-items: center;
-		}
+		// &[data-load="true"],
+		// &[data-empty="true"] {
+		// 	min-height: 20rem;
+		// 	display: grid;
+		// 	place-items: center;
+		// }
 	}
 }

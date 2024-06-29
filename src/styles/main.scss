@@ -219,3 +219,26 @@ input:user-invalid {
 .firebase-emulator-warning {
 	display: none;
 }
+
+div[data-load="true"],
+div[data-empty="true"] {
+	display: grid;
+	min-height: 20rem;
+
+	place-items: center;
+}
+
+input,
+textarea {
+	width: min(100%, 30rem);
+}
+
+textarea {
+	resize: vertical;
+	max-height: 14rem;
+	min-height: 3rem;
+
+	&:disabled {
+		resize: none;
+	}
+}

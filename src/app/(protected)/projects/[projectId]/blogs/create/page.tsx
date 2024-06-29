@@ -13,6 +13,7 @@ import Editor from "../components/editor/Editor";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
 import Details from "../components/details/Details";
+import { useParams } from "next/navigation";
 
 export type BlogDetails = {
 	title: string;
@@ -33,6 +34,9 @@ const CreateBlog = () => {
 	const user = useMemo(() => {
 		return userWithRole ? userWithRole.user : null;
 	}, [userWithRole]);
+
+	const params = useParams<{ projectId: string }>();
+	const [obj, setObj] = useState<string>("");
 
 	// multi-step blog
 	const [step, setStep] = useState<number>(1);
@@ -70,6 +74,23 @@ const CreateBlog = () => {
 			.catch((err) => {
 				toast.error(err.message);
 			});
+
+		// let blogId = "cf27a401-4999-459e-a6fd-af9a02999717";
+		// // let blogId = "c833643e-4a14-4ed1-9474-27a11c976e30";
+		// const blogGet = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blogId}`;
+		// fetch(blogGet, {
+		// 	method: "GET",
+		// 	headers,
+		// })
+		// 	.then((res) => res.json())
+		// 	.then((res) => {
+		// 		if (res.error) throw new Error(res.message);
+
+		// 		setObj(res.data.content);
+		// 	})
+		// 	.catch((err) => {
+		// 		toast.error(`getting blog error: ${err.message}`);
+		// 	});
 	}, [user]);
 
 	useEffect(() => {
@@ -81,6 +102,10 @@ const CreateBlog = () => {
 	};
 	const handlePrevious = () => {
 		setStep(1);
+	};
+
+	let trial = {
+		__html: obj,
 	};
 
 	return (
@@ -107,6 +132,19 @@ const CreateBlog = () => {
 					/>
 				</div>
 			)}
+
+			<div
+				style={{
+					outline: "2px solid coral",
+					margin: "1em",
+					padding: "1em",
+				}}
+			>
+				<div
+					dangerouslySetInnerHTML={trial}
+					className={styles.previewBody}
+				></div>
+			</div>
 		</div>
 	);
 };

@@ -1,0 +1,41 @@
+@use "/src/styles/abstract" as ab;
+
+.blog {
+	display: grid;
+	gap: 0.75em;
+
+	padding: 0.75em;
+	background-color: var(--bg-400);
+
+	.manage {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.image {
+		img {
+			object-fit: cover;
+		}
+	}
+
+	.title {
+		font-size: clamp(1.5rem, 2.5vi, 2rem);
+	}
+
+	.summary {
+		font-size: clamp(1rem, 1.5vi, 1.25rem);
+	}
+
+	.details {
+		display: flex;
+		gap: 1em;
+		font-size: 0.9rem;
+	}
+
+	.actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 2em;
+		padding-block: 0.25em;
+	}
+}

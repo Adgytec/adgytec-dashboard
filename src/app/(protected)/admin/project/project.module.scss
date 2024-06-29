@@ -23,12 +23,12 @@
 		display: grid;
 		gap: 1em;
 
-		&[data-load="true"],
-		&[data-empty="true"] {
-			min-height: 20rem;
+		// &[data-load="true"],
+		// &[data-empty="true"] {
+		// 	min-height: 20rem;
 
-			place-items: center;
-		}
+		// 	place-items: center;
+		// }
 	}
 }
 

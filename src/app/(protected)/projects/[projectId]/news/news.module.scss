@@ -29,17 +29,17 @@
 			display: grid;
 			gap: 0.5em;
 
-			input,
-			textarea {
-				width: min(100%, 30rem);
-			}
+			// input,
+			// textarea {
+			// 	width: min(100%, 30rem);
+			// }
 
-			textarea {
-				min-height: 3rem;
-				resize: vertical;
+			// textarea {
+			// 	min-height: 3rem;
+			// 	resize: vertical;
 
-				max-height: 10rem;
-			}
+			// 	max-height: 10rem;
+			// }
 		}
 	}
 }

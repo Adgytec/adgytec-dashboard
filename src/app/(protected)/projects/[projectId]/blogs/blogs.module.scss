@@ -1,1 +1,11 @@
 @use "/src/styles/abstract" as ab;
+
+.blogs {
+	display: grid;
+	gap: 1.5em;
+
+	.container {
+		display: grid;
+		gap: 1em;
+	}
+}
