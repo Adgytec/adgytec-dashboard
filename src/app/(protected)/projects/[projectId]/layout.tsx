@@ -138,6 +138,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	let breadCrumbItems: React.JSX.Element[] = [];
 	paths.forEach((path, ind) => {
 		if (path === "") return;
+		if (ind === 4) return;
 
 		const url = createLink(ind);
 
@@ -153,7 +154,8 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 			);
 
 			breadCrumbItems.push(element);
-			breadCrumbItems.push(<p key={`seperator-${ind}`}> / </p>);
+			if (ind !== 3)
+				breadCrumbItems.push(<p key={`seperator-${ind}`}> / </p>);
 		} else {
 			breadCrumbItems.push(
 				<p key={`path-${path}-index-${ind}`} className={styles.item}>

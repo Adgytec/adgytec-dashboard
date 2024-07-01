@@ -35,6 +35,8 @@ dialog[open] {
 		animation: appearBackdrop 500ms;
 	}
 
+	--_w: 40em;
+
 	.modal-menu {
 		display: flex;
 		align-items: center;
@@ -43,6 +45,17 @@ dialog[open] {
 		button {
 			font-size: 1.5rem;
 		}
+	}
+
+	.modal {
+		display: grid;
+		gap: 1em;
+	}
+
+	.action {
+		display: flex;
+		gap: 2em;
+		justify-content: flex-end;
 	}
 }
 

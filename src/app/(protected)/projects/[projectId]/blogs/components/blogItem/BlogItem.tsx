@@ -11,10 +11,16 @@ import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { error } from "console";
+import Link from "next/link";
 
 interface BlogItemProps {
 	blog: Blog;
 	setAllBlogs: React.Dispatch<React.SetStateAction<Blog[]>>;
+}
+
+interface CoverImage {
+	file: File | null;
+	url: string | null;
 }
 
 const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
@@ -34,9 +40,16 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 	});
 	const [updating, setUpdating] = useState(false);
 	const [deleting, setDeleting] = useState(false);
+	const [coverUpdating, setCoverUpdating] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
+	const [coverImage, setCoverImage] = useState<CoverImage>({
+		file: null,
+		url: null,
+	});
+
 	const deleteConfirmRef = useRef<HTMLDialogElement | null>(null);
+	const updateCoverRef = useRef<HTMLDialogElement | null>(null);
 
 	let d = new Date(blog.createdAt);
 
@@ -113,7 +126,9 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 			});
 	};
 
-	const handleClose = () => handleModalClose(deleteConfirmRef);
+	const handleClose = (
+		ref: React.MutableRefObject<HTMLDialogElement | null>
+	) => handleModalClose(ref);
 	const handleDelete = async () => {
 		setDeleting(true);
 		setError(null);
@@ -148,6 +163,61 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 			.finally(() => setDeleting(false));
 	};
 
+	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files;
+		if (!files) {
+			toast.error("Something went wrong while seleting file");
+			return;
+		}
+
+		const url = URL.createObjectURL(files[0]);
+		setCoverImage({
+			url: url,
+			file: files[0],
+		});
+	};
+
+	const handleCoverImage = async () => {
+		if (!coverImage.file) {
+			toast.error("no file selected.");
+			return;
+		}
+		setCoverUpdating(true);
+		const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blog.blogId}/cover`;
+		const token = await user?.getIdToken();
+		const headers = {
+			Authorization: `Bearer ${token}`,
+		};
+
+		const formData = new FormData();
+		formData.append("cover", coverImage.file);
+
+		fetch(url, {
+			method: "PATCH",
+			headers,
+			body: formData,
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				if (res.error) throw new Error(res.message);
+
+				updateCoverRef.current?.close();
+				toast.success("successfully updated blog cover");
+				if (coverImage.url) blog.cover = coverImage.url;
+
+				setCoverImage({
+					file: null,
+					url: null,
+				});
+			})
+			.catch((err) => {
+				toast.error(err.message);
+			})
+			.finally(() => {
+				setCoverUpdating(false);
+			});
+	};
+
 	return (
 		<>
 			<dialog
@@ -161,7 +231,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 
 						<button
 							data-type="link"
-							onClick={handleClose}
+							onClick={() => handleClose(deleteConfirmRef)}
 							title="close"
 							disabled={deleting}
 						>
@@ -184,7 +254,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 						<button
 							data-type="link"
 							disabled={deleting}
-							onClick={handleClose}
+							onClick={() => handleClose(deleteConfirmRef)}
 						>
 							Cancel
 						</button>
@@ -198,6 +268,73 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 							data-variant="error"
 						>
 							{deleting ? <Loader variant="small" /> : "Delete"}
+						</button>
+					</div>
+				</div>
+			</dialog>
+
+			<dialog ref={updateCoverRef}>
+				<div className="modal">
+					<div className="modal-menu">
+						<h2>Update Blog Cover</h2>
+
+						<button
+							data-type="link"
+							onClick={() => handleClose(updateCoverRef)}
+							title="close"
+							disabled={coverUpdating}
+						>
+							<FontAwesomeIcon icon={faXmark} />
+						</button>
+					</div>
+
+					<div className={styles.updateCover}>
+						<label htmlFor="image">Cover Image</label>
+						<input
+							type="file"
+							placeholder="File..."
+							id="image"
+							accept=".jpg, .jpeg, .png"
+							required
+							name="image"
+							onChange={handleImageChange}
+							disabled={coverUpdating}
+						/>
+
+						{coverImage.url && (
+							<div className={styles.image_preview}>
+								<Image
+									src={coverImage.url}
+									alt="preview"
+									width={500}
+									height={250}
+								/>
+							</div>
+						)}
+					</div>
+
+					<div className="action">
+						<button
+							data-type="link"
+							disabled={coverUpdating}
+							onClick={() => handleClose(updateCoverRef)}
+						>
+							Cancel
+						</button>
+
+						<button
+							data-type="button"
+							className={styles.delete}
+							disabled={coverUpdating || !coverImage.file}
+							data-load={coverUpdating}
+							onClick={handleCoverImage}
+							data-variant="primary"
+						>
+							{coverUpdating ? (
+								<Loader variant="small" />
+							) : (
+								"Update"
+							)}
 						</button>
 					</div>
 				</div>
@@ -221,6 +358,17 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 						width={500}
 						height={250}
 					/>
+
+					{isEdit && (
+						<button
+							data-type="link"
+							data-variant="secondary"
+							disabled={updating}
+							onClick={() => updateCoverRef.current?.showModal()}
+						>
+							Update Cover
+						</button>
+					)}
 				</div>
 
 				<div>
@@ -234,7 +382,11 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 							disabled={updating}
 						/>
 					) : (
-						<h2 className={styles.title}>{blog.title}</h2>
+						<h2 className={styles.title}>
+							<Link href={`blogs/${blog.blogId}`}>
+								{blog.title}
+							</Link>
+						</h2>
 					)}
 				</div>
 

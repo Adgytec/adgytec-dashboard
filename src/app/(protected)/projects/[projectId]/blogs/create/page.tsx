@@ -76,7 +76,7 @@ const CreateBlog = () => {
 			});
 
 		// let blogId = "cf27a401-4999-459e-a6fd-af9a02999717";
-		// // let blogId = "c833643e-4a14-4ed1-9474-27a11c976e30";
+		// let blogId = "c833643e-4a14-4ed1-9474-27a11c976e30";
 		// const blogGet = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blogId}`;
 		// fetch(blogGet, {
 		// 	method: "GET",
@@ -86,6 +86,7 @@ const CreateBlog = () => {
 		// 	.then((res) => {
 		// 		if (res.error) throw new Error(res.message);
 
+		// 		console.log(res.data);
 		// 		setObj(res.data.content);
 		// 	})
 		// 	.catch((err) => {
