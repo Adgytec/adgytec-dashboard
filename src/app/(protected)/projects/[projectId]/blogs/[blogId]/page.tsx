@@ -8,6 +8,7 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 // import { toast } from "react-toastify";
@@ -15,8 +16,10 @@ import BlogItem from "../components/blogItem/BlogItem";
 
 import styles from "./blog.module.scss";
 import Image from "next/image";
+import EditEditor from "../components/editor/EditEditor";
+import { toast } from "react-toastify";
 
-interface BlogItem {
+export interface BlogItem {
 	blogId: string;
 	title: string;
 	content: string;
@@ -35,6 +38,9 @@ const Blog = () => {
 	const params = useParams<{ projectId: string; blogId: string }>();
 	const [blogItem, setBlogItem] = useState<BlogItem | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [isEdit, setIsEdit] = useState(false);
+
+	const uuidRef = useRef<string | null>(null);
 
 	const getBlogItem = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${params.blogId}`;
@@ -52,9 +58,10 @@ const Blog = () => {
 				if (res.error) throw new Error(res.message);
 
 				setBlogItem(res.data);
+				uuidRef.current = res.data.blogId;
 			})
 			.catch((err) => {
-				// toast.error(err.message);
+				toast.error(err.message);
 			})
 			.finally(() => setLoading(false));
 	}, [user, params]);
@@ -107,12 +114,31 @@ const Blog = () => {
 				<p>{blogItem?.author}</p>
 
 				<p className={styles.date}>{createdAt.toDateString()}</p>
+
+				<div className={styles.edit}>
+					<button
+						onClick={() => setIsEdit((prev) => !prev)}
+						data-type="link"
+						data-variant="secondary"
+					>
+						{isEdit ? "Cancel" : "Edit"}
+					</button>
+				</div>
 			</div>
 
-			<div
-				className={styles.content}
-				dangerouslySetInnerHTML={blogHTML}
-			></div>
+			{!isEdit ? (
+				<div
+					className={styles.content}
+					dangerouslySetInnerHTML={blogHTML}
+				></div>
+			) : (
+				<EditEditor
+					setBlogItem={setBlogItem}
+					uuidRef={uuidRef}
+					content={blogItem.content}
+					setEdit={setIsEdit}
+				/>
+			)}
 		</div>
 	);
 };

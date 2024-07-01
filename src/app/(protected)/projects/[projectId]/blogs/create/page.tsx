@@ -74,24 +74,6 @@ const CreateBlog = () => {
 			.catch((err) => {
 				toast.error(err.message);
 			});
-
-		// let blogId = "cf27a401-4999-459e-a6fd-af9a02999717";
-		// let blogId = "c833643e-4a14-4ed1-9474-27a11c976e30";
-		// const blogGet = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blogId}`;
-		// fetch(blogGet, {
-		// 	method: "GET",
-		// 	headers,
-		// })
-		// 	.then((res) => res.json())
-		// 	.then((res) => {
-		// 		if (res.error) throw new Error(res.message);
-
-		// 		console.log(res.data);
-		// 		setObj(res.data.content);
-		// 	})
-		// 	.catch((err) => {
-		// 		toast.error(`getting blog error: ${err.message}`);
-		// 	});
 	}, [user]);
 
 	useEffect(() => {
@@ -111,15 +93,14 @@ const CreateBlog = () => {
 
 	return (
 		<div className={styles.blog}>
-			<div className={styles.blogEditor} data-hidden={step !== 1}>
-				<Editor
-					uuidRef={uuidRef}
-					handleNext={handleNext}
-					setBlogDetails={setBlogDetails}
-					newImagesRef={newImagesRef}
-					setDeletedImages={setDeletedImages}
-				/>
-			</div>
+			<Editor
+				uuidRef={uuidRef}
+				handleNext={handleNext}
+				setBlogDetails={setBlogDetails}
+				newImagesRef={newImagesRef}
+				setDeletedImages={setDeletedImages}
+				hidden={step !== 1}
+			/>
 
 			{step === 2 && (
 				<div className={styles.blogDetails}>
@@ -133,19 +114,6 @@ const CreateBlog = () => {
 					/>
 				</div>
 			)}
-
-			<div
-				style={{
-					outline: "2px solid coral",
-					margin: "1em",
-					padding: "1em",
-				}}
-			>
-				<div
-					dangerouslySetInnerHTML={trial}
-					className={styles.previewBody}
-				></div>
-			</div>
 		</div>
 	);
 };

@@ -33,6 +33,9 @@ import {
 	Dispatch,
 	MutableRefObject,
 	SetStateAction,
+	useContext,
+	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -44,6 +47,12 @@ import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TreeView } from "@lexical/react/LexicalTreeView";
+import { toast } from "react-toastify";
+import { UserContext } from "@/components/AuthContext/authContext";
+import { validateString } from "@/helpers/validation";
+import { useParams } from "next/navigation";
+import Loader from "@/components/Loader/Loader";
+import { BlogItem } from "../../[blogId]/page";
 
 function Placeholder() {
 	return (
@@ -77,30 +86,165 @@ const editorConfig = {
 };
 
 interface EditorActionsProps {
-	handleNext: () => void;
-	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
+	content: string;
+	deletedImages: string[];
+	newImagesRef: MutableRefObject<NewImages[]>;
+	setBlogItem: React.Dispatch<React.SetStateAction<BlogItem | null>>;
+	setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
-function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
+function EditorActions({
+	content,
+	newImagesRef,
+	deletedImages,
+	setBlogItem,
+	setEdit,
+}: EditorActionsProps) {
+	const userWithRole = useContext(UserContext);
+	const user = useMemo(() => {
+		return userWithRole ? userWithRole.user : null;
+	}, [userWithRole]);
+
 	const [editor] = useLexicalComposerContext();
 	const isEmpty = useLexicalIsTextContentEmpty(editor);
 
+	const params = useParams<{ projectId: string; blogId: string }>();
 	const previewRef = useRef<HTMLDialogElement | null>(null);
-	const [previewContent, setPreviewContent] = useState<string>(
-		"<p>No content to preview</p>"
-	);
+	const initContentRef = useRef<string | null>(null);
+	const [previewContent, setPreviewContent] = useState<string>(content);
 
-	const handleEditorContent = () => {
-		editor.getEditorState().read(() => {
-			const htmlString = $generateHtmlFromNodes(editor, null);
+	const [updating, setUpdating] = useState(false);
 
-			setBlogDetails((prev) => {
-				return {
-					...prev,
-					content: htmlString,
-				};
+	useEffect(() => {
+		return editor.update(() => {
+			const parser = new DOMParser();
+			const dom = parser.parseFromString(content, "text/html");
+			const nodes = $generateNodesFromDOM(editor, dom);
+
+			// Select the root
+			const root = $getRoot();
+			root.select();
+			root.clear();
+
+			// Insert them at a selection.
+			$insertNodes(nodes);
+			initContentRef.current = $generateHtmlFromNodes(editor, null);
+		});
+	}, [editor, content]);
+
+	const updateBlogContent = async (htmlString: string) => {
+		const token = await user?.getIdToken();
+		const headers = {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
+		};
+
+		if (deletedImages.length > 0) {
+			const deleteMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${params.blogId}/media`;
+			const body = JSON.stringify({
+				paths: deletedImages,
 			});
 
-			handleNext();
+			fetch(deleteMediaURL, {
+				method: "DELETE",
+				headers,
+				body,
+			})
+				.then((res) => {
+					return res.json();
+				})
+				.then((res) => {
+					if (res.error) throw new Error(res.message);
+
+					console.log("successfully deleted unused media");
+				})
+				.catch((err) => {
+					console.error(err.message);
+				});
+		}
+
+		const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${params.blogId}/content`;
+		const body = JSON.stringify({
+			content: htmlString,
+		});
+
+		fetch(url, {
+			method: "PATCH",
+			headers,
+			body,
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				if (res.error) throw new Error(res.message);
+
+				toast.success("successfully updated blog content");
+				setBlogItem((prev) => {
+					if (!prev) return prev;
+
+					return {
+						...prev,
+						content: htmlString,
+					};
+				});
+				setEdit(false);
+			})
+			.catch((err) => {
+				toast.error(err.message);
+			})
+			.finally(() => setUpdating(false));
+	};
+
+	const handleEditorContent = () => {
+		if (updating) return;
+
+		editor.getEditorState().read(async () => {
+			let htmlString = $generateHtmlFromNodes(editor, null);
+
+			if (!validateString(htmlString, 200)) {
+				toast.error("blog content too short!");
+				return;
+			}
+
+			setUpdating(true);
+			const validNewFiles = newImagesRef.current.filter(
+				(img) => !img.isRemoved
+			);
+
+			if (validNewFiles.length === 0) {
+				updateBlogContent(htmlString);
+				return;
+			}
+
+			const formData = new FormData();
+			const metaData = validNewFiles.map(({ path }) => {
+				return { path };
+			});
+			formData.append("metadata", JSON.stringify(metaData));
+			validNewFiles.forEach(({ file }, index) => {
+				formData.append(`media_${index}`, file);
+			});
+
+			const addMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${params.blogId}/media`;
+			const token = await user?.getIdToken();
+			const headers = {
+				Authorization: `Bearer ${token}`,
+			};
+
+			fetch(addMediaURL, {
+				method: "POST",
+				headers,
+				body: formData,
+			})
+				.then((res) => res.json())
+				.then((res) => {
+					if (res.error) throw new Error(res.message);
+					console.log(res.message);
+
+					updateBlogContent(htmlString);
+				})
+				.catch((err) => {
+					toast.error(err.message);
+					setUpdating(false);
+				});
 		});
 	};
 
@@ -145,7 +289,7 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 			<div className={styles.action}>
 				<button
 					data-type="link"
-					// disabled={isEmpty}
+					disabled={updating}
 					onClick={handlePreview}
 				>
 					Preview
@@ -154,10 +298,11 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 				<button
 					data-type="button"
 					data-variant="secondary"
-					disabled={isEmpty}
+					disabled={isEmpty || updating}
 					onClick={handleEditorContent}
+					data-load={updating}
 				>
-					Next
+					{updating ? <Loader variant="small" /> : "Update"}
 				</button>
 			</div>
 
@@ -174,25 +319,24 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 	);
 }
 
-interface EditorProps {
+interface EditEditorProps {
 	uuidRef: MutableRefObject<string | null>;
-	handleNext: () => void;
-	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
-	newImagesRef: MutableRefObject<NewImages[]>;
-	setDeletedImages: Dispatch<SetStateAction<string[]>>;
-	hidden: boolean;
+	content: string;
+	setBlogItem: React.Dispatch<React.SetStateAction<BlogItem | null>>;
+	setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Editor({
+export default function EditEditor({
 	uuidRef,
-	handleNext,
-	setBlogDetails,
-	newImagesRef,
-	setDeletedImages,
-	hidden,
-}: EditorProps) {
+	content,
+	setBlogItem,
+	setEdit,
+}: EditEditorProps) {
+	const newImagesRef = useRef<NewImages[]>([]);
+	const [deletedImages, setDeletedImages] = useState<string[]>([]);
+
 	return (
-		<div className={styles.blogEditor} data-hidden={hidden}>
+		<div className={styles.blogEditor}>
 			<LexicalComposer initialConfig={editorConfig}>
 				<div className={`editor-container ${styles.container}`}>
 					<ToolbarPlugin
@@ -225,8 +369,11 @@ export default function Editor({
 					</div>
 
 					<EditorActions
-						setBlogDetails={setBlogDetails}
-						handleNext={handleNext}
+						deletedImages={deletedImages}
+						newImagesRef={newImagesRef}
+						content={content}
+						setBlogItem={setBlogItem}
+						setEdit={setEdit}
 					/>
 				</div>
 			</LexicalComposer>
