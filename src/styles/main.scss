@@ -234,6 +234,10 @@ textarea {
 	width: min(100%, 30rem);
 }
 
+input[type="checkbox"] {
+	width: auto;
+}
+
 textarea {
 	resize: vertical;
 	max-height: 14rem;
