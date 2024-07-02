@@ -42,7 +42,7 @@ const Login = () => {
 					await resendEmailVerification();
 					emailConfirmRef.current?.showModal();
 					await signoutUser();
-     setLoading(false);
+					setLoading(false);
 					return;
 				}
 				router.push("/");

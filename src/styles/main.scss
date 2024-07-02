@@ -30,6 +30,11 @@
 	--error-hover: hsl(0, 100%, 53%);
 	--error-active: hsl(0, 100%, 33%);
 
+	// clear
+	--clear: var(--white);
+	--clear-active: hsl(26, 100%, 92%);
+	--clear-hover: hsl(26, 100%, 100%);
+
 	// accent 1
 	--accent-primary: var(--yellow);
 	--accent-primary-hover: hsl(51, 100%, 65%);
@@ -108,6 +113,20 @@ body {
 
 		&:active {
 			--_bg: var(--error-active);
+		}
+	}
+
+	&[data-variant="clear"] {
+		--_bg: var(--white);
+		--_c: var(--dark);
+
+		&:hover,
+		&:focus-visible {
+			--_bg: var(--clear-hover);
+		}
+
+		&:active {
+			--_bg: var(--clear-active);
 		}
 	}
 
