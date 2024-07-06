@@ -12,6 +12,7 @@
 	--white: hsl(26, 100%, 97%);
 	--yellow: hsl(51, 100%, 50%);
 	--blue: hsl(194, 69%, 65%);
+	--grey: hsl(0, 0%, 33%);
 
 	--success: #22bb33;
 	--error: #dc0000;
@@ -205,6 +206,11 @@ body {
 		}
 	}
 
+	&[data-active="true"] {
+		--_c: var(--accent-secondary);
+		text-decoration-color: currentColor;
+	}
+
 	&:hover,
 	&:focus-visible,
 	&:active {
@@ -213,7 +219,7 @@ body {
 
 	&:is(button:disabled) {
 		cursor: not-allowed;
-		text-decoration-color: transparent;
+		// text-decoration-color: transparent;
 	}
 }
 
@@ -264,5 +270,15 @@ textarea {
 
 	&:disabled {
 		resize: none;
+	}
+}
+
+#hamburger {
+	@include ab.nav {
+		display: none;
+	}
+
+	label {
+		font-size: 1.5rem;
 	}
 }

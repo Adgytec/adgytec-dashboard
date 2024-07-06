@@ -1,56 +1,36 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
-import Link from "next/link";
-import { UserContext } from "@/components/AuthContext/authContext";
+import React, { useContext, useEffect, useMemo } from "react";
 import styles from "./home.module.scss";
 import Container from "@/components/Container/Container";
+import { UserContext } from "@/components/AuthContext/authContext";
 import { userRoles } from "@/helpers/type";
-
-const AdminLinks = () => {
-	return (
-		<>
-			<div>
-				<Link href="/admin/user">Manage user</Link>
-			</div>
-
-			<div>
-				<Link href="/admin/project">Manage Project</Link>
-			</div>
-		</>
-	);
-};
+import { useRouter } from "next/navigation";
 
 const Home = () => {
 	const userWithRole = useContext(UserContext);
-	const role = userWithRole?.role;
+	const role = useMemo(() => {
+		return userWithRole ? userWithRole.role : null;
+	}, [userWithRole]);
+	const router = useRouter();
 
-	// 0->super_admin, 1->admin, 2->user, 3->pending
-	const roleEnum = () => {
-		switch (role) {
-			case userRoles.superAdmin:
-				return 0;
-			case userRoles.admin:
-				return 1;
-			case userRoles.user:
-				return 2;
-			default:
-				return 2;
+	useEffect(() => {
+		if (role === userRoles.user) {
+			router.push("/projects");
+		} else {
+			router.push("/admin/user");
 		}
-	};
+	}, [role, router]);
 
 	return (
 		<div className={styles.home}>
 			<Container type="normal" className={styles.container}>
-				<h2>{role}</h2>
+				<h1> Welcome to the Adgytec Dashboard!</h1>
 
-				<div className={styles.link}>
-					{roleEnum() !== 2 && <AdminLinks />}
-
-					<div>
-						<Link href="/projects">Projects</Link>
-					</div>
-				</div>
+				<p>
+					Here you can manage all your project content. Simply select
+					an option from the navigation bar to get started.
+				</p>
 			</Container>
 		</div>
 	);

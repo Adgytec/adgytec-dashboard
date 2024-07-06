@@ -7,11 +7,86 @@
 
 		padding: clamp(1em, 1.75vi, 1.5rem);
 		display: grid;
-		gap: 2em;
+		gap: 1em;
+	}
+}
+
+.layout {
+	--_w: 0;
+	height: 100vb;
+
+	overflow: hidden;
+
+	display: grid;
+	grid-template-columns: var(--_w) 1fr;
+
+	transition: grid-template-columns 300ms;
+
+	&:has(input:checked) {
+		--_w: 70vi;
+
+		.main::before {
+			z-index: 1;
+			opacity: 1;
+		}
 	}
 
-	.link {
+	@include ab.nav {
+		--_w: clamp(16rem, 25vi, 20rem);
+
+		&:has(input:checked) {
+			--_w: clamp(16rem, 25vi, 20rem);
+		}
+
+		.main::before {
+			display: none;
+		}
+	}
+
+	input {
+		display: none;
+	}
+
+	.nav {
+		overflow: hidden;
+	}
+
+	.main {
+		position: relative;
+		width: 100vi;
+
 		display: grid;
+		align-content: start;
 		gap: 1em;
+
+		grid-template-areas: "header" "content";
+		grid-template-rows: 4.5rem 1fr;
+
+		& > :first-child {
+			grid-area: header;
+		}
+
+		@include ab.nav {
+			width: auto;
+		}
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-color: rgba(0, 0, 0, 0.75);
+			backdrop-filter: blur(5px);
+			opacity: 0;
+			z-index: -1;
+
+			transition: opacity 300ms;
+		}
+	}
+
+	.content {
+		grid-area: content;
+
+		overflow: auto;
+		height: calc(100vb - 1.5em - 5em);
 	}
 }

@@ -17,6 +17,7 @@ import EmailConfirmModal from "./components/EmailConfirmModal";
 import ForgotPasswordModal from "./components/ForgotPasswordModal";
 import Image from "next/image";
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
+import { userRoles } from "@/helpers/type";
 
 const inputReset = {
 	email: "",
@@ -45,7 +46,15 @@ const Login = () => {
 					setLoading(false);
 					return;
 				}
-				router.push("/");
+
+				let idTokenResult = await user.getIdTokenResult();
+				let role = idTokenResult?.claims.role;
+
+				if (role === userRoles.user) {
+					router.push("/projects");
+				} else {
+					router.push("/admin/user");
+				}
 			} else {
 				setLoading(false);
 			}

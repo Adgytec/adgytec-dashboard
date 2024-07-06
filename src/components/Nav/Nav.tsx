@@ -1,85 +1,85 @@
-"use client";
-
 import React, { useContext } from "react";
 import styles from "./nav.module.scss";
-import { UserContext } from "../AuthContext/authContext";
-import Container from "../Container/Container";
 import Image from "next/image";
 import Link from "next/link";
+import { userRoles } from "@/helpers/type";
+import { UserContext } from "../AuthContext/authContext";
+import { usePathname } from "next/navigation";
 
-import * as Popover from "@radix-ui/react-popover";
-import { UserPopoverProps } from "./types";
-import { signoutUser } from "@/firebase/auth/auth";
-
-const UserPopover = ({ user }: UserPopoverProps) => {
-	const handleSignout = async () => {
-		await signoutUser();
-	};
-
+const AdminLinks = () => {
+	const pathname = usePathname();
 	return (
-		<Popover.Root>
-			<Popover.Trigger asChild>
-				<button
-					data-type="button"
-					data-variant="primary"
-					className={styles.trigger}
+		<>
+			<div>
+				<Link
+					data-type="link"
+					href="/admin/user"
+					data-active={pathname === "/admin/user"}
 				>
-					{user?.displayName && user.displayName[0].toUpperCase()}
-				</button>
-			</Popover.Trigger>
+					Manage user
+				</Link>
+			</div>
 
-			<Popover.Portal>
-				<Popover.Content sideOffset={10} className={styles.content}>
-					<p>{user?.displayName}</p>
-
-					<div>
-						<Link
-							data-type="link"
-							href="/profile"
-							data-variant="secondary"
-						>
-							Profile
-						</Link>
-					</div>
-
-					<div>
-						<button
-							data-type="link"
-							data-variant="error"
-							onClick={handleSignout}
-						>
-							Sign out
-						</button>
-					</div>
-				</Popover.Content>
-			</Popover.Portal>
-		</Popover.Root>
+			<div>
+				<Link
+					data-type="link"
+					href="/admin/project"
+					data-active={pathname === "/admin/project"}
+				>
+					Manage Project
+				</Link>
+			</div>
+		</>
 	);
 };
 
 const Nav = () => {
 	const userWithRole = useContext(UserContext);
-	const user = userWithRole ? userWithRole.user : null;
+	const role = userWithRole?.role;
+
+	const pathname = usePathname();
+
+	// 0->super_admin, 1->admin, 2->user, 3->pending
+	const roleEnum = () => {
+		switch (role) {
+			case userRoles.superAdmin:
+				return 0;
+			case userRoles.admin:
+				return 1;
+			case userRoles.user:
+				return 2;
+			default:
+				return 2;
+		}
+	};
 
 	return (
-		<nav className={styles.nav}>
-			<Container type="normal" className={styles.container}>
-				<div className={styles.logo}>
-					<Link href="/">
-						<Image
-							src="/logo.svg"
-							alt="adgytec"
-							width="250"
-							height="50"
-						/>
+		<div className={styles.nav}>
+			<div className={styles.logo}>
+				<Link href="/">
+					<Image
+						src="/logo.svg"
+						alt="adgytec"
+						width={200}
+						height={50}
+					/>
+				</Link>
+			</div>
+
+			<div className={styles.links}>
+				{roleEnum() !== 2 && <AdminLinks />}
+
+				<div>
+					<Link
+						data-type="link"
+						href="/projects"
+						data-active={pathname === "/projects"}
+					>
+						Projects
 					</Link>
 				</div>
-
-				<div className={styles.user}>
-					<UserPopover user={user} />
-				</div>
-			</Container>
-		</nav>
+			</div>
+		</div>
 	);
 };
 
