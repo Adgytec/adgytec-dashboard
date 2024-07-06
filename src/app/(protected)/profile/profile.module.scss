@@ -1,36 +1,68 @@
 @use "/src/styles/abstract" as ab;
 
 .profile {
-	height: 100%;
-
 	.container {
 		display: grid;
-		gap: 1em;
+		gap: 2em;
 		border-radius: 0.75em;
 
 		padding: clamp(1em, 2.5vi, 2em);
 
-		background-color: var(--bg-600);
 		overflow: hidden;
 	}
 
-	.table {
-		--_space: 1em;
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-		border-spacing: var(--_space);
-		translate: calc(-1 * var(--_space));
+	.main {
+		form {
+			--_g: clamp(1em, 2vi, 1.75em);
+			--_w: min(100%, 50rem);
 
-		td {
-			word-break: break-word;
+			display: grid;
+			gap: var(--_g);
+		}
+
+		.input {
+			display: grid;
+			gap: 0.5em;
+
+			width: var(--_w);
 
 			input {
-				width: min(100%, 15rem);
+				width: 100%;
+				font-size: 1.25rem;
+
+				padding-inline: 0.5em;
+				padding-block: 0.5em;
+
+				border-radius: 0.25em;
+				border-style: solid;
+
+				background-color: var(--bg-600);
+			}
+
+			label {
+				color: var(--accent-secondary);
+				font-weight: 500;
 			}
 		}
 
-		th {
-			text-align: left;
+		.inputGroup {
+			display: grid;
+			gap: var(--_g);
+			width: var(--_w);
+
+			grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 		}
+	}
+
+	.action {
+		display: flex;
+		gap: 1em;
 	}
 }
 

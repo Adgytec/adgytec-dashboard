@@ -13,6 +13,8 @@
 
 .layout {
 	--_w: 0;
+	--_g: clamp(1.5em, 2.25vi, 2em);
+
 	height: 100vb;
 
 	overflow: hidden;
@@ -43,7 +45,7 @@
 		}
 	}
 
-	input {
+	.navCheckbox {
 		display: none;
 	}
 
@@ -57,7 +59,7 @@
 
 		display: grid;
 		align-content: start;
-		gap: 1em;
+		gap: var(--_g);
 
 		grid-template-areas: "header" "content";
 		grid-template-rows: 4.5rem 1fr;
@@ -87,6 +89,6 @@
 		grid-area: content;
 
 		overflow: auto;
-		height: calc(100vb - 1.5em - 5em);
+		height: calc(100vb - var(--_g) - 5em);
 	}
 }

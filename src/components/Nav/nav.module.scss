@@ -27,6 +27,8 @@
 			padding-block: 1em;
 			transition: background-color 300ms;
 
+			box-shadow: inset -1px 0px var(--white);
+
 			&[data-active="true"] {
 				background-color: var(--active);
 			}

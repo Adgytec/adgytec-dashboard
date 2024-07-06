@@ -30,6 +30,7 @@ export default function ProtectedLayout({
 		<AuthProvider>
 			<div className={styles.layout}>
 				<input
+					className={styles.navCheckbox}
 					type="checkbox"
 					id="nav"
 					checked={expand}
