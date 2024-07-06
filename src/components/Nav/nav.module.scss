@@ -29,6 +29,7 @@
 
 			&[data-active="true"] {
 				background-color: var(--active);
+				border-inline-end: 1px solid var(--white);
 			}
 		}
 

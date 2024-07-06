@@ -92,7 +92,7 @@ function Profile() {
 			<div className={styles.profile}>
 				<Container type="normal" className={styles.container}>
 					<div className={styles.header}>
-						<h2>{edit ? "Edit Profile" : "Profile"}</h2>
+						<h1>{edit ? "Edit Profile" : "Profile"}</h1>
 
 						<button
 							data-type="link"

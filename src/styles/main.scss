@@ -12,7 +12,7 @@
 	--white: hsl(26, 100%, 97%);
 	--yellow: hsl(51, 100%, 50%);
 	--blue: hsl(194, 69%, 65%);
-	--grey: hsl(0, 0%, 33%);
+	--grey: #555555;
 
 	--success: #22bb33;
 	--error: #dc0000;
@@ -298,4 +298,8 @@ textarea {
 	label {
 		font-size: 1.5rem;
 	}
+}
+
+h1 {
+	font-size: clamp(1.75rem, 2.5vi, 2.25rem);
 }
