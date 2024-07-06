@@ -51,6 +51,9 @@
 
 	.nav {
 		overflow: hidden;
+		width: var(--_w);
+
+		transition: width 0ms 150ms;
 	}
 
 	.main {

@@ -11,7 +11,7 @@
 
 	align-content: start;
 
-	box-shadow: inset -1px 0px var(--white);
+	border-inline-end: 1px solid var(--white);
 
 	.logo {
 		width: clamp(10rem, 20vi, 20rem);
@@ -26,8 +26,6 @@
 			padding-inline: clamp(1em, 2vi, 2em);
 			padding-block: 1em;
 			transition: background-color 300ms;
-
-			box-shadow: inset -1px 0px var(--white);
 
 			&[data-active="true"] {
 				background-color: var(--active);
