@@ -4,8 +4,6 @@
 	display: grid;
 	gap: 2em;
 
-	outline: 2px solid red;
-
 	.options {
 		border-block-end: 1px solid var(--grey);
 
@@ -46,7 +44,4 @@
 	padding: clamp(1em, 1.75vi, 1.5em);
 	display: grid;
 	gap: 2em;
-
-	.list_container {
-	}
 }

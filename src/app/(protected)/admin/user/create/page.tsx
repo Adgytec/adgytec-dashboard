@@ -40,8 +40,6 @@ const CreateUser = () => {
 	const role = userWithRole ? userWithRole.role : null;
 
 	const [userInput, setUserInput] = useState(defaultInputValues);
-	const [error, setError] = useState<string | null>(null);
-	const [message, setMessage] = useState<string | null>(null);
 
 	const [creating, setCreating] = useState<boolean>(false);
 
@@ -74,14 +72,10 @@ const CreateUser = () => {
 
 		const { name, email, role } = userInput;
 		if (!validateInput(name, email, role)) {
-			// setError("Invalid input values");
-			// setMessage(null);
 			toast.error("Invalid input values");
 			return;
 		}
 
-		// setError(null);
-		// setMessage(null);
 		setCreating(true);
 		const url = `${process.env.NEXT_PUBLIC_API}/user`;
 		const token = await user?.getIdToken();
@@ -108,7 +102,6 @@ const CreateUser = () => {
 				handleReset();
 			})
 			.catch((err) => {
-				// setError(err.message);
 				toast.error(err.message);
 			})
 			.finally(() => {
@@ -117,23 +110,25 @@ const CreateUser = () => {
 	};
 
 	return (
-		<Container type="normal" className={styles.create_user}>
-			<div className={styles.link}>
-				<button
-					data-type="link"
-					data-variant="secondary"
-					onClick={handleBack}
-					title="back"
-					disabled={creating}
-				>
-					Back
-				</button>
-			</div>
+		<div className={styles.form}>
+			<h2>Create New User</h2>
 
-			<div className={styles.form}>
-				<h2>Create New User</h2>
+			<form onSubmit={handleCreateUser}>
+				<div className={styles.input}>
+					<label htmlFor="email">Email ID</label>
+					<input
+						type="email"
+						value={userInput.email}
+						onChange={handleInputChange}
+						id="email"
+						name="email"
+						placeholder="Email..."
+						required
+						disabled={creating}
+					/>
+				</div>
 
-				<form onSubmit={handleCreateUser}>
+				<div className={styles.inputGroup}>
 					<div className={styles.input}>
 						<label htmlFor="name">Name</label>
 						<input
@@ -143,19 +138,6 @@ const CreateUser = () => {
 							id="name"
 							name="name"
 							placeholder="Name..."
-							required
-							disabled={creating}
-						/>
-					</div>
-					<div className={styles.input}>
-						<label htmlFor="email">Email</label>
-						<input
-							type="email"
-							value={userInput.email}
-							onChange={handleInputChange}
-							id="email"
-							name="email"
-							placeholder="Email..."
 							required
 							disabled={creating}
 						/>
@@ -173,7 +155,7 @@ const CreateUser = () => {
 							disabled={creating}
 						>
 							<option value="" disabled>
-								Select a role for user
+								Choose One
 							</option>
 
 							{roles.map((val) => {
@@ -196,33 +178,31 @@ const CreateUser = () => {
 							})}
 						</select>
 					</div>
+				</div>
 
-					{error && <p className="error">{error}</p>}
-					{message && <p className="message">{message}</p>}
+				<div className={styles.action}>
+					<button
+						data-type="button"
+						type="reset"
+						disabled={creating}
+						onClick={handleReset}
+						data-variant="clear"
+					>
+						Reset
+					</button>
 
-					<div className={styles.button}>
-						<button
-							data-type="link"
-							type="reset"
-							disabled={creating}
-							onClick={handleReset}
-						>
-							Reset
-						</button>
-
-						<button
-							data-type="button"
-							data-variant="secondary"
-							type="submit"
-							disabled={creating}
-							data-load={creating ? "true" : "false"}
-						>
-							{creating ? <Loader variant="small" /> : "Create"}
-						</button>
-					</div>
-				</form>
-			</div>
-		</Container>
+					<button
+						data-type="button"
+						data-variant="secondary"
+						type="submit"
+						disabled={creating}
+						data-load={creating ? "true" : "false"}
+					>
+						{creating ? <Loader variant="small" /> : "Create User"}
+					</button>
+				</div>
+			</form>
+		</div>
 	);
 };
 

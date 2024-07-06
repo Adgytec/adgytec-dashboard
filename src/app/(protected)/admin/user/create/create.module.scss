@@ -1,37 +1,46 @@
 @use "/src/styles/abstract" as ab;
 
-.create_user {
-	background-color: var(--bg-600);
-	border-radius: 0.75em;
-
-	padding: clamp(1em, 1.75vi, 1.5em);
-
+.form {
 	display: grid;
-	gap: 1em;
+	gap: 2em;
 
-	.form {
+	form {
 		display: grid;
-		gap: 1em;
+		gap: 1.5em;
+	}
 
-		form {
-			display: grid;
-			gap: 1em;
-		}
+	.inputGroup {
+		display: grid;
+		gap: 1.5rem;
 
-		.input {
-			display: grid;
-			gap: 0.5em;
-		}
+		width: min(100%, 50rem);
 
-		.select {
-			display: grid;
-			gap: 0.5em;
+		@include ab.container-35 {
+			grid-template-columns: 1fr clamp(12.5rem, 20vi, 15rem);
 		}
+	}
 
-		.button {
-			display: flex;
-			justify-content: flex-end;
-			gap: 2em;
+	.input {
+		display: grid;
+		gap: 0.5em;
+
+		input {
+			width: min(100%, 50rem);
 		}
+	}
+
+	.select {
+		display: grid;
+		gap: 0.5em;
+
+		select {
+		}
+	}
+
+	.action {
+		display: flex;
+		gap: 2em;
+
+		margin-block-start: 1.5em;
 	}
 }

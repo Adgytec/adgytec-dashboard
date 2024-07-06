@@ -1,5 +1,9 @@
 @use "/src/styles/abstract" as ab;
 
+.container {
+	container-type: inline-size;
+}
+
 .normal {
 	width: min(90%, var(--max-width));
 	margin-inline: auto;

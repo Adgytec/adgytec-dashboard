@@ -27,7 +27,10 @@ const Container = ({ type, children, className, style }: ContainerProps) => {
 	};
 
 	return (
-		<div className={`${getClassname(type)} ${className}`} style={style}>
+		<div
+			className={`${getClassname(type)} ${className} ${styles.container}`}
+			style={style}
+		>
 			{children}
 		</div>
 	);

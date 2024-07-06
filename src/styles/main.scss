@@ -10,7 +10,7 @@
 	// colors
 	--dark: hsl(0, 0%, 6%);
 	--white: hsl(26, 100%, 97%);
-	--yellow: hsl(51, 100%, 50%);
+	--yellow: rgb(255, 217, 0);
 	--blue: hsl(194, 69%, 65%);
 	--grey: #555555;
 
@@ -49,6 +49,7 @@
 
 	color-scheme: dark;
 	accent-color: var(--accent-secondary);
+	caret-color: var(--accent-secondary);
 }
 
 body {
@@ -63,7 +64,7 @@ body {
 	border-radius: 0.25rem;
 	border: 0;
 
-	padding-inline: 1em;
+	padding-inline: 1.25em;
 	padding-block: 0.4em;
 	font-weight: 600;
 
@@ -265,15 +266,29 @@ label {
 	color: var(--accent-secondary);
 }
 
-input {
+input,
+select {
+	--_pi: 0.5em;
+	--_pb: 0.4em;
+
 	font-size: 1.25rem;
-	padding-inline: 0.5em;
-	padding-block: 0.4em;
+	padding-inline: var(--_pi);
+	padding-block: var(--_pb);
 
 	border-radius: 0.25em;
 	border-style: solid;
+	border-width: 2px;
 
 	background-color: var(--bg-600);
+}
+
+select {
+	appearance: none;
+
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2ZmZDkwMCIgZD0iTTIwMS40IDM3NC42YzEyLjUgMTIuNSAzMi44IDEyLjUgNDUuMyAwbDE2MC0xNjBjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDBMMjI0IDMwNi43IDg2LjYgMTY5LjRjLTEyLjUtMTIuNS0zMi44LTEyLjUtNDUuMyAwcy0xMi41IDMyLjggMCA0NS4zbDE2MCAxNjB6Ii8+PC9zdmc+);
+	background-repeat: no-repeat;
+	background-position: calc(100% - var(--_pi)) center;
+	background-size: 1.5ch;
 }
 
 input[type="checkbox"] {
@@ -302,4 +317,8 @@ textarea {
 
 h1 {
 	font-size: clamp(1.75rem, 2.5vi, 2.25rem);
+}
+
+h2 {
+	font-size: clamp(1.25rem, 1.75vi, 1.5rem);
 }
