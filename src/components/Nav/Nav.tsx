@@ -14,7 +14,7 @@ const AdminLinks = () => {
 				<Link
 					data-type="link"
 					href="/admin/user"
-					data-active={pathname === "/admin/user"}
+					data-active={pathname.includes("/admin/user")}
 				>
 					Manage user
 				</Link>
@@ -24,7 +24,7 @@ const AdminLinks = () => {
 				<Link
 					data-type="link"
 					href="/admin/project"
-					data-active={pathname === "/admin/project"}
+					data-active={pathname.includes("/admin/project")}
 				>
 					Manage Project
 				</Link>
@@ -73,7 +73,7 @@ const Nav = () => {
 					<Link
 						data-type="link"
 						href="/projects"
-						data-active={pathname === "/projects"}
+						data-active={pathname.includes("/projects")}
 					>
 						Projects
 					</Link>
