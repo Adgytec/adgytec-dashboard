@@ -31,7 +31,14 @@ const UserPopover = ({ user }: UserPopoverProps) => {
 			</Popover.Trigger>
 
 			<Popover.Portal>
-				<Popover.Content sideOffset={10} className={styles.content}>
+				<Popover.Content
+					sideOffset={10}
+					className={styles.content}
+					collisionPadding={{
+						right: 10,
+					}}
+					// align="start"
+				>
 					<p>{user?.displayName}</p>
 
 					<div>

@@ -36,18 +36,19 @@
 }
 
 .content {
-	--_w: 15em;
+	padding-block: 0.75em;
 
-	border-radius: 0.75em;
-
-	padding-inline: 1em;
-	padding-block: 1em;
+	background-color: var(--bg-400);
+	border-radius: 0.5em;
 
 	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
 		rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-	background-color: var(--bg-200);
 
-	max-width: var(--_w);
+	> * {
+		padding-inline: 2rem;
+		font-size: clamp(1.25rem, 1.75vi, 1.5rem);
+		font-weight: 600;
+	}
 
 	&[data-state="open"] {
 		transform-origin: top center;
@@ -55,8 +56,11 @@
 
 		display: grid;
 		gap: 1em;
+	}
 
-		font-size: 1.25rem;
+	p {
+		border-block-end: 2px solid var(--white);
+		padding-block-end: 1rem;
 	}
 }
 
