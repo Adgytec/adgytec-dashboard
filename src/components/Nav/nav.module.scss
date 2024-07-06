@@ -29,7 +29,10 @@
 
 			&[data-active="true"] {
 				background-color: var(--active);
-				border-inline-end: 1px solid var(--white);
+
+				@include ab.nav {
+					border-inline-end: 1px solid var(--white);
+				}
 			}
 		}
 

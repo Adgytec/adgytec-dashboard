@@ -27,6 +27,11 @@
 	&:has(input:checked) {
 		--_w: 70vi;
 
+		.nav {
+			opacity: 1;
+			transition: opacity 150ms 150ms;
+		}
+
 		.main::before {
 			z-index: 1;
 			opacity: 1;
@@ -51,9 +56,13 @@
 
 	.nav {
 		overflow: hidden;
-		width: var(--_w);
+		opacity: 0;
 
-		transition: width 0ms 150ms;
+		transition: opacity 0ms;
+
+		@include ab.nav {
+			opacity: 1;
+		}
 	}
 
 	.main {
