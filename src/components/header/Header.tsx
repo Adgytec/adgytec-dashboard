@@ -37,7 +37,6 @@ const UserPopover = ({ user }: UserPopoverProps) => {
 					collisionPadding={{
 						right: 10,
 					}}
-					// align="start"
 				>
 					<p>{user?.displayName}</p>
 

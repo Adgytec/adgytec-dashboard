@@ -1,5 +1,19 @@
+// 560
 @mixin container-35 {
 	@container (min-width: 35em) {
+		@content;
+	}
+}
+
+// 640
+@mixin container-40 {
+	@container (min-width: 40em) {
+		@content;
+	}
+}
+
+@mixin container-table {
+	@include container-40 {
 		@content;
 	}
 }

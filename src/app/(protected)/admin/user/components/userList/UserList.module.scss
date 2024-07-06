@@ -4,15 +4,72 @@
 	display: grid;
 	gap: 2em;
 
-	.user_list {
-		display: grid;
-		gap: 2em;
+	.header {
+		display: flex;
+		gap: 1em;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-		// &[data-load="true"],
-		// &[data-empty="true"] {
-		// 	min-height: 20rem;
-		// 	display: grid;
-		// 	place-items: center;
-		// }
+	.list {
+		--_pi: clamp(0.75rem, 1rem, 1rem);
+		--_pb: 1.25rem;
+		--_r: 0.15rem;
+
+		display: grid;
+		gap: 0.15em;
+
+		@include ab.container-table {
+			grid-template-columns: repeat(6, auto);
+			gap: 1.5rem;
+
+			> :nth-child(odd) {
+				background-color: var(--bg-400);
+			}
+		}
+
+		&_head {
+			display: none;
+			@include ab.container-table {
+				display: grid;
+			}
+
+			grid-template-columns: subgrid;
+			grid-column: 1 / 7;
+
+			padding-inline: var(--_pi);
+			padding-block: var(--_pb);
+			border-radius: var(--_r);
+
+			h4 {
+				font-size: clamp(1.15rem, 1.25vi, 1.25rem);
+				color: var(--accent-secondary);
+				user-select: none;
+			}
+
+			.name {
+				grid-column: 1 / 2;
+			}
+
+			.email {
+				grid-column: 2 / 3;
+			}
+
+			.role {
+				grid-column: 3 / 4;
+			}
+
+			.created {
+				grid-column: 4 / 5;
+			}
+
+			.edit {
+				grid-column: 5 / 6;
+			}
+
+			.delete {
+				grid-column: 6 / 7;
+			}
+		}
 	}
 }

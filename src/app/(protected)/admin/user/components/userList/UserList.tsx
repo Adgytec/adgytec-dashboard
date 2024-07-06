@@ -6,6 +6,7 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import UserElement from "../userElement/UserElement";
 import { toast } from "react-toastify";
+import { userRoles } from "@/helpers/type";
 
 export interface userObj {
 	name: string;
@@ -42,7 +43,6 @@ const UserList = () => {
 					setUsers(res.data);
 				})
 				.catch((err) => {
-					// console.error(err.message);
 					toast.error(err.message);
 				})
 				.finally(() => {
@@ -51,15 +51,22 @@ const UserList = () => {
 		})();
 	}, [userWithRole, user]);
 
-	let elements: React.JSX.Element[] = [];
+	let usersList: React.JSX.Element[] = [];
 	users.forEach((user) => {
 		const { userId, email, name, role: userRole } = user;
+
+		if (
+			role === userRoles.admin &&
+			(userRole === userRoles.superAdmin || role === userRole)
+		) {
+			return;
+		}
 		let element = (
 			<UserElement key={user.userId} user={user} setUsers={setUsers} />
 		);
 
 		if (search.length === 0) {
-			elements.push(element);
+			usersList.push(element);
 			return;
 		}
 
@@ -69,34 +76,47 @@ const UserList = () => {
 			name.toLowerCase().includes(search.toLowerCase()) ||
 			userRole.toLowerCase().includes(search.toLowerCase())
 		)
-			elements.push(element);
+			usersList.push(element);
 	});
 
 	return (
 		<div className={styles.container}>
-			<div
-				className={styles.search}
-				title="search user by userid, email, name, or role"
-			>
+			<div className={styles.header}>
+				<h2>User Overview</h2>
+
 				<input
 					type="text"
-					placeholder="Search user..."
+					placeholder="Type to search..."
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
+					disabled={loading}
 				/>
 			</div>
 
 			<div
-				className={styles.user_list}
+				className={styles.users}
 				data-load={loading}
-				data-empty={users.length === 0 || elements.length === 0}
+				data-empty={users.length === 0 || usersList.length === 0}
 			>
-				{loading && <Loader />}
-
-				{!loading && (elements.length === 0 || users.length === 0) ? (
+				{loading ? (
+					<Loader />
+				) : usersList.length === 0 || users.length === 0 ? (
 					<h3>No users exist</h3>
 				) : (
-					elements
+					<>
+						<div className={styles.list}>
+							<div className={styles.list_head}>
+								<h4 className={styles.name}>Name</h4>
+								<h4 className={styles.email}>Email</h4>
+								<h4 className={styles.role}>Role</h4>
+								<h4 className={styles.created}>Created At</h4>
+								<h4 className={styles.edit}>Edit</h4>
+								<h4 className={styles.delete}>Delete</h4>
+							</div>
+
+							{usersList}
+						</div>
+					</>
 				)}
 			</div>
 		</div>

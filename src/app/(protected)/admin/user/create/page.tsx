@@ -47,10 +47,6 @@ const CreateUser = () => {
 		return validateName(name) && validateEmail(email) && validateRole(role);
 	};
 
-	const handleBack = () => {
-		window.history.back();
-	};
-
 	const handleReset = () => {
 		// handle manually resetting form values
 		setUserInput(defaultInputValues);

@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useContext, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./userElement.module.scss";
 import { userObj } from "../userList/UserList";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "@/components/Loader/Loader";
 import { userRoles } from "@/helpers/type";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { validateName, validateRole } from "@/helpers/validation";
 import { toast } from "react-toastify";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
 interface UserElementProps {
 	user: userObj;
@@ -39,11 +41,15 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 
 	let d = new Date(user.createdAt);
 	const deleteConfirmRef = useRef<HTMLDialogElement | null>(null);
-	const handleClose = () => handleModalClose(deleteConfirmRef);
+	const editRef = useRef<HTMLDialogElement | null>(null);
+
+	const handleDeleteModalClose = () => handleModalClose(deleteConfirmRef);
+	const handleEditModalClose = () => handleModalClose(editRef);
 
 	const [deleting, setDeleting] = useState(false);
-	const [message, setMessage] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
+	const [editError, setEditError] = useState<string | null>(null);
+
 	const [isEdit, setIsEdit] = useState(false);
 	const [userInput, setUserInput] = useState({
 		name: user.name,
@@ -80,7 +86,6 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 			})
 			.catch((err) => {
 				setError(err.message);
-				// toast.error(err.message);
 			})
 			.finally(() => setDeleting(false));
 	};
@@ -120,14 +125,12 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 	const handleUpdate = async () => {
 		const { name, role } = userInput;
 		if (!validateInput(name, role)) {
-			// setError("invalid input");
-			// setMessage(null);
+			setEditError("Invalid user details");
 			return;
 		}
 
 		setUpdating(true);
-		// setError(null);
-		// setMessage(null);
+		setEditError(null);
 
 		const url = `${process.env.NEXT_PUBLIC_API}/user/${user.userId}`;
 		const token = await myUser?.getIdToken();
@@ -145,8 +148,8 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
 
-				// setMessage("user updated");
 				toast.success("user updated");
+				editRef.current?.close();
 				setUsers((prev) => {
 					return prev.map((u) =>
 						u.userId === user.userId ? { ...u, name, role } : u
@@ -155,8 +158,7 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 				setIsEdit(false);
 			})
 			.catch((err) => {
-				setError(err.message);
-				// toast.error(err.message);
+				setEditError(err.message);
 			})
 			.finally(() => {
 				setUpdating(false);
@@ -165,153 +167,253 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 
 	return (
 		<>
-			<dialog
-				onKeyDown={handleEscModal}
-				ref={deleteConfirmRef}
-				className="delete-confirm"
-			>
-				<div className="delete-modal">
-					<div className="modal-menu">
-						<h2>Confirm User Deletion</h2>
-
-						<button
-							data-type="link"
-							onClick={handleClose}
-							title="close"
-							disabled={deleting}
-						>
-							<FontAwesomeIcon icon={faXmark} />
-						</button>
-					</div>
-
-					<div className="delete-content">
-						<p>Are you sure you want to delete this user?</p>
-
-						<p>
-							Deleting this user will permanently remove their
-							account and all associated data. This action cannot
-							be undone.
-						</p>
-					</div>
-
-					{error && <p className="error">{error}</p>}
-
-					<div className="delete-action">
-						<button
-							data-type="link"
-							disabled={deleting}
-							onClick={handleClose}
-						>
-							Cancel
-						</button>
-
-						<button
-							data-type="button"
-							className={styles.delete}
-							disabled={deleting}
-							data-load={deleting}
-							onClick={handleDelete}
-							data-variant="error"
-						>
-							{deleting ? <Loader variant="small" /> : "Delete"}
-						</button>
-					</div>
-				</div>
-			</dialog>
-
-			<div className={styles.user}>
-				<div className={styles.edit}>
-					<button
-						data-type="link"
-						onClick={() => setIsEdit((prev) => !prev)}
-						disabled={actionDisabled() || updating}
+			{createPortal(
+				<>
+					<dialog
+						onKeyDown={handleEscModal}
+						ref={deleteConfirmRef}
+						className="delete-confirm"
 					>
-						{isEdit ? "Cancel" : "Edit"}
-					</button>
-				</div>
+						<div className="delete-modal">
+							<div className="modal-menu">
+								<h2>Confirm User Deletion</h2>
 
-				<p>
-					<strong>Name:</strong>{" "}
-					{isEdit ? (
-						<input
-							type="text"
-							name="name"
-							value={userInput.name}
-							onChange={handleInputChange}
-							placeholder="Name..."
-							disabled={updating}
-						/>
-					) : (
-						user.name
-					)}
-				</p>
-				<p>
-					<strong>Email:</strong> {user.email}
-				</p>
-				<p>
-					<strong>Role:</strong>{" "}
-					{isEdit ? (
-						<select
-							value={userInput.role}
-							disabled={updating}
-							onChange={handleInputChange}
-							name="role"
-						>
-							{roles.map((val) => {
-								let disabled =
-									myRole === userRoles.superAdmin
-										? false
-										: myRole === val.key
-										? true
-										: val.key === userRoles.superAdmin;
+								<button
+									data-type="link"
+									onClick={handleDeleteModalClose}
+									title="close"
+									disabled={deleting}
+								>
+									<FontAwesomeIcon icon={faXmark} />
+								</button>
+							</div>
 
-								return (
-									<option
-										key={val.key}
-										disabled={disabled}
-										value={val.key}
+							<div className="delete-content">
+								<p>
+									Are you sure you want to delete this user?
+								</p>
+
+								<p>
+									Deleting this user will permanently remove
+									their account and all associated data. This
+									action cannot be undone.
+								</p>
+							</div>
+
+							{error && <p className="error">{error}</p>}
+
+							<div className="delete-action">
+								<button
+									data-type="link"
+									disabled={deleting}
+									onClick={handleDeleteModalClose}
+								>
+									Cancel
+								</button>
+
+								<button
+									data-type="button"
+									className={styles.delete}
+									disabled={deleting || actionDisabled()}
+									data-load={deleting}
+									onClick={handleDelete}
+									data-variant="error"
+								>
+									{deleting ? (
+										<Loader variant="small" />
+									) : (
+										"Delete"
+									)}
+								</button>
+							</div>
+						</div>
+					</dialog>
+
+					<dialog ref={editRef}>
+						<div className="modal">
+							<div className="modal-menu">
+								<h2>Edit User Details</h2>
+
+								<button
+									data-type="link"
+									onClick={handleEditModalClose}
+									title="close"
+									disabled={updating}
+								>
+									<FontAwesomeIcon icon={faXmark} />
+								</button>
+							</div>
+
+							<div className={styles.modalContent}>
+								<div className={styles.input}>
+									<label htmlFor="name">Name</label>
+									<input
+										id="name"
+										type="text"
+										name="name"
+										value={userInput.name}
+										onChange={handleInputChange}
+										placeholder="Name..."
+										disabled={updating}
+									/>
+								</div>
+
+								<div className={styles.input}>
+									<label htmlFor="user-role">Role</label>
+									<select
+										id="user-role"
+										value={userInput.role}
+										disabled={updating}
+										onChange={handleInputChange}
+										name="role"
 									>
-										{val.displayValue}
-									</option>
-								);
-							})}
-						</select>
-					) : (
-						user.role
-					)}
-				</p>
-				<p>
-					<strong>Created At:</strong> {d.toDateString()}
-				</p>
+										{roles.map((val) => {
+											let disabled =
+												myRole === userRoles.superAdmin
+													? false
+													: myRole === val.key
+													? true
+													: val.key ===
+													  userRoles.superAdmin;
 
-				{isEdit && error && <p className="error">{error}</p>}
-				{isEdit && message && <p className="message">{message}</p>}
+											return (
+												<option
+													key={val.key}
+													disabled={disabled}
+													value={val.key}
+												>
+													{val.displayValue}
+												</option>
+											);
+										})}
+									</select>
+								</div>
 
-				<div className={styles.action}>
-					{isEdit && (
-						<button
-							data-type="button"
-							data-variant="secondary"
-							disabled={
-								updating || actionDisabled() || updateDisabled()
-							}
-							data-load={updating}
-							onClick={handleUpdate}
-						>
-							{updating ? <Loader variant="small" /> : "Update"}
-						</button>
-					)}
+								{editError && (
+									<p className="error">{editError}</p>
+								)}
+							</div>
 
+							<div className="action">
+								<button
+									data-type="link"
+									disabled={updating}
+									onClick={handleEditModalClose}
+								>
+									Cancel
+								</button>
+
+								<button
+									data-type="button"
+									data-variant="secondary"
+									disabled={
+										updating ||
+										actionDisabled() ||
+										updateDisabled()
+									}
+									data-load={updating}
+									onClick={handleUpdate}
+								>
+									{updating ? (
+										<Loader variant="small" />
+									) : (
+										"Update User"
+									)}
+								</button>
+							</div>
+						</div>
+					</dialog>
+				</>,
+				document.body
+			)}
+
+			<div className={styles.userCard}>
+				<table>
+					<tbody>
+						<tr>
+							<th>Name</th>
+							<td>{user.name}</td>
+						</tr>
+
+						<tr>
+							<th>Email</th>
+							<td>{user.email}</td>
+						</tr>
+
+						<tr>
+							<th>Role</th>
+							<td>{user.role}</td>
+						</tr>
+
+						<tr>
+							<th>Created At</th>
+							<td>{d.toDateString()}</td>
+						</tr>
+
+						<tr>
+							<th>Edit</th>
+							<td>
+								<button
+									data-type="link"
+									onClick={() => editRef.current?.showModal()}
+									disabled={actionDisabled()}
+								>
+									<FontAwesomeIcon icon={faPenToSquare} />
+								</button>
+							</td>
+						</tr>
+
+						<tr>
+							<th>Delete</th>
+							<td>
+								<button
+									data-type="link"
+									onClick={() =>
+										deleteConfirmRef.current?.showModal()
+									}
+									disabled={actionDisabled()}
+									data-variant="error"
+								>
+									<FontAwesomeIcon icon={faTrashCan} />
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			{/* for making odd and even child background color */}
+			<span style={{ display: "none" }}></span>
+
+			<div className={styles.userTable}>
+				<p className={styles.name}>{user.name}</p>
+
+				<p className={styles.email}>{user.email}</p>
+
+				<p className={styles.role}>{user.role}</p>
+
+				<p className={styles.created}>{d.toDateString()}</p>
+
+				<p className={styles.edit}>
 					<button
 						data-type="link"
-						data-variant="error"
-						className={styles.delete}
-						onClick={() => deleteConfirmRef.current?.showModal()}
-						disabled={actionDisabled() || updating}
+						onClick={() => editRef.current?.showModal()}
+						disabled={actionDisabled()}
 					>
-						Delete
+						<FontAwesomeIcon icon={faPenToSquare} />
 					</button>
-				</div>
+				</p>
+
+				<p className={styles.delete}>
+					<button
+						data-type="link"
+						onClick={() => deleteConfirmRef.current?.showModal()}
+						disabled={actionDisabled()}
+						data-variant="error"
+					>
+						<FontAwesomeIcon icon={faTrashCan} />
+					</button>
+				</p>
 			</div>
 		</>
 	);
