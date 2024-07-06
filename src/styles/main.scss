@@ -17,6 +17,7 @@
 	--success: #22bb33;
 	--error: #dc0000;
 	--disabled: #7d7c7c;
+	--active: #191919;
 
 	// background
 	--bg-800: var(--dark);
@@ -208,7 +209,6 @@ body {
 
 	&[data-active="true"] {
 		--_c: var(--accent-secondary);
-		text-decoration-color: currentColor;
 	}
 
 	&:hover,

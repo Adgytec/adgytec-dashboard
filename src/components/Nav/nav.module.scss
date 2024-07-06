@@ -4,7 +4,6 @@
 	background-color: var(--bg-600);
 	height: 100%;
 
-	padding-inline: clamp(1em, 2vi, 2em);
 	padding-block: 1em;
 
 	display: grid;
@@ -13,16 +12,25 @@
 	align-content: start;
 
 	box-shadow: inset -1px 0px var(--white);
-	@include ab.nav {
-	}
 
 	.logo {
 		width: clamp(10rem, 20vi, 20rem);
+		padding-inline: clamp(1em, 2vi, 2em);
 	}
 
 	.links {
 		display: grid;
-		gap: clamp(1em, 1.5vi, 1.5em);
+		gap: 1em;
+
+		> div {
+			padding-inline: clamp(1em, 2vi, 2em);
+			padding-block: 1em;
+			transition: background-color 300ms;
+
+			&[data-active="true"] {
+				background-color: var(--active);
+			}
+		}
 
 		a {
 			font-size: clamp(1.25rem, 1.75vi, 1.25rem);

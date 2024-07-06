@@ -10,7 +10,7 @@ const AdminLinks = () => {
 	const pathname = usePathname();
 	return (
 		<>
-			<div>
+			<div data-active={pathname.includes("/admin/user")}>
 				<Link
 					data-type="link"
 					href="/admin/user"
@@ -20,7 +20,7 @@ const AdminLinks = () => {
 				</Link>
 			</div>
 
-			<div>
+			<div data-active={pathname.includes("/admin/project")}>
 				<Link
 					data-type="link"
 					href="/admin/project"
@@ -69,7 +69,7 @@ const Nav = () => {
 			<div className={styles.links}>
 				{roleEnum() !== 2 && <AdminLinks />}
 
-				<div>
+				<div data-active={pathname.includes("/projects")}>
 					<Link
 						data-type="link"
 						href="/projects"
