@@ -60,19 +60,19 @@ body {
 	--_c: var(--dark);
 
 	padding: 0;
-	border-radius: 0.5rem;
+	border-radius: 0.25rem;
 	border: 0;
 
 	padding-inline: 1em;
-	padding-block: 0.2em;
-	font-weight: 500;
+	padding-block: 0.4em;
+	font-weight: 600;
 
 	background-color: var(--_bg);
 	color: var(--_c);
 	transition: background-color 300ms ease;
 
 	display: inline-block;
-	font-size: clamp(1rem, 1.5vi, 1.25rem);
+	font-size: clamp(1.15rem, 1.65vi, 1.35rem);
 
 	&:is(a) {
 		text-decoration-color: transparent;
@@ -257,6 +257,23 @@ div[data-empty="true"] {
 input,
 textarea {
 	width: min(100%, 30rem);
+}
+
+label {
+	font-size: clamp(1rem, 1.5vi, 1.25rem);
+	font-weight: 500;
+	color: var(--accent-secondary);
+}
+
+input {
+	font-size: 1.25rem;
+	padding-inline: 0.5em;
+	padding-block: 0.4em;
+
+	border-radius: 0.25em;
+	border-style: solid;
+
+	background-color: var(--bg-600);
 }
 
 input[type="checkbox"] {

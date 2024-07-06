@@ -60,10 +60,10 @@ const ForgotPasswordModal = ({ handleClose }: ForgotPasswordModalProps) => {
 
 			<form className={styles.form} onSubmit={handleReset}>
 				<div className={styles.input}>
-					<label htmlFor="email">Email</label>
+					<label htmlFor="forgot-email">Email</label>
 					<input
 						type="email"
-						id="email"
+						id="forgot-email"
 						name="email"
 						placeholder="Email..."
 						value={email}

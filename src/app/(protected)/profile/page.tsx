@@ -142,7 +142,7 @@ function Profile() {
 								</div>
 
 								<div className={styles.input}>
-									<label>Memeber Since</label>
+									<label>Member Since</label>
 									<input
 										type="text"
 										value={d.toDateString()}
