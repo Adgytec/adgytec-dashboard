@@ -47,12 +47,6 @@
 	}
 }
 
-@mixin container-45 {
-	@container (min-width: 45em) {
-		@content;
-	}
-}
-
 @mixin motion {
 	@media (prefers-reduced-motion: "no-preference") {
 		@content;
