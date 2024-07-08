@@ -327,74 +327,24 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 				document.body
 			)}
 
-			<div className={styles.userCard}>
-				<table>
-					<tbody>
-						<tr>
-							<th>Name</th>
-							<td>{user.name}</td>
-						</tr>
-
-						<tr>
-							<th>Email</th>
-							<td>{user.email}</td>
-						</tr>
-
-						<tr>
-							<th>Role</th>
-							<td>{user.role}</td>
-						</tr>
-
-						<tr>
-							<th>Created At</th>
-							<td>{d.toDateString()}</td>
-						</tr>
-
-						<tr>
-							<th>Edit</th>
-							<td>
-								<button
-									data-type="link"
-									onClick={() => editRef.current?.showModal()}
-									disabled={actionDisabled()}
-								>
-									<FontAwesomeIcon icon={faPenToSquare} />
-								</button>
-							</td>
-						</tr>
-
-						<tr>
-							<th>Delete</th>
-							<td>
-								<button
-									data-type="link"
-									onClick={() =>
-										deleteConfirmRef.current?.showModal()
-									}
-									disabled={actionDisabled()}
-									data-variant="error"
-								>
-									<FontAwesomeIcon icon={faTrashCan} />
-								</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			{/* for making odd and even child background color */}
-			<span style={{ display: "none" }}></span>
-
 			<div className={styles.userTable}>
-				<p className={styles.name}>{user.name}</p>
+				<p className={styles.name} data-label="Name">
+					{user.name}
+				</p>
 
-				<p className={styles.email}>{user.email}</p>
+				<p className={styles.email} data-label="Email">
+					{user.email}
+				</p>
 
-				<p className={styles.role}>{user.role}</p>
+				<p className={styles.role} data-label="Role">
+					{user.role}
+				</p>
 
-				<p className={styles.created}>{d.toDateString()}</p>
+				<p className={styles.created} data-label="Created At">
+					{d.toDateString()}
+				</p>
 
-				<p className={styles.edit}>
+				<p className={styles.edit} data-label="Edit">
 					<button
 						data-type="link"
 						onClick={() => editRef.current?.showModal()}
@@ -404,7 +354,7 @@ const UserElement = ({ user, setUsers }: UserElementProps) => {
 					</button>
 				</p>
 
-				<p className={styles.delete}>
+				<p className={styles.delete} data-label="Delete">
 					<button
 						data-type="link"
 						onClick={() => deleteConfirmRef.current?.showModal()}

@@ -19,10 +19,18 @@
 		display: grid;
 		gap: 0.15em;
 
+		> :nth-child(n) {
+			background-color: var(--bg-400);
+		}
+
 		@include ab.container-table {
 			grid-template-columns: repeat(6, auto);
 			gap: 1.5rem;
 			row-gap: 0.25em;
+
+			> :nth-child(n) {
+				background-color: transparent;
+			}
 
 			> :nth-child(odd) {
 				background-color: var(--bg-400);

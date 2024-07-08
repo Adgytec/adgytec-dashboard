@@ -1,77 +1,75 @@
 @use "/src/styles/abstract" as ab;
 
-.userCard {
-	background-color: var(--bg-400);
-	padding: clamp(0.75em, 1.5vi, 1.25em);
+.userTable {
+	--_p: clamp(0.75em, 1.5vi, 1.25em);
+
+	display: grid;
+	row-gap: 0.675em;
+
+	padding: calc(var(--_p) + 0.5em) clamp(0.75em, 1.5vi, 1.25em);
 
 	border-radius: 0.5em;
 
 	border-bottom: 1.5px solid var(--white);
 
-	table {
-		--_h: clamp(1.5em, 2.75vi, 2.25em);
+	@include ab.container-table {
+		grid-template-columns: subgrid;
+		grid-column: 1 / 7;
 
-		border-spacing: var(--_h) 0.5em;
-		border-collapse: separate;
+		border: 0;
 
-		font-size: clamp(1rem, 1.5vi, 1.25rem);
-		margin-inline-start: calc(var(--_h) * -1);
+		padding-inline: var(--_pi);
+		padding-block: var(--_pb);
+		border-radius: var(--_r);
 
-		th {
-			color: var(--accent-secondary);
-			text-align: left;
+		.name {
+			grid-column: 1 / 2;
 		}
 
-		td {
-			word-break: break-all;
+		.email {
+			grid-column: 2 / 3;
+		}
+
+		.role {
+			grid-column: 3 / 4;
+		}
+
+		.created {
+			grid-column: 4 / 5;
+		}
+
+		.edit {
+			grid-column: 5 / 6;
+		}
+
+		.delete {
+			grid-column: 6 / 7;
 		}
 	}
-
-	@include ab.container-table {
-		display: none;
-	}
-}
-
-.userTable {
-	display: none;
-	@include ab.container-table {
-		display: grid;
-	}
-
-	grid-template-columns: subgrid;
-	grid-column: 1 / 7;
-
-	padding-inline: var(--_pi);
-	padding-block: var(--_pb);
-	border-radius: var(--_r);
 
 	p {
-		font-size: clamp(1rem, 1.15vi, 1.15rem);
+		font-size: clamp(1rem, 1.5vi, 1.25rem);
+		display: grid;
+		grid-template-columns: 11ch auto;
+
+		justify-items: start;
+
+		&::before {
+			content: attr(data-label);
+			font-weight: 700;
+			color: var(--accent-secondary);
+		}
+
+		@include ab.container-table {
+			font-size: clamp(1rem, 1.15vi, 1.15rem);
+			display: block;
+
+			&::before {
+				display: none;
+			}
+		}
+
 		word-break: break-all;
-	}
-
-	.name {
-		grid-column: 1 / 2;
-	}
-
-	.email {
-		grid-column: 2 / 3;
-	}
-
-	.role {
-		grid-column: 3 / 4;
-	}
-
-	.created {
-		grid-column: 4 / 5;
-	}
-
-	.edit {
-		grid-column: 5 / 6;
-	}
-
-	.delete {
-		grid-column: 6 / 7;
 	}
 }
 
