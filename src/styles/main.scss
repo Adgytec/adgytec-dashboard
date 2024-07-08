@@ -79,7 +79,7 @@ body {
 	transition: background-color 300ms ease;
 
 	display: inline-block;
-	font-size: clamp(1.15rem, 1.65vi, 1.35rem);
+	font-size: clamp(1.05rem, 4.5vi, 1.35rem);
 
 	&:is(a) {
 		text-decoration-color: transparent;
@@ -273,7 +273,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
 	--_pi: 0.5em;
 	--_pb: 0.4em;
 
@@ -303,8 +304,8 @@ input[type="checkbox"] {
 
 textarea {
 	resize: vertical;
-	max-height: 14rem;
-	min-height: 3rem;
+	max-height: 20rem;
+	min-height: 10rem;
 
 	&:disabled {
 		resize: none;

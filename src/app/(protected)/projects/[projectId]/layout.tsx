@@ -171,12 +171,12 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 				<div className={styles.bread_crumb}>{breadCrumbItems}</div>
 
 				{project.services.length > 0 && (
-					<select onChange={handleChange} value={activePath}>
-						<option value="">
-							{project.services.length === 0
-								? "No services in this project"
-								: "Select a service"}
-						</option>
+					<select
+						onChange={handleChange}
+						value={activePath}
+						style={{ minWidth: "15rem" }}
+					>
+						<option value="">Select a service</option>
 
 						{project.services.map((service) => {
 							return (
