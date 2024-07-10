@@ -2,36 +2,7 @@
 	--_radius: 0.8em;
 	--_bg-select: var(--bg-200);
 	--_link: var(--accent-secondary);
-	--_w: 60em;
 }
-
-// .other h2 {
-// 	font-size: 18px;
-// 	color: #444;
-// 	margin-bottom: 7px;
-// }
-
-// .other a {
-// 	color: #777;
-// 	text-decoration: underline;
-// 	font-size: 14px;
-// }
-
-// .other ul {
-// 	padding: 0;
-// 	margin: 0;
-// 	list-style-type: none;
-// }
-
-// .App {
-// 	font-family: sans-serif;
-// 	text-align: center;
-// }
-
-// h1 {
-// 	font-size: 24px;
-// 	color: #333;
-// }
 
 .ltr {
 	text-align: left;
@@ -57,7 +28,6 @@
 	// rohan
 	border-radius: 1em;
 	color: var(--text);
-	width: min(var(--_w), 100%);
 
 	// overflow: hidden;
 }
