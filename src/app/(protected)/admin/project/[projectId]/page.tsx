@@ -38,6 +38,7 @@ export interface ProjectDetails {
 	publicToken: string;
 	users: Users[];
 	services: Services[];
+	cover: string;
 }
 
 const ProjectDetails = ({ params }: ProjectDetailsProps) => {

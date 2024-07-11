@@ -134,6 +134,10 @@ const Details = ({ projectId, user, details, handleManage }: DetailsProps) => {
 			</dialog>
 
 			<div className={styles.table}>
+				<div className={styles.image}>
+					<img src={details?.cover} alt={details?.projectName} />
+				</div>
+
 				<table>
 					<tbody>
 						<tr>

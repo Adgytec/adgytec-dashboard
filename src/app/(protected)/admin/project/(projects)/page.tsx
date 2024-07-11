@@ -8,19 +8,20 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import styles from "./project.module.scss";
+import styles from "./projects.module.scss";
 import Container from "@/components/Container/Container";
-import ModalCreateProject from "./components/ModalCreateProject";
+import ModalCreateProject from "../components/ModalCreateProject";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import Loader from "@/components/Loader/Loader";
 import { UserContext } from "@/components/AuthContext/authContext";
-import ProjectElement from "./components/ProjectElement/ProjectElement";
+import ProjectElement from "../components/ProjectElement/ProjectElement";
 import { toast } from "react-toastify";
 
 export interface Project {
 	projectId: string;
 	projectName: string;
 	createdAt: string;
+	cover: string;
 }
 
 const ProjectAdmin = () => {
@@ -100,7 +101,7 @@ const ProjectAdmin = () => {
 				/>
 			</dialog>
 
-			<Container type="normal" className={styles.project}>
+			<Container type="full" className={styles.project}>
 				<div className={styles.create}>
 					<button
 						data-type="button"

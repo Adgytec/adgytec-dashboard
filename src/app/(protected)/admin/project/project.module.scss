@@ -32,27 +32,28 @@
 	}
 }
 
-.modal_create {
-	--_w: 32em;
+.container {
+	display: grid;
+	gap: 1.5em;
+}
 
-	.container {
+.form {
+	display: grid;
+	gap: 1.5em;
+
+	.input {
 		display: grid;
-		gap: 1.5em;
+		gap: 0.5em;
 	}
 
-	.form {
-		display: grid;
-		gap: 1.5em;
-
-		.input {
-			display: grid;
-			gap: 0.5em;
-		}
-
-		.action {
-			display: flex;
-			gap: 2em;
-			justify-content: flex-end;
-		}
+	.action {
+		display: flex;
+		gap: 2em;
+		justify-content: flex-end;
 	}
+}
+
+.layout {
+	display: grid;
+	gap: 2em;
 }
