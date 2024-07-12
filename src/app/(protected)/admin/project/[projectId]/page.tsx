@@ -16,6 +16,9 @@ import Details from "./components/Details/Details";
 import Container from "@/components/Container/Container";
 import styles from "./project.module.scss";
 import Manage from "./components/Manage/Manage";
+import { copyToClipboard } from "@/helpers/helpers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
 
 interface ProjectDetailsProps {
 	params: { projectId: string };
@@ -52,7 +55,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 	const [details, setDetails] = useState<ProjectDetails | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [manage, setManage] = useState(false);
+	const [isText, setIsText] = useState(false);
 
 	const getProjectDetail = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}`;
@@ -77,7 +80,6 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 				setDetails(res.data);
 			})
 			.catch((err) => {
-				// console.error(err.message);
 				toast.error(err.message);
 			})
 			.finally(() => {
@@ -91,47 +93,101 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 	if (loading) {
 		return (
-			<div
-				style={{
-					position: "absolute",
-					inset: "0",
-					display: "grid",
-					placeItems: "center",
-				}}
-			>
+			<Container type="normal" className={styles.empty}>
 				<Loader />
-			</div>
+			</Container>
 		);
 	}
 
-	const handleManage = () => {
-		setManage((prev) => !prev);
+	if (!details) {
+		return (
+			<Container type="normal" className={styles.empty}>
+				<h3>Project doesn't exist</h3>
+			</Container>
+		);
+	}
+
+	let createdAt = new Date(details.createdAt);
+
+	const handleMouseOver = () => {
+		setIsText(true);
+	};
+
+	const handleMouseOut = () => {
+		setIsText(false);
+	};
+
+	const handleClick = () => {
+		if (!isText) return;
+
+		copyToClipboard(details.publicToken);
+		toast.success("Client token copied to clipboard");
 	};
 
 	return (
-		<Container type="normal" className={styles.detail}>
-			<div>
-				<button data-type="link" onClick={() => history.back()}>
-					back
-				</button>
-			</div>
+		<div className={styles.container}>
+			<Container type="normal" className={styles.project}>
+				<div className={styles.back}>
+					<button data-type="link" onClick={() => history.back()}>
+						Back
+					</button>
+				</div>
 
-			{manage ? (
-				<Manage
-					handleManage={handleManage}
-					getProjectDetail={getProjectDetail}
-					users={details ? details.users : null}
-					services={details ? details.services : null}
-				/>
-			) : (
-				<Details
-					projectId={params.projectId}
-					user={user}
-					details={details}
-					handleManage={handleManage}
-				/>
-			)}
-		</Container>
+				<div className={styles.details}>
+					<div className={styles.image}>
+						<label>Project Logo</label>
+
+						<img src={details.cover} alt={details.projectName} />
+					</div>
+
+					<div className={styles.item}>
+						<label>Project Name</label>
+
+						<input
+							type="text"
+							value={details.projectName}
+							disabled
+						/>
+					</div>
+
+					<div className={styles.item_group}>
+						<div className={styles.item}>
+							<label>Created At</label>
+
+							<input
+								type="text"
+								value={createdAt.toDateString()}
+								disabled
+							/>
+						</div>
+
+						<div className={styles.item}>
+							<label>Public Secret Token</label>
+
+							<input
+								title="Click to copy"
+								type={isText ? "text" : "password"}
+								value={details.publicToken}
+								disabled
+								onMouseOver={handleMouseOver}
+								onMouseOut={handleMouseOut}
+							/>
+
+							{isText && (
+								<button
+									data-type="link"
+									data-variant="primary"
+									onClick={handleClick}
+									className={styles.copy}
+								>
+									<FontAwesomeIcon icon={faCopy} />
+								</button>
+							)}
+						</div>
+					</div>
+				</div>
+			</Container>
+		</div>
 	);
 };
 

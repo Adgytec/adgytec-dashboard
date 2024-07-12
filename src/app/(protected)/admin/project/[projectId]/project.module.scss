@@ -1,142 +1,69 @@
 @use "/src/styles/abstract" as ab;
 
-.detail {
-	padding: clamp(0.75em, 1.5vi, 1.25em);
-	background-color: var(--bg-600);
+.empty {
+	min-height: 25rem;
 
-	border-radius: 0.75em;
 	display: grid;
-	gap: 1em;
+	place-items: center;
+}
 
-	.table {
-		table {
-			--_space: 1em;
+.container {
+	display: grid;
+	gap: 2em;
 
-			border-spacing: var(--_space);
-			translate: calc(-1 * var(--_space));
-
-			td {
-				word-break: break-word;
-
-				input {
-					width: min(100%, 15rem);
-				}
-			}
-
-			th {
-				text-align: left;
-			}
-		}
-	}
-
-	.container {
+	.project {
 		display: grid;
 		gap: 1em;
-
-		> div {
-			background-color: var(--bg-400);
-			padding: 1em;
-			display: grid;
-			gap: 1em;
-
-			border-radius: 0.75em;
-		}
 	}
 
-	.manage {
-		display: grid;
-		gap: 2em;
-	}
-
-	.action {
+	.back {
 		display: flex;
 		justify-content: flex-end;
-		gap: 2em;
+
+		button {
+			font-weight: 500;
+			font-size: clamp(1rem, 1.5vi, 1.25rem);
+		}
 	}
 
-	.tabs {
-		background-color: var(--bg-400);
-		padding: clamp(0.5em, 1.25vi, 1em);
-		border-radius: 0.75em;
+	.details {
+		--_w: 50rem;
+		--_g: 1.5em;
 
-		.trigger {
+		display: grid;
+		gap: var(--_g);
+
+		.image {
 			display: flex;
-			gap: 2em;
+			align-items: center;
+			gap: clamp(0.5em, 1.25vi, 1em);
+		}
 
-			[data-state="active"] {
-				--_c: var(--accent-secondary);
+		.item_group {
+			display: grid;
+			gap: var(--_g);
 
-				&:hover,
-				&:focus-visible {
-					--_c: var(--accent-secondary-hover);
-				}
+			width: min(100%, var(--_w));
 
-				&:active {
-					--_c: var(--accent-secondary-active);
-				}
+			grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+
+			.copy {
+				position: absolute;
+				right: 2.5px;
+				bottom: 0;
+
+				translate: -50% -50%;
 			}
 		}
 
-		.tabs_content {
-			background-color: var(--bg-200);
-			padding: clamp(0.5em, 1.25vi, 1em);
-			border-radius: 0.75em;
-		}
-	}
-}
+		.item {
+			display: grid;
+			gap: 0.5em;
+			position: relative;
 
-.users {
-	display: grid;
-	gap: 1.5em;
-
-	&_container {
-		display: grid;
-		gap: 1em;
-	}
-
-	&_list {
-		display: grid;
-		gap: 0.75em;
-	}
-
-	&_item {
-		background-color: var(--bg-400);
-		padding: 0.75em 1em;
-
-		display: grid;
-		gap: 0.5em;
-	}
-}
-
-.services {
-	display: grid;
-	gap: 1.5em;
-
-	&_container {
-		display: grid;
-		gap: 1em;
-	}
-
-	&_list {
-		display: grid;
-		gap: 0.75em;
-	}
-
-	&_item {
-		background-color: var(--bg-400);
-		padding: 0.75em 1em;
-
-		display: grid;
-		gap: 0.5em;
-	}
-
-	&_input {
-		display: flex;
-		align-items: center;
-		gap: 0.5em;
-
-		label {
-			font-size: 1.1rem;
+			input {
+				width: min(100%, var(--_w));
+			}
 		}
 	}
 }

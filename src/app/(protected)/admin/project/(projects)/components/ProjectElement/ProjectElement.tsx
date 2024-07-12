@@ -18,7 +18,7 @@ function ProjectElement({ project }: ProjectElementProps) {
 
 			<div className={styles.info}>
 				<Link href={`project/${project.projectId}`} data-type="link">
-				 {project.projectName}
+					{project.projectName}
 				</Link>
 
 				<p className={styles.date}>Created at: {d.toDateString()}</p>
