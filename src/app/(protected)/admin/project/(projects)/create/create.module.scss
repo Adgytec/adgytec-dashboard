@@ -1,1 +1,21 @@
 @use "/src/styles/abstract" as ab;
+
+.container {
+	--_input-width: 50rem;
+	display: grid;
+	gap: 2em;
+
+	.form {
+		display: grid;
+		gap: 1.5em;
+
+		.input {
+			display: grid;
+			gap: 0.5em;
+
+			input {
+				width: min(100%, var(--_input-width));
+			}
+		}
+	}
+}

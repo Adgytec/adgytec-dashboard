@@ -1,6 +1,8 @@
 @use "/src/styles/abstract" as ab;
 
 .form {
+	--_input-width: 50rem;
+
 	display: grid;
 	gap: 2em;
 
@@ -13,7 +15,7 @@
 		display: grid;
 		gap: 1.5rem;
 
-		width: min(100%, 50rem);
+		width: min(100%, var(--_input-width));
 
 		@include ab.container-35 {
 			grid-template-columns: 1fr clamp(12.5rem, 20vi, 15rem);
@@ -25,16 +27,13 @@
 		gap: 0.5em;
 
 		input {
-			width: min(100%, 50rem);
+			width: min(100%, var(--_input-width));
 		}
 	}
 
 	.select {
 		display: grid;
 		gap: 0.5em;
-
-		select {
-		}
 	}
 
 	.action {

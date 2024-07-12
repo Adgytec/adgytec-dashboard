@@ -59,6 +59,9 @@
 
 // new code
 .layout {
+	display: grid;
+	gap: 2em;
+
 	.options {
 		border-block-end: 1px solid var(--grey);
 

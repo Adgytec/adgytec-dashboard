@@ -7,6 +7,8 @@
 	--max-width: 70em;
 	--max-width-wide: 90em;
 
+	--input-width: 30rem;
+
 	// colors
 	--dark: hsl(0, 0%, 6%);
 	--white: hsl(26, 100%, 97%);
@@ -33,6 +35,10 @@
 
 	// text
 	--text: var(--white);
+
+	// input
+	--input-bg: var(--bg-600);
+	--input-border: #75747a;
 
 	// error
 	--error-hover: hsl(0, 100%, 53%);
@@ -263,7 +269,7 @@ div[data-empty="true"] {
 
 input,
 textarea {
-	width: min(100%, 30rem);
+	width: min(100%, var(--input-width));
 }
 
 label {
@@ -286,7 +292,8 @@ textarea {
 	border-style: solid;
 	border-width: 2px;
 
-	background-color: var(--bg-600);
+	background-color: var(--input-bg);
+	border-color: var(--input-border);
 }
 
 select {

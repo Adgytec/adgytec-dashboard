@@ -28,7 +28,8 @@ export const validateRole: ValdiateRole = (role) => {
 };
 
 export const validateProjectName: ValidateProjectName = (projectName) => {
-	const regex = /^\b[A-Za-z0-9_]+(?:\s+[A-Za-z0-9_]+)*\b$/;
+	const regex = /^[a-zA-Z0-9\s\-\_\(\)]*$/;
+
 	return projectName.length >= 3 && regex.test(projectName);
 };
 
