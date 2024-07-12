@@ -7,23 +7,25 @@ import Service from "./Service";
 import { UserContext } from "@/components/AuthContext/authContext";
 
 interface ManageProps {
-	handleManage: () => void;
-	getProjectDetail: () => void;
+	// handleManage: () => void;
+	// getProjectDetail: () => void;
 	users: Users[] | null;
-	services: Services[] | null;
+	// services: Services[] | null;
 }
 
 const Manage = ({
-	handleManage,
-	getProjectDetail,
+	// handleManage,
+	// getProjectDetail,
 	users,
-	services,
-}: ManageProps) => {
+}: // services,
+ManageProps) => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(
 		() => (userWithRole ? userWithRole.user : null),
 		[userWithRole]
 	);
+
+	const getProjectDetail = () => {};
 
 	return (
 		<div className={styles.manage}>
@@ -56,11 +58,11 @@ const Manage = ({
 							/>
 						</Tabs.Content>
 						<Tabs.Content value="services">
-							<Service
+							{/* <Service
 								addedServices={services}
 								getProjectDetail={getProjectDetail}
 								user={user}
-							/>
+							/> */}
 						</Tabs.Content>
 					</div>
 				</Tabs.Root>
@@ -70,7 +72,7 @@ const Manage = ({
 				<button
 					data-type="link"
 					data-variant="primary"
-					onClick={handleManage}
+					// onClick={handleManage}
 				>
 					details
 				</button>

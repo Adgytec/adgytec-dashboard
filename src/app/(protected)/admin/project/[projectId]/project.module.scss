@@ -9,7 +9,7 @@
 
 .container {
 	display: grid;
-	gap: 2em;
+	gap: clamp(2.5em, 4vi, 3.5em);
 
 	.project {
 		display: grid;
@@ -63,7 +63,51 @@
 
 			input {
 				width: min(100%, var(--_w));
+
+				&[data-hidden="true"] {
+					-webkit-text-security: disc;
+				}
 			}
+		}
+	}
+
+	.metadata {
+		display: grid;
+		gap: 1em;
+
+		.options {
+			border-block-end: 1px solid var(--grey);
+
+			.links {
+				--_s: 0.5em;
+
+				display: flex;
+				gap: 3em;
+				padding-block-end: var(--_s);
+			}
+
+			a {
+				--_c: transparent;
+
+				color: var(--white);
+				text-decoration: none;
+
+				font-size: clamp(1rem, 1.5vi, 1.25rem);
+				transition: all 300ms;
+
+				text-decoration: underline var(--_c);
+				text-decoration-thickness: 2.5px;
+				text-underline-offset: calc(var(--_s) * 1.5);
+
+				transition: text-decoration-color 300ms;
+
+				&[data-active="true"] {
+					--_c: var(--accent-secondary);
+				}
+			}
+		}
+
+		.info {
 		}
 	}
 }

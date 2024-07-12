@@ -58,3 +58,9 @@
 		@content;
 	}
 }
+
+@mixin admin-project {
+	@include screen-40 {
+		@content;
+	}
+}

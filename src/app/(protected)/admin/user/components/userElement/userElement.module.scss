@@ -14,7 +14,7 @@
 
 	@include ab.container-table {
 		grid-template-columns: subgrid;
-		grid-column: 1 / 7;
+		grid-column: span 7;
 
 		border: 0;
 
@@ -22,28 +22,8 @@
 		padding-block: var(--_pb);
 		border-radius: var(--_r);
 
-		.name {
-			grid-column: 1 / 2;
-		}
-
-		.email {
-			grid-column: 2 / 3;
-		}
-
-		.role {
-			grid-column: 3 / 4;
-		}
-
-		.created {
-			grid-column: 4 / 5;
-		}
-
-		.edit {
-			grid-column: 5 / 6;
-		}
-
-		.delete {
-			grid-column: 6 / 7;
+		> * {
+			grid-column: span 1;
 		}
 	}
 

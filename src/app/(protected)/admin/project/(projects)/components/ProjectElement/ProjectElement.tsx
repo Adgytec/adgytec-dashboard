@@ -17,7 +17,10 @@ function ProjectElement({ project }: ProjectElementProps) {
 			</div>
 
 			<div className={styles.info}>
-				<Link href={`project/${project.projectId}`} data-type="link">
+				<Link
+					href={`project/${project.projectId}?view=users`}
+					data-type="link"
+				>
 					{project.projectName}
 				</Link>
 

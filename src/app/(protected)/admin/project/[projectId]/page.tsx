@@ -11,14 +11,16 @@ import React, {
 	useState,
 } from "react";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import Details from "./components/Details/Details";
+import { useRouter, useSearchParams } from "next/navigation";
 import Container from "@/components/Container/Container";
 import styles from "./project.module.scss";
-import Manage from "./components/Manage/Manage";
 import { copyToClipboard } from "@/helpers/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import Link from "next/link";
+import Users from "./components/Users/Users";
+import Services from "./components/Services/Services";
+import Manage from "./components/Manage/Manage";
 
 interface ProjectDetailsProps {
 	params: { projectId: string };
@@ -56,6 +58,9 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 	const [details, setDetails] = useState<ProjectDetails | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [isText, setIsText] = useState(false);
+
+	const searchParams = useSearchParams();
+	const view = searchParams.get("view");
 
 	const getProjectDetail = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}`;
@@ -124,6 +129,17 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 		toast.success("Client token copied to clipboard");
 	};
 
+	const handleInfo = () => {
+		switch (view) {
+			case "users":
+				return <Users users={details.users} />;
+			case "services":
+				return <Services services={details.services} />;
+			default:
+				return <h3>Please select an option to view the details.</h3>;
+		}
+	};
+
 	return (
 		<div className={styles.container}>
 			<Container type="normal" className={styles.project}>
@@ -173,6 +189,16 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 								onMouseOut={handleMouseOut}
 							/>
 
+							{/* <input
+								title="Click to copy"
+								type="text"
+								value={details.publicToken}
+								disabled
+								onMouseOver={handleMouseOver}
+								onMouseOut={handleMouseOut}
+								data-hidden={!isText}
+							/> */}
+
 							{isText && (
 								<button
 									data-type="link"
@@ -187,6 +213,26 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 					</div>
 				</div>
 			</Container>
+
+			<div className={styles.metadata}>
+				<div className={styles.options}>
+					<Container type="normal" className={styles.links}>
+						<Link href="?view=users" data-active={view === "users"}>
+							Added Users
+						</Link>
+
+						<Link
+							href="?view=services"
+							data-active={view === "services"}
+						>
+							Added Services
+						</Link>
+					</Container>
+				</div>
+				<Container type="normal">
+					<div className={styles.info}>{handleInfo()}</div>
+				</Container>
+			</div>
 		</div>
 	);
 };

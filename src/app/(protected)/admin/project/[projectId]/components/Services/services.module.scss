@@ -1,0 +1,33 @@
+@use "/src/styles/abstract" as ab;
+
+.services {
+	display: grid;
+	gap: 1em;
+
+	.action {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.list {
+		display: flex;
+		gap: clamp(1em, 1.75vi, 1.5em);
+
+		flex-wrap: wrap;
+
+		.item {
+			padding-inline: 1.5em;
+			padding-block: 0.25em;
+
+			font-size: clamp(1rem, 1.5vi, 1.25rem);
+			color: var(--accent-secondary);
+
+			border-radius: 50vi;
+			background-color: var(--bg-400);
+
+			display: flex;
+			align-items: center;
+			gap: 0.5em;
+		}
+	}
+}
