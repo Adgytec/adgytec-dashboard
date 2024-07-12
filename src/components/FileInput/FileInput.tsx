@@ -3,6 +3,7 @@ import styles from "./fileinput.module.scss";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
+import Image from "next/image";
 
 interface FileInputProps {
 	multiple?: boolean;
@@ -171,7 +172,15 @@ const FileInput = ({ multiple, setFiles, disabled }: FileInputProps) => {
 			{previewURL.length > 0 && (
 				<div className={styles.preview}>
 					{previewURL.map((url) => {
-						return <img key={url} src={url} alt="" />;
+						return (
+							<Image
+								key={url}
+								src={url}
+								alt=""
+								width={200}
+								height={100}
+							/>
+						);
 					})}
 				</div>
 			)}

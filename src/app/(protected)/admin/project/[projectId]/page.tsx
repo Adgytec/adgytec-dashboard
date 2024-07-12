@@ -21,6 +21,7 @@ import Link from "next/link";
 import Users from "./components/Users/Users";
 import Services from "./components/Services/Services";
 import Manage from "./components/Manage/Manage";
+import Image from "next/image";
 
 interface ProjectDetailsProps {
 	params: { projectId: string };
@@ -107,7 +108,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 	if (!details) {
 		return (
 			<Container type="normal" className={styles.empty}>
-				<h3>Project doesn't exist</h3>
+				<h3>Project doesn&apos;t exist</h3>
 			</Container>
 		);
 	}
@@ -153,7 +154,12 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 					<div className={styles.image}>
 						<label>Project Logo</label>
 
-						<img src={details.cover} alt={details.projectName} />
+						<Image
+							src={details.cover}
+							alt={details.projectName}
+							width={200}
+							height={100}
+						/>
 					</div>
 
 					<div className={styles.item}>

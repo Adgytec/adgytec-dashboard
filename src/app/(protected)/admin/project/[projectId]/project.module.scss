@@ -37,6 +37,11 @@
 			display: flex;
 			align-items: center;
 			gap: clamp(0.5em, 1.25vi, 1em);
+
+			img {
+				width: auto;
+				height: auto;
+			}
 		}
 
 		.item_group {
@@ -105,9 +110,6 @@
 					--_c: var(--accent-secondary);
 				}
 			}
-		}
-
-		.info {
 		}
 	}
 }
