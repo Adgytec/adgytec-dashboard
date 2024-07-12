@@ -606,7 +606,16 @@ export default function ToolbarPlugin({
 			const files = e.target.files;
 			if (!files) return;
 
+			const acceptedType = ["image/png", "image/jpg", "image/jpeg"];
+
 			let extension = files[0].type;
+
+			if (!acceptedType.includes(extension)) {
+				toast.error(
+					"You need to select either '.png' or '.jpg / .jpeg' images"
+				);
+				return;
+			}
 			extension = extension.replace(/(.*)\//g, "");
 
 			const src = URL.createObjectURL(files[0]);
