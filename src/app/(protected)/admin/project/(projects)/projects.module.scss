@@ -40,20 +40,22 @@
 
 // styles for active project
 .project {
-	background-color: var(--bg-600);
 	display: grid;
-	gap: 3em;
+	gap: 2em;
 
-	padding: clamp(1em, 1.75vi, 1.5em);
 	border-radius: 0.75em;
 
-	.project_details {
-		display: grid;
-		gap: 1.5em;
+	.header {
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.project_list {
 		display: grid;
-		gap: 1em;
+		gap: 1.5em;
+
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
 	}
 }

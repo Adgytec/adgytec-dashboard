@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./projectElement.module.scss";
-import { Project } from "../../(projects)/page";
 import Link from "next/link";
+import { Project } from "../../page";
 
 interface ProjectElementProps {
 	project: Project;
@@ -15,10 +15,15 @@ function ProjectElement({ project }: ProjectElementProps) {
 			<div className={styles.image}>
 				<img src={project.cover} alt={project.projectName} />
 			</div>
-			<Link href={`project/${project.projectId}`}>
-				{project.projectName}
-			</Link>
-			<p>{d.toDateString()}</p>
+
+			<div className={styles.info}>
+				<Link href={`project/${project.projectId}`} data-type="link">
+					{/* {project.projectName} */}
+					Ministry of Rural Development (PRISE)
+				</Link>
+
+				<p className={styles.date}>Created at: {d.toDateString()}</p>
+			</div>
 		</div>
 	);
 }

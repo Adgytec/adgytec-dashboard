@@ -11,7 +11,7 @@ import styles from "./projects.module.scss";
 import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
 import { UserContext } from "@/components/AuthContext/authContext";
-import ProjectElement from "../components/ProjectElement/ProjectElement";
+import ProjectElement from "./components/ProjectElement/ProjectElement";
 import { toast } from "react-toastify";
 
 export interface Project {
@@ -86,36 +86,31 @@ const ProjectAdmin = () => {
 	return (
 		<>
 			<Container type="full" className={styles.project}>
-				<div className={styles.project_details}>
-					<div
-						className={styles.search}
-						title="search project by project id or project name"
-					>
-						<input
-							type="text"
-							placeholder="Search project..."
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-						/>
-					</div>
+				<div
+					className={styles.header}
+					title="search project by project id or project name"
+				>
+					<h2>Project Overview</h2>
 
-					<div
-						className={styles.project_list}
-						data-empty={
-							projects.length === 0 || elements.length === 0
-						}
-						data-load={loading}
-					>
-						{loading && <Loader />}
-
-						{!loading &&
-						(elements.length === 0 || projects.length === 0) ? (
-							<h3>No project exist</h3>
-						) : (
-							elements
-						)}
-					</div>
+					<input
+						type="text"
+						placeholder="Type to search..."
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
 				</div>
+
+				{loading ? (
+					<div data-load="true">
+						<Loader />
+					</div>
+				) : elements.length === 0 || projects.length === 0 ? (
+					<div data-empty="true">
+						<h3>No project exist</h3>
+					</div>
+				) : (
+					<div className={styles.project_list}>{elements}</div>
+				)}
 			</Container>
 		</>
 	);
