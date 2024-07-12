@@ -1,63 +1,6 @@
 @use "/src/styles/abstract" as ab;
 
-.project {
-	background-color: var(--bg-600);
-	display: grid;
-	gap: 3em;
-
-	padding: clamp(1em, 1.75vi, 1.5em);
-	border-radius: 0.75em;
-
-	.create {
-		display: flex;
-		justify-content: space-between;
-		gap: 2em;
-	}
-
-	.project_details {
-		display: grid;
-		gap: 1.5em;
-	}
-
-	.project_list {
-		display: grid;
-		gap: 1em;
-
-		// &[data-load="true"],
-		// &[data-empty="true"] {
-		// 	min-height: 20rem;
-
-		// 	place-items: center;
-		// }
-	}
-}
-
-.modal_create {
-	--_w: 32em;
-
-	.container {
-		display: grid;
-		gap: 1.5em;
-	}
-
-	.form {
-		display: grid;
-		gap: 1.5em;
-
-		.input {
-			display: grid;
-			gap: 0.5em;
-		}
-
-		.action {
-			display: flex;
-			gap: 2em;
-			justify-content: flex-end;
-		}
-	}
-}
-
-// new code
+// styles for layout
 .layout {
 	display: grid;
 	gap: 2em;
@@ -92,5 +35,25 @@
 				--_c: var(--accent-secondary);
 			}
 		}
+	}
+}
+
+// styles for active project
+.project {
+	background-color: var(--bg-600);
+	display: grid;
+	gap: 3em;
+
+	padding: clamp(1em, 1.75vi, 1.5em);
+	border-radius: 0.75em;
+
+	.project_details {
+		display: grid;
+		gap: 1.5em;
+	}
+
+	.project_list {
+		display: grid;
+		gap: 1em;
 	}
 }

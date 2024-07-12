@@ -5,13 +5,10 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
-	useRef,
 	useState,
 } from "react";
 import styles from "./projects.module.scss";
 import Container from "@/components/Container/Container";
-import ModalCreateProject from "../components/ModalCreateProject";
-import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import Loader from "@/components/Loader/Loader";
 import { UserContext } from "@/components/AuthContext/authContext";
 import ProjectElement from "../components/ProjectElement/ProjectElement";
@@ -30,8 +27,6 @@ const ProjectAdmin = () => {
 		() => (userWithRole ? userWithRole.user : null),
 		[userWithRole]
 	);
-
-	const createProjectRef = useRef<HTMLDialogElement | null>(null);
 
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -90,36 +85,7 @@ const ProjectAdmin = () => {
 
 	return (
 		<>
-			<dialog
-				ref={createProjectRef}
-				className={styles.modal_create}
-				onKeyDown={(e) => handleEscModal(e)}
-			>
-				<ModalCreateProject
-					handleClose={() => handleModalClose(createProjectRef)}
-					handleRefresh={getAllProjects}
-				/>
-			</dialog>
-
 			<Container type="full" className={styles.project}>
-				<div className={styles.create}>
-					<button
-						data-type="button"
-						data-variant="primary"
-						onClick={() => createProjectRef.current?.showModal()}
-					>
-						Create new project
-					</button>
-
-					<button
-						data-type="link"
-						disabled={loading}
-						onClick={getAllProjects}
-					>
-						Refresh
-					</button>
-				</div>
-
 				<div className={styles.project_details}>
 					<div
 						className={styles.search}
