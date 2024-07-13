@@ -7,7 +7,6 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
-	useRef,
 	useState,
 } from "react";
 import { toast } from "react-toastify";
@@ -20,15 +19,15 @@ import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import Link from "next/link";
 import Users from "./components/Users/Users";
 import Services from "./components/Services/Services";
-import Manage from "./components/Manage/Manage";
 import Image from "next/image";
+import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
 
 interface ProjectDetailsProps {
 	params: { projectId: string };
 }
 
 export interface Users {
-	id: string;
+	userId: string;
 	name: string;
 	email: string;
 }
@@ -62,6 +61,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 	const searchParams = useSearchParams();
 	const view = searchParams.get("view");
+	const manange = searchParams.get("manage");
 
 	const getProjectDetail = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}`;
@@ -113,6 +113,16 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 		);
 	}
 
+	if (manange === "true" && view === "users") {
+		return (
+			<ManageUsers
+				details={details}
+				setDetails={setDetails}
+				projectName={details.projectName}
+			/>
+		);
+	}
+
 	let createdAt = new Date(details.createdAt);
 
 	const handleMouseOver = () => {
@@ -145,9 +155,9 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 		<div className={styles.container}>
 			<Container type="normal" className={styles.project}>
 				<div className={styles.back}>
-					<button data-type="link" onClick={() => history.back()}>
+					<Link data-type="link" href="/admin/project">
 						Back
-					</button>
+					</Link>
 				</div>
 
 				<div className={styles.details}>

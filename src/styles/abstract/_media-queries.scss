@@ -59,8 +59,8 @@
 	}
 }
 
-@mixin admin-project {
-	@include screen-40 {
+@mixin admin-table {
+	@media (max-width: 40em) {
 		@content;
 	}
 }

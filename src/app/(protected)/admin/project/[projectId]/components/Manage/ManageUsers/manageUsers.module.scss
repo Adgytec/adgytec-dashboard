@@ -1,0 +1,110 @@
+@use "/src/styles/abstract" as ab;
+
+.container {
+	display: grid;
+	gap: 2em;
+
+	.header {
+		display: flex;
+		gap: 1em;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.content {
+		// outline: 2px solid lightgreen;
+		display: grid;
+		gap: 2em;
+
+		> * {
+			display: grid;
+			gap: 1em;
+		}
+
+		.added {
+			// outline: 2px solid lightblue;
+		}
+
+		.toAdd {
+			// outline: 2px solid lightpink;
+		}
+
+		.title {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1em;
+		}
+
+		.empty {
+			text-align: center;
+			padding: 1em;
+		}
+
+		.table {
+			display: grid;
+			grid-template-columns: auto auto auto;
+			column-gap: clamp(1em, 5vi, 5em);
+			row-gap: 0.25em;
+
+			h4,
+			p {
+				font-size: clamp(1rem, 1.5vi, 1.25rem);
+			}
+
+			h4 {
+				color: var(--accent-secondary);
+				font-weight: 600;
+			}
+
+			> :nth-child(odd) {
+				background-color: var(--bg-400);
+			}
+
+			> * {
+				display: grid;
+				grid-template-columns: subgrid;
+
+				grid-column: span 3;
+				padding: 0.75em 1.25em;
+				border-radius: 0.25em;
+
+				> * {
+					grid-column: span 1;
+				}
+			}
+
+			@include ab.admin-table {
+				grid-template-columns: none;
+				gap: 0.25em;
+
+				.heading {
+					display: none;
+				}
+
+				> * {
+					grid-template-columns: none;
+					background-color: var(--bg-400);
+
+					padding: 1.5em 1em;
+					border-radius: 0.75em;
+					border-bottom: 1.5px solid var(--white);
+					gap: 0.5em;
+
+					p {
+						display: grid;
+						grid-template-columns: 8ch auto;
+
+						word-break: break-all;
+
+						&::before {
+							content: attr(data-key) " ";
+							color: var(--accent-secondary);
+							font-weight: 600;
+						}
+					}
+				}
+			}
+		}
+	}
+}

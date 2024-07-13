@@ -10,12 +10,112 @@
 	}
 
 	.list {
-		max-height: 25rem;
-		overflow: auto;
+		// max-height: 25rem;
+		// overflow: auto;
 
+		// .table {
+		// 	display: grid;
+		// 	gap: 0.5em;
+
+		// 	h4,
+		// 	p {
+		// 		font-size: clamp(1rem, 1.5vi, 1.25rem);
+		// 	}
+
+		// 	h4 {
+		// 		color: var(--accent-secondary);
+		// 		font-weight: 600;
+		// 	}
+
+		// 	> :nth-child(n) {
+		// 		background-color: var(--bg-400);
+		// 	}
+
+		// 	@include ab.admin-project {
+		// 		grid-template-columns: auto 1fr;
+		// 		column-gap: clamp(1em, 5vi, 5em);
+		// 		row-gap: 0.25em;
+
+		// 		> * {
+		// 			display: grid;
+		// 			grid-template-columns: subgrid;
+
+		// 			grid-column: span 2;
+		// 			padding: 0.75em 1.25em;
+		// 			border-radius: 0.25em;
+
+		// 			> * {
+		// 				grid-column: span 1;
+		// 			}
+		// 		}
+
+		// 		> :nth-child(even) {
+		// 			background-color: transparent;
+		// 		}
+
+		// 		> :nth-child(odd) {
+		// 			background-color: var(--bg-400);
+		// 		}
+		// 	}
+
+		// 	.heading {
+		// 		display: none;
+		// 		position: sticky;
+		// 		top: 0;
+
+		// 		@include ab.admin-project {
+		// 			display: grid;
+		// 		}
+		// 	}
+
+		// 	.content {
+		// 		display: grid;
+		// 		row-gap: 0.25em;
+
+		// 		padding: 1.5em 1em;
+		// 		border-radius: 0.75em;
+		// 		border-bottom: 1.5px solid var(--white);
+
+		// 		@include ab.admin-project {
+		// 			border: 0;
+		// 			grid-template-columns: subgrid;
+
+		// 			grid-column: span 2;
+		// 			padding: 0.75em 1.25em;
+		// 			border-radius: 0.25em;
+
+		// 			> * {
+		// 				grid-column: span 1;
+		// 			}
+		// 		}
+
+		// 		p {
+		// 			display: grid;
+		// 			grid-template-columns: 6.5ch auto;
+
+		// 			word-break: break-all;
+
+		// 			@include ab.admin-project {
+		// 				display: block;
+		// 			}
+
+		// 			&::before {
+		// 				content: attr(data-key) " ";
+		// 				color: var(--accent-secondary);
+		// 				font-weight: 600;
+
+		// 				@include ab.admin-project {
+		// 					display: none;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 		.table {
 			display: grid;
-			gap: 0.5em;
+			grid-template-columns: auto 1fr;
+			column-gap: clamp(1em, 5vi, 5em);
+			row-gap: 0.25em;
 
 			h4,
 			p {
@@ -27,85 +127,50 @@
 				font-weight: 600;
 			}
 
-			> :nth-child(n) {
+			> :nth-child(odd) {
 				background-color: var(--bg-400);
 			}
 
-			@include ab.admin-project {
-				grid-template-columns: auto 1fr;
-				column-gap: clamp(1em, 5vi, 5em);
-				row-gap: 0.25em;
+			> * {
+				display: grid;
+				grid-template-columns: subgrid;
+
+				grid-column: span 2;
+				padding: 0.75em 1.25em;
+				border-radius: 0.25em;
 
 				> * {
-					display: grid;
-					grid-template-columns: subgrid;
+					grid-column: span 1;
+				}
+			}
 
-					grid-column: span 2;
-					padding: 0.75em 1.25em;
-					border-radius: 0.25em;
+			@include ab.admin-table {
+				grid-template-columns: none;
+				gap: 0.25em;
 
-					> * {
-						grid-column: span 1;
-					}
+				.heading {
+					display: none;
 				}
 
-				> :nth-child(even) {
-					background-color: transparent;
-				}
-
-				> :nth-child(odd) {
+				> * {
+					grid-template-columns: none;
 					background-color: var(--bg-400);
-				}
-			}
 
-			.heading {
-				display: none;
-				position: sticky;
-				top: 0;
+					padding: 1.5em 1em;
+					border-radius: 0.75em;
+					border-bottom: 1.5px solid var(--white);
+					gap: 0.5em;
 
-				@include ab.admin-project {
-					display: grid;
-				}
-			}
+					p {
+						display: grid;
+						grid-template-columns: 8ch auto;
 
-			.content {
-				display: grid;
-				row-gap: 0.25em;
+						word-break: break-all;
 
-				padding: 1.5em 1em;
-				border-radius: 0.75em;
-				border-bottom: 1.5px solid var(--white);
-
-				@include ab.admin-project {
-					border: 0;
-					grid-template-columns: subgrid;
-
-					grid-column: span 2;
-					padding: 0.75em 1.25em;
-					border-radius: 0.25em;
-
-					> * {
-						grid-column: span 1;
-					}
-				}
-
-				p {
-					display: grid;
-					grid-template-columns: 6.5ch auto;
-
-					word-break: break-all;
-
-					@include ab.admin-project {
-						display: block;
-					}
-
-					&::before {
-						content: attr(data-key) " ";
-						color: var(--accent-secondary);
-						font-weight: 600;
-
-						@include ab.admin-project {
-							display: none;
+						&::before {
+							content: attr(data-key) " ";
+							color: var(--accent-secondary);
+							font-weight: 600;
 						}
 					}
 				}

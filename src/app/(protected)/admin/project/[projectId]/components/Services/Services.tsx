@@ -32,16 +32,22 @@ const AddedServices = ({ services }: AddedServicesProps) => {
 				</button>
 			</div>
 
-			<div className={styles.list}>
-				{services.map((service) => {
-					return (
-						<div className={styles.item} key={service.id}>
-							{getIcon(service.name)}
-							{service.name}
-						</div>
-					);
-				})}
-			</div>
+			{services.length === 0 ? (
+				<div data-empty={true}>
+					<h3>No services are added</h3>
+				</div>
+			) : (
+				<div className={styles.list}>
+					{services.map((service) => {
+						return (
+							<div className={styles.item} key={service.id}>
+								{getIcon(service.name)}
+								{service.name}
+							</div>
+						);
+					})}
+				</div>
+			)}
 		</div>
 	);
 };
