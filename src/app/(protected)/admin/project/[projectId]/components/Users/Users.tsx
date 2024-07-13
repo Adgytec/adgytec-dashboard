@@ -2,15 +2,12 @@ import React from "react";
 import { Users } from "../../page";
 import styles from "./users.module.scss";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
 interface AddedUsersProps {
 	users: Users[];
 }
 
 const AddedUsers = ({ users }: AddedUsersProps) => {
-	const params = useParams<{ projectId: string }>();
-
 	const userItems = users.map((user) => {
 		return (
 			<div className={styles.content} key={user.userId}>

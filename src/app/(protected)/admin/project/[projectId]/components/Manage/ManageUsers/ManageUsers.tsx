@@ -8,7 +8,7 @@ import React, {
 import styles from "./manageUsers.module.scss";
 import Container from "@/components/Container/Container";
 import { UserContext } from "@/components/AuthContext/authContext";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ProjectDetails, Users } from "../../../page";
 import Loader from "@/components/Loader/Loader";
@@ -42,6 +42,7 @@ const ManageUsers = ({
 	);
 
 	const params = useParams<{ projectId: string }>();
+	const router = useRouter();
 
 	const [users, setUsers] = useState<UserObj[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -105,10 +106,6 @@ const ManageUsers = ({
 				const user = addedUsers.find((el) => el.userId === userId);
 				if (!user) return;
 
-				// setUsers((prev) => {
-				// 	return [...prev, user];
-				// });
-
 				setDetails((prev) => {
 					if (!prev) return null;
 
@@ -151,7 +148,8 @@ const ManageUsers = ({
 				setDetails((prev) => {
 					if (!prev) return null;
 
-					prev.users.push(user);
+					prev.users = [...prev.users, user];
+
 					return prev;
 				});
 			})
@@ -205,16 +203,12 @@ const ManageUsers = ({
 			usersToAdd.push(element);
 	});
 
-	// console.log("users: ", users);
-	// console.log("addedUsers: ", addedUsers);
-	// console.log("elements: ", usersToAdd);
-
 	return (
 		<Container type="normal" className={styles.container}>
 			<div className={styles.header}>
 				<h2>{projectName}</h2>
 
-				<button data-type="link" onClick={() => history.back()}>
+				<button data-type="link" onClick={() => router.back()}>
 					Back
 				</button>
 			</div>
