@@ -35,6 +35,7 @@ export interface Users {
 export interface Services {
 	id: string;
 	name: string;
+	icon: string;
 }
 
 export interface ProjectDetails {

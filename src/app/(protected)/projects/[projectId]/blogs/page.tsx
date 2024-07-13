@@ -53,8 +53,7 @@ const Blogs = () => {
 				setAllBlogs(res.data);
 			})
 			.catch((err) => {
-				toast.error("error getting blogs");
-				console.error(err.message);
+				toast.error(err.message);
 			})
 			.finally(() => setLoading(false));
 	}, [user, params.projectId]);

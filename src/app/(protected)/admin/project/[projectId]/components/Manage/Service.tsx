@@ -45,7 +45,6 @@ const Service = ({ addedServices, getProjectDetail, user }: ServiceProps) => {
 				setServices(res.data);
 			})
 			.catch((err) => {
-				// console.error(err.message);
 				toast.error(err.message);
 			})
 			.finally(() => {

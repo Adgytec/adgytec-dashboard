@@ -173,7 +173,6 @@ const Details = ({
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
-				console.log(res.message);
 
 				if (deletedImages.length > 0) {
 					const deleteMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;

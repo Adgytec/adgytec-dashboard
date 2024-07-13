@@ -10,7 +10,6 @@ import Loader from "@/components/Loader/Loader";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { error } from "console";
 import Link from "next/link";
 
 interface BlogItemProps {
