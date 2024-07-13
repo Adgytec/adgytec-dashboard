@@ -43,7 +43,7 @@
 
 		.table {
 			display: grid;
-			grid-template-columns: auto auto auto;
+			grid-template-columns: 1.5fr 3fr 0.5fr;
 			column-gap: clamp(1em, 5vi, 5em);
 			row-gap: 0.25em;
 
