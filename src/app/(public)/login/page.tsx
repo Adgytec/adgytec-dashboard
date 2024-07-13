@@ -47,14 +47,11 @@ const Login = () => {
 					return;
 				}
 
-				let idTokenResult = await user.getIdTokenResult();
-				let role = idTokenResult?.claims.role;
+				
 
-				if (role === userRoles.user) {
-					router.push("/projects");
-				} else {
-					router.push("/admin/user");
-				}
+			
+					router.push("/");
+				
 			} else {
 				setLoading(false);
 			}
