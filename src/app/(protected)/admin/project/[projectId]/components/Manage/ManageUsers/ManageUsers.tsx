@@ -52,7 +52,7 @@ const ManageUsers = ({
 	const addedUsers = details.users;
 
 	const getAllUsers = useCallback(async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/users?role="user"`;
+		const url = `${process.env.NEXT_PUBLIC_API}/users?role=user`;
 		const token = await user?.getIdToken();
 		const headers = {
 			Authorization: `Bearer ${token}`,
