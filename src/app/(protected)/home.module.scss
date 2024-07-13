@@ -24,7 +24,7 @@
 
 	transition: grid-template-columns 300ms;
 
-	&:has(input:checked) {
+	&:has(.navCheckbox:checked) {
 		--_w: 70vi;
 
 		.nav {
