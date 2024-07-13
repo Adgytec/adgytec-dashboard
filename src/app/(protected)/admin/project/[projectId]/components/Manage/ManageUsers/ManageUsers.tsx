@@ -140,8 +140,8 @@ const ManageUsers = ({
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
 				toast.success("successfully added user to project");
-				// add user to project details users[]
 
+				// add user to project details users[]
 				const user = users.find((el) => el.userId === userId);
 				if (!user) return;
 

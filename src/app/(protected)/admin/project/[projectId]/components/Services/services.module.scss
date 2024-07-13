@@ -31,3 +31,98 @@
 		}
 	}
 }
+
+.modal {
+	--_w: 45em;
+
+	.modal_content {
+		display: grid;
+		gap: 2.5em;
+
+		> * {
+			display: grid;
+			gap: 1.5em;
+
+			.empty {
+				text-align: center;
+			}
+
+			.load {
+				margin-block: 1em;
+			}
+		}
+
+		.title {
+			display: flex;
+			gap: 1em;
+			align-items: center;
+			justify-content: space-between;
+
+			input {
+				width: min(100%, 22rem);
+			}
+		}
+
+		.items {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1em;
+
+			.item {
+				--_bg: var(--bg-400);
+				--_c: var(--accent-secondary);
+				--_g: 0.5rem;
+
+				border-radius: 50vi;
+
+				background-color: var(--_bg);
+				transition: background-color 300ms;
+
+				display: flex;
+				align-items: center;
+				gap: var(--_g);
+
+				&:has(input:checked) {
+					--_bg: var(--accent-secondary);
+					--_c: black;
+				}
+
+				label {
+					display: flex;
+					align-items: center;
+					gap: var(--_g);
+
+					padding-inline: 1em;
+					padding-block: 0.25em;
+					color: var(--_c);
+
+					transition: color 300ms;
+
+					img {
+						mix-blend-mode: difference;
+					}
+				}
+
+				input {
+					display: none;
+				}
+			}
+		}
+
+		.added {
+			.item {
+				padding-block: 0.5em;
+				padding-inline: 1.5em;
+
+				button {
+					margin-inline-start: 0.5em;
+					display: flex;
+					align-items: center;
+					svg {
+						font-size: 1.25rem;
+					}
+				}
+			}
+		}
+	}
+}

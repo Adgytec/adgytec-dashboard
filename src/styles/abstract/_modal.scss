@@ -1,6 +1,8 @@
 @use "./index" as ab;
 
 dialog {
+	--_w: 40em;
+
 	inset: 0;
 	@include ab.motion {
 		animation: vanish 500ms;
@@ -34,8 +36,6 @@ dialog[open] {
 	&::backdrop {
 		animation: appearBackdrop 500ms;
 	}
-
-	--_w: 40em;
 
 	.modal-menu {
 		display: flex;

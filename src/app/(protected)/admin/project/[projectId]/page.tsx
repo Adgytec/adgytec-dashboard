@@ -33,8 +33,8 @@ export interface Users {
 }
 
 export interface Services {
-	id: string;
-	name: string;
+	serviceId: string;
+	serviceName: string;
 	icon: string;
 }
 
@@ -146,7 +146,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 			case "users":
 				return <Users users={details.users} />;
 			case "services":
-				return <Services services={details.services} />;
+				return <Services details={details} setDetails={setDetails} />;
 			default:
 				return <h3>Please select an option to view the details.</h3>;
 		}
