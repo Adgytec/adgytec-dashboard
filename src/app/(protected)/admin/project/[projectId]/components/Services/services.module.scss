@@ -85,6 +85,10 @@
 				&:has(input:checked) {
 					--_bg: var(--accent-secondary);
 					--_c: black;
+
+					img {
+						mix-blend-mode: difference;
+					}
 				}
 
 				label {
@@ -97,10 +101,6 @@
 					color: var(--_c);
 
 					transition: color 300ms;
-
-					img {
-						mix-blend-mode: difference;
-					}
 				}
 
 				input {

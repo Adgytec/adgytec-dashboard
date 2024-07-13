@@ -6,7 +6,7 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { ProjectDetails, Services } from "../../page";
+import { ProjectDetails } from "../../page";
 import styles from "./services.module.scss";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
