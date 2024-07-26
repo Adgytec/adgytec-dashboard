@@ -318,16 +318,6 @@ textarea {
 	}
 }
 
-#hamburger {
-	@include ab.nav {
-		display: none;
-	}
-
-	label {
-		font-size: 1.5rem;
-	}
-}
-
 h1 {
 	font-size: clamp(1.75rem, 2.5vi, 2.25rem);
 }

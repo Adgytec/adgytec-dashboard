@@ -33,6 +33,16 @@
 		border-radius: 50%;
 		box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
 	}
+
+	.action {
+		@include ab.nav {
+			display: none;
+		}
+
+		label {
+			font-size: 1.5rem;
+		}
+	}
 }
 
 .content {

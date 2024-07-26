@@ -13,7 +13,7 @@
 
 	.project {
 		display: grid;
-		gap: 1em;
+		gap: 3em;
 	}
 
 	.back {
@@ -23,6 +23,14 @@
 		button {
 			font-weight: 500;
 			font-size: clamp(1rem, 1.5vi, 1.25rem);
+		}
+	}
+
+	.category {
+		.categoryItem {
+			> div[data-empty="true"] {
+				min-height: 10rem;
+			}
 		}
 	}
 

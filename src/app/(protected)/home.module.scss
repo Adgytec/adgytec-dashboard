@@ -41,7 +41,7 @@
 	@include ab.nav {
 		--_w: clamp(16rem, 25vi, 20rem);
 
-		&:has(input:checked) {
+		&:has(.navCheckbox:checked) {
 			--_w: clamp(16rem, 25vi, 20rem);
 		}
 

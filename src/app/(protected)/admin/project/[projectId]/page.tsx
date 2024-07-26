@@ -162,6 +162,8 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 				</div>
 
 				<div className={styles.details}>
+					<h2>Details</h2>
+
 					<div className={styles.image}>
 						<label>Project Logo</label>
 
@@ -229,6 +231,16 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 						</div>
 					</div>
 				</div>
+
+				<div className={styles.category}>
+					<h2>Category</h2>
+
+					<div className={styles.categoryItem}>
+						<div data-empty="true">
+							<p>No category exist for this project</p>
+						</div>
+					</div>
+				</div>
 			</Container>
 
 			<div className={styles.metadata}>
@@ -246,6 +258,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 						</Link>
 					</Container>
 				</div>
+
 				<Container type="normal">
 					<div className={styles.info}>{handleInfo()}</div>
 				</Container>
