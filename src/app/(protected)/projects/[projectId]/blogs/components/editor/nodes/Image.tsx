@@ -158,8 +158,7 @@ export const Image = ({
 				outline: `${
 					isSelected ? "2px" : "0"
 				} solid var(--accent-primary-active)`,
-
-				padding: `${isSelected ? "0.1em" : "0"}`,
+				outlineOffset: "0.25em",
 			}}
 			src={src}
 			data-path={path}
