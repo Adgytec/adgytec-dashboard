@@ -27,11 +27,8 @@
 	}
 
 	.category {
-		.categoryItem {
-			> div[data-empty="true"] {
-				min-height: 10rem;
-			}
-		}
+		display: grid;
+		gap: 1em;
 	}
 
 	.details {

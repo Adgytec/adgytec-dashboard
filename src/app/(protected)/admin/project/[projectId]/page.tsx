@@ -21,6 +21,7 @@ import Users from "./components/Users/Users";
 import Services from "./components/Services/Services";
 import Image from "next/image";
 import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
+import Category from "./components/Category/Category";
 
 interface ProjectDetailsProps {
 	params: { projectId: string };
@@ -235,11 +236,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 				<div className={styles.category}>
 					<h2>Category</h2>
 
-					<div className={styles.categoryItem}>
-						<div data-empty="true">
-							<p>No category exist for this project</p>
-						</div>
-					</div>
+					<Category />
 				</div>
 			</Container>
 

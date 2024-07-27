@@ -1,0 +1,47 @@
+@use "/src/styles/abstract" as ab;
+
+.category {
+	> div[data-load="true"],
+	> div[data-empty="true"] {
+		min-height: 10rem;
+	}
+
+	.categoryList {
+		max-height: 30rem;
+		overflow: auto;
+
+		box-shadow: 0px 2px hsl(from var(--accent-primary) h s l / 0.25);
+		padding-block-end: 0.75em;
+
+		.action {
+			display: flex;
+			gap: 1em;
+			align-items: center;
+		}
+
+		ul {
+			list-style-type: none;
+			display: grid;
+			gap: 1em;
+
+			li {
+				display: grid;
+				gap: 1em;
+			}
+		}
+
+		> ul {
+			padding: 0;
+		}
+
+		.details {
+			display: flex;
+			gap: 1em;
+
+			p {
+				font-size: clamp(1rem, 1.5vi, 1.25rem);
+				font-weight: 600;
+			}
+		}
+	}
+}
