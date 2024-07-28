@@ -382,7 +382,11 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 						/>
 					) : (
 						<h2 className={styles.title}>
-							<Link href={`blogs/${blog.blogId}`}>
+							<Link
+								href={`blogs/${blog.blogId}`}
+								data-type="link"
+								data-variant="secondary"
+							>
 								{blog.title}
 							</Link>
 						</h2>

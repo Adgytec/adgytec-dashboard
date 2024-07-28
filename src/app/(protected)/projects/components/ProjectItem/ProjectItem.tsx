@@ -13,7 +13,11 @@ const ProjectItem = ({ project }: ProjectItemProps) => {
 	return (
 		<div className={styles.project}>
 			<div>
-				<Link href={`/projects/${project.projectId}`}>
+				<Link
+					href={`/projects/${project.projectId}`}
+					data-type="link"
+					data-variant="secondary"
+				>
 					{project.projectName}
 				</Link>
 			</div>

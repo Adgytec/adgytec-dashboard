@@ -148,6 +148,8 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 					href={url}
 					className={styles.item}
 					key={`path-${path}-index-${ind}`}
+					data-type="link"
+					data-variant="primary"
 				>
 					{ind === 2 ? project.projectName : path}
 				</Link>
