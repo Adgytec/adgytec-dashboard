@@ -81,7 +81,7 @@ const Project = () => {
 	projects.forEach((project) => {
 		const { projectName: name, projectId: id, createdAt } = project;
 
-		let item = <ProjectElement key={id} project={project} />;
+		let item = <ProjectItem key={id} project={project} />;
 
 		if (search.length === 0) {
 			elements.push(item);

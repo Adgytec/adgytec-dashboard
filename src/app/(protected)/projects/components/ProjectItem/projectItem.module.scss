@@ -1,9 +1,36 @@
 @use "/src/styles/abstract" as ab;
 
-.project {
+.element {
 	background-color: var(--bg-400);
-	padding: clamp(0.75em, 1.5vi, 1.25em);
+	border-radius: 0.75em;
+
+	padding: clamp(1em, 1.75vi, 1.5em);
+	padding-block-start: clamp(2em, 2.75vi, 2.5em);
 
 	display: grid;
-	gap: 0.75em;
+	gap: 2em;
+
+	.image {
+		img {
+			object-fit: cover;
+			margin: auto;
+			width: auto;
+			height: auto;
+			max-height: 4rem;
+			max-width: 15rem;
+		}
+	}
+
+	.info {
+		a {
+			font-size: clamp(1.25rem, 2vi, 1.5rem);
+			font-weight: 600;
+		}
+
+		.date {
+			font-size: clamp(1rem, 1.5vi, 1.15rem);
+			font-weight: 500;
+			opacity: 0.2;
+		}
+	}
 }
