@@ -13,11 +13,13 @@ import Loader from "@/components/Loader/Loader";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
 import ProjectItem from "./components/ProjectItem/ProjectItem";
+import ProjectElement from "../admin/project/(projects)/components/ProjectElement/ProjectElement";
 
 export interface ProjectObj {
 	projectName: string;
 	projectId: string;
 	createdAt: string;
+	cover: string;
 }
 
 const Project = () => {
@@ -79,7 +81,7 @@ const Project = () => {
 	projects.forEach((project) => {
 		const { projectName: name, projectId: id, createdAt } = project;
 
-		let item = <ProjectItem key={id} project={project} />;
+		let item = <ProjectElement key={id} project={project} />;
 
 		if (search.length === 0) {
 			elements.push(item);
@@ -109,7 +111,7 @@ const Project = () => {
 			) : elements.length === 0 ? (
 				"No project"
 			) : (
-				elements
+				<div className={styles.projectContainer}>{elements}</div>
 			)}
 		</Container>
 	);

@@ -1,11 +1,13 @@
 @use "/src/styles/abstract" as ab;
 
 .projects {
-	background-color: var(--bg-600);
-	border-radius: 0.75em;
-
-	padding: clamp(1em, 1.75vi, 1.5em);
-
 	display: grid;
 	gap: 2em;
+
+	.projectContainer {
+		display: grid;
+		gap: 1.5em;
+
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+	}
 }
