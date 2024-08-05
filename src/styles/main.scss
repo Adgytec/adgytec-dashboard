@@ -16,9 +16,7 @@
 	--yellow: rgb(255, 217, 0);
 	--blue: rgb(104, 199, 227);
 	--grey: #555555;
-
 	--success: #22bb33;
-	--error: #dc0000;
 	--disabled: #7d7c7c;
 	--active: #191919;
 
@@ -38,23 +36,28 @@
 	--input-border: #75747a;
 
 	// error
-	--error-hover: hsl(0, 100%, 53%);
-	--error-active: hsl(0, 100%, 33%);
+	--error: #dc0000;
+	--error-hover: hsl(from var(--error) h s calc(l + 10));
+	--error-active: hsl(from var(--error) h s calc(l - 10));
 
 	// clear
 	--clear: var(--white);
-	--clear-active: hsl(26, 100%, 92%);
-	--clear-hover: hsl(26, 100%, 100%);
+	--clear-active: hsl(from var(--white) h s calc(l - 5));
+	--clear-hover: hsl(from var(--white) h s calc(l + 3));
 
 	// accent 1
 	--accent-primary: var(--yellow);
-	--accent-primary-hover: hsl(51, 100%, 65%);
-	--accent-primary-active: hsl(51, 100%, 40%);
+	--accent-primary-hover: hsl(from var(--accent-primary) h s calc(l + 15));
+	--accent-primary-active: hsl(from var(--accent-primary) h s calc(l - 10));
 
 	// accent-2
 	--accent-secondary: var(--blue);
-	--accent-secondary-hover: hsl(194, 69%, 75%);
-	--accent-secondary-active: hsl(194, 69%, 55%);
+	--accent-secondary-hover: hsl(
+		from var(--accent-secondary) h s calc(l + 10)
+	);
+	--accent-secondary-active: hsl(
+		from var(--accent-secondary) h s calc(l - 10)
+	);
 
 	// scroll bar
 	--scrollbar-thumb: var(--accent-secondary);
