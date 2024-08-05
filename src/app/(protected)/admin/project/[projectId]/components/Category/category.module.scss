@@ -1,15 +1,21 @@
 @use "/src/styles/abstract" as ab;
 
 .category {
+	--scrollbar-thumb: hsl(from var(--accent-secondary) h s l / 0.5);
+
 	> div[data-load="true"],
 	> div[data-empty="true"] {
 		min-height: 10rem;
 	}
 
+	overflow-x: auto;
+
 	.categoryList {
+		// outline: 2px solid red;
 		max-height: 30rem;
-max-width: 100%;
 		overflow: auto;
+
+		// max-width: calc(var(--vw) * 50);
 
 		box-shadow: 0px 2px hsl(from var(--accent-primary) h s l / 0.25);
 		padding-block-end: 0.75em;
@@ -28,6 +34,8 @@ max-width: 100%;
 			li {
 				display: grid;
 				gap: 1em;
+
+				padding-inline-end: 0.125em;
 			}
 		}
 
