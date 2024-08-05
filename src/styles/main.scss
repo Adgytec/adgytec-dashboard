@@ -1,6 +1,7 @@
 @use "./abstract/reset";
 @use "./abstract/modal";
 @use "./abstract/lexical";
+@use "./abstract/button-links";
 @use "./abstract" as ab;
 
 :root {
@@ -22,19 +23,15 @@
 	--active: #191919;
 
 	// background
-	--bg-800: var(--dark);
-	--bg-800: #0c0c0c;
-
-	--bg-600: #1f1f1f;
+	--bg-800: hsl(0, 0%, 5%);
 	--bg-600: var(--dark);
-
-	--bg-400: hsl(0, 0%, 18%);
-	--bg-400: #191919;
-
-	--bg-200: hsl(0, 0%, 24%);
+	--bg-400: hsl(0, 0%, 10%);
+	--bg-200: hsl(from var(--bg-400) h s calc(l + 5));
 
 	// text
 	--text: var(--white);
+	--text-button: var(--dark);
+	--text-button-error: var(--white);
 
 	// input
 	--input-bg: var(--bg-600);
@@ -75,173 +72,6 @@
 
 body {
 	background-color: var(--bg-800);
-}
-
-// button
-[data-type="button"] {
-	--_c: var(--dark);
-
-	border-radius: 0.25rem;
-	border: 0;
-
-	padding-inline: 1.25em;
-	padding-block: 0.4em;
-	font-weight: 600;
-
-	background-color: var(--_bg);
-	color: var(--_c);
-	transition: background-color 300ms ease;
-
-	display: inline-block;
-	font-size: clamp(1.05rem, 4.5vi, 1.35rem);
-
-	&:is(a) {
-		text-decoration-color: transparent;
-	}
-
-	&[data-variant="primary"] {
-		--_bg: var(--accent-primary);
-
-		&:hover,
-		&:focus-visible {
-			--_bg: var(--accent-primary-hover);
-		}
-
-		&:active {
-			--_bg: var(--accent-primary-active);
-		}
-	}
-
-	&[data-variant="secondary"] {
-		--_bg: var(--accent-secondary);
-
-		&:hover,
-		&:focus-visible {
-			--_bg: var(--accent-secondary-hover);
-		}
-
-		&:active {
-			--_bg: var(--accent-secondary-active);
-		}
-	}
-
-	&[data-variant="error"] {
-		--_bg: var(--error);
-		--_c: var(--white);
-
-		&:hover,
-		&:focus-visible {
-			--_bg: var(--error-hover);
-		}
-
-		&:active {
-			--_bg: var(--error-active);
-		}
-	}
-
-	&[data-variant="clear"] {
-		--_bg: var(--white);
-		--_c: var(--dark);
-
-		&:hover,
-		&:focus-visible {
-			--_bg: var(--clear-hover);
-		}
-
-		&:active {
-			--_bg: var(--clear-active);
-		}
-	}
-
-	&[data-load="true"] {
-		width: 4.65em;
-		height: 2em;
-	}
-	&:disabled {
-		cursor: not-allowed;
-
-		--_bg: var(--disabled);
-
-		&:hover,
-		&:focus-visible {
-			--_bg: var(--disabled);
-		}
-
-		&:active {
-			--_bg: var(--disabled);
-		}
-	}
-}
-
-// link
-[data-type="link"] {
-	color: var(--_c);
-	text-decoration-color: transparent;
-
-	transition: color 300ms ease, text-decoration-color 300ms ease;
-
-	&:is(button) {
-		background-color: transparent;
-		border: 0;
-		padding: 0;
-
-		text-decoration: underline transparent;
-		cursor: pointer;
-	}
-
-	&[data-variant="primary"] {
-		--_c: var(--accent-primary);
-
-		&:hover,
-		&:focus-visible {
-			--_c: var(--accent-primary-hover);
-		}
-
-		&:active {
-			--_c: var(--accent-primary-active);
-		}
-	}
-
-	&[data-variant="secondary"] {
-		--_c: var(--accent-secondary);
-
-		&:hover,
-		&:focus-visible {
-			--_c: var(--accent-secondary-hover);
-		}
-
-		&:active {
-			--_c: var(--accent-secondary-active);
-		}
-	}
-
-	&[data-variant="error"] {
-		--_c: var(--error);
-
-		&:hover,
-		&:focus-visible {
-			--_c: var(--error-hover);
-		}
-
-		&:active {
-			--_c: var(--error-active);
-		}
-	}
-
-	&[data-active="true"] {
-		--_c: var(--accent-secondary);
-	}
-
-	&:hover,
-	&:focus-visible,
-	&:active {
-		text-decoration-color: currentColor;
-	}
-
-	&:is(button:disabled) {
-		cursor: not-allowed;
-		// text-decoration-color: transparent;
-	}
 }
 
 // input:user-invalid {
