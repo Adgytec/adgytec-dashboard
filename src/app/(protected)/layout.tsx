@@ -1,11 +1,10 @@
 "use client";
 
 import AuthProvider from "@/components/AuthContext/AuthProvider";
-import Footer from "@/components/Footer/Footer";
 import Header from "@/components/header/Header";
 import styles from "./home.module.scss";
 import Nav from "@/components/Nav/Nav";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export default function ProtectedLayout({
