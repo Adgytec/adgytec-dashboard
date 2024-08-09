@@ -2,12 +2,29 @@
 
 .projects {
 	display: grid;
-	gap: 2em;
+	gap: clamp(2em, 3vi, 3em);
+
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1em;
+	}
 
 	.projectContainer {
 		display: grid;
 		gap: 1.5em;
 
-		grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+		.italic {
+			font-style: italic;
+			font-weight: 500;
+		}
+
+		&:not(&[data-empty="true"], &[data-load="true"]) {
+			grid-template-columns: repeat(
+				auto-fill,
+				minmax(min(100%, 22rem), 1fr)
+			);
+		}
 	}
 }

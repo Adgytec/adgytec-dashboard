@@ -62,20 +62,20 @@ const Project = () => {
 		fetchAllProjectForUser();
 	}, [fetchAllProjectForUser]);
 
-	if (loading) {
-		return (
-			<div
-				style={{
-					display: "grid",
-					placeItems: "center",
-					position: "absolute",
-					inset: "0",
-				}}
-			>
-				<Loader />
-			</div>
-		);
-	}
+	// if (loading) {
+	// 	return (
+	// 		<div
+	// 			style={{
+	// 				display: "grid",
+	// 				placeItems: "center",
+	// 				position: "absolute",
+	// 				inset: "0",
+	// 			}}
+	// 		>
+	// 			<Loader />
+	// 		</div>
+	// 	);
+	// }
 
 	let elements: React.JSX.Element[] = [];
 	projects.forEach((project) => {
@@ -95,24 +95,42 @@ const Project = () => {
 
 	return (
 		<Container type="normal" className={styles.projects}>
-			{projects.length > 1 && (
-				<div>
+			<div className={styles.header}>
+				<h1>Project Overview</h1>
+
+				{projects.length > 1 && (
 					<input
 						type="text"
-						placeholder="Search..."
+						placeholder="Type to search..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
-				</div>
-			)}
+				)}
+			</div>
 
-			{projects.length === 0 ? (
-				<h3>You are not assocaited with any project</h3>
-			) : elements.length === 0 ? (
-				"No project"
-			) : (
-				<div className={styles.projectContainer}>{elements}</div>
-			)}
+			<div
+				className={styles.projectContainer}
+				data-empty={projects.length == 0 || elements.length == 0}
+				data-load={loading}
+			>
+				{loading ? (
+					<Loader />
+				) : projects.length === 0 ? (
+					<h3>
+						You are not assocaited with any project. Please contact
+						us at Adgytec to resolve this issue.
+					</h3>
+				) : elements.length === 0 ? (
+					<p>
+						There is no project named{" "}
+						<span className={styles.italic}>
+							<q>{search}</q>
+						</span>
+					</p>
+				) : (
+					elements
+				)}
+			</div>
 		</Container>
 	);
 };
