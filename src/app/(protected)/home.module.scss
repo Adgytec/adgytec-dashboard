@@ -118,7 +118,7 @@
 		grid-area: content;
 
 		overflow: auto;
-		height: calc(100vb - var(--_g) - var(--_nav));
+		height: calc(100dvb - var(--_g) - var(--_nav));
 		padding-block: 5px 2em;
 	}
 }
