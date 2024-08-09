@@ -17,7 +17,13 @@ const Home = () => {
 				</p>
 
 				<div className={styles.image}>
-					<Image src="/home.png" alt="" width={420} height={370} />
+					<Image
+						src="/home.png"
+						alt=""
+						width={420}
+						height={370}
+						priority
+					/>
 				</div>
 			</Container>
 		</div>
