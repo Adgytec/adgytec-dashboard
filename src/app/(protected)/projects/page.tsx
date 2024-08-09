@@ -94,7 +94,7 @@ const Project = () => {
 	});
 
 	return (
-		<Container type="normal" className={styles.projects}>
+		<Container className={styles.projects}>
 			<div className={styles.header}>
 				<h1>Project Overview</h1>
 

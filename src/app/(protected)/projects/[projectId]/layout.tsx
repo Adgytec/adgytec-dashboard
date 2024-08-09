@@ -95,7 +95,6 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	if (!project) {
 		return (
 			<Container
-				type="normal"
 				style={{
 					display: "grid",
 					placeItems: "center",

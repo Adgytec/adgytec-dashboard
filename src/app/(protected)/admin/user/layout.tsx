@@ -14,12 +14,12 @@ const UserLayout = ({ children }: UserLayoutProps) => {
 	const pathname = usePathname();
 	return (
 		<div className={styles.layout}>
-			<Container type="normal">
+			<Container>
 				<h1>Manage User</h1>
 			</Container>
 
 			<div className={styles.options}>
-				<Container type="normal" className={styles.links}>
+				<Container className={styles.links}>
 					<Link
 						href="/admin/user"
 						data-active={pathname === "/admin/user"}
@@ -36,7 +36,7 @@ const UserLayout = ({ children }: UserLayoutProps) => {
 				</Container>
 			</div>
 
-			<Container type="normal">{children}</Container>
+			<Container>{children}</Container>
 		</div>
 	);
 };

@@ -90,7 +90,7 @@ function Profile() {
 			</dialog>
 
 			<div className={styles.profile}>
-				<Container type="normal" className={styles.container}>
+				<Container className={styles.container}>
 					<div className={styles.header}>
 						<h1>{edit ? "Edit Profile" : "Profile"}</h1>
 

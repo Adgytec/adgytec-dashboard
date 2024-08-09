@@ -101,7 +101,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 	if (loading) {
 		return (
-			<Container type="normal" className={styles.empty}>
+			<Container className={styles.empty}>
 				<Loader />
 			</Container>
 		);
@@ -109,7 +109,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 	if (!details) {
 		return (
-			<Container type="normal" className={styles.empty}>
+			<Container className={styles.empty}>
 				<h3>Project doesn&apos;t exist</h3>
 			</Container>
 		);
@@ -155,7 +155,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 	return (
 		<div className={styles.container}>
-			<Container type="normal" className={styles.project}>
+			<Container className={styles.project}>
 				<div className={styles.back}>
 					<Link data-type="link" href="/admin/project">
 						Back
@@ -242,7 +242,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
 			<div className={styles.metadata}>
 				<div className={styles.options}>
-					<Container type="normal" className={styles.links}>
+					<Container className={styles.links}>
 						<Link href="?view=users" data-active={view === "users"}>
 							Added Users
 						</Link>
@@ -256,7 +256,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 					</Container>
 				</div>
 
-				<Container type="normal">
+				<Container>
 					<div className={styles.info}>{handleInfo()}</div>
 				</Container>
 			</div>

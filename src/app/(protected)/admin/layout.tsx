@@ -30,7 +30,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 	if (role === "user") {
 		return (
 			<Container
-				type="normal"
 				style={{
 					position: "absolute",
 					inset: "0",

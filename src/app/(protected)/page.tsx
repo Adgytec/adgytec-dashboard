@@ -8,7 +8,7 @@ import Image from "next/image";
 const Home = () => {
 	return (
 		<div className={styles.home}>
-			<Container type="normal" className={styles.container}>
+			<Container className={styles.container}>
 				<h1> Welcome to the Adgytec Dashboard!👋</h1>
 
 				<p>

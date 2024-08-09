@@ -16,7 +16,7 @@ const ProjectsLayout = ({ children }: ProjectLayoutProps) => {
 	return (
 		<div className={styles.layout}>
 			<div className={styles.options}>
-				<Container type="normal" className={styles.links}>
+				<Container className={styles.links}>
 					<Link
 						href="/admin/project"
 						data-active={pathname === "/admin/project"}
@@ -33,7 +33,7 @@ const ProjectsLayout = ({ children }: ProjectLayoutProps) => {
 				</Container>
 			</div>
 
-			<Container type="normal">{children}</Container>
+			<Container>{children}</Container>
 		</div>
 	);
 };

@@ -10,7 +10,7 @@ const ProjectAdminLayout = ({ children }: ProjectAdminLayoutProps) => {
 	return (
 		<div className={styles.layout}>
 			<div className={styles.heading}>
-				<Container type="normal">
+				<Container>
 					<h1>Manage Projects</h1>
 				</Container>
 			</div>

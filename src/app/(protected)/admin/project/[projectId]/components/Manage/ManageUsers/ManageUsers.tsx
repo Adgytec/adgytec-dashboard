@@ -204,7 +204,7 @@ const ManageUsers = ({
 	});
 
 	return (
-		<Container type="normal" className={styles.container}>
+		<Container className={styles.container}>
 			<div className={styles.header}>
 				<h2>{projectName}</h2>
 

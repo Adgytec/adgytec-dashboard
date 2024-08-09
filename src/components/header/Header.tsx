@@ -71,7 +71,7 @@ const Header = () => {
 
 	return (
 		<nav className={styles.header}>
-			<Container type="normal" className={styles.container}>
+			<Container className={styles.container}>
 				<div id="hamburger" className={styles.action}>
 					<label htmlFor="nav">
 						<FontAwesomeIcon icon={faBars} />
