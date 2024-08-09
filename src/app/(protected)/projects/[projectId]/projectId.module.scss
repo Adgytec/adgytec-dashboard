@@ -1,32 +1,64 @@
 @use "/src/styles/abstract" as ab;
 
 .project {
-	background-color: var(--bg-600);
-	padding: clamp(1em, 1.75vi, 1.5em);
-	border-radius: 0.75em;
-
 	display: grid;
-	gap: 1em;
+	gap: clamp(2em, 3vi, 3em);
+	height: 100%;
+
+	grid-template-rows: auto 1fr;
 
 	.nav {
+		display: flex;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+
 		justify-content: space-between;
 		align-items: center;
 
-		margin-block-end: 1em;
+		.select {
+			select {
+				--input-bg: var(--bg-400);
 
-		display: grid;
-		gap: 1em;
-
-		@include ab.screen-40 {
-			display: flex;
+				width: 15rem;
+			}
 		}
 
 		.bread_crumb {
 			display: flex;
 			gap: 0.25em;
 
-			p {
-				user-select: none;
+			background-color: var(--bg-400);
+			padding: 0.5rem 0.75rem;
+			border-radius: 0.25rem;
+
+			font-size: 1.25rem;
+			font-weight: 600;
+		}
+	}
+
+	.home {
+		display: grid;
+		gap: 2em;
+		height: 100%;
+		grid-template-rows: auto auto 1fr;
+
+		.info {
+			display: grid;
+			gap: 1em;
+		}
+
+		p {
+			font-size: clamp(1rem, 1.5vi, 1.25rem);
+			font-weight: 500;
+		}
+
+		.image {
+			align-self: end;
+			img {
+				width: auto;
+				height: auto;
+				object-fit: cover;
+				margin-inline-start: auto;
 			}
 		}
 	}

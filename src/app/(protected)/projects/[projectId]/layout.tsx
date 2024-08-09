@@ -168,31 +168,49 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	});
 
 	return (
-		<Container type="normal" className={styles.project}>
-			<div className={styles.nav}>
-				<div className={styles.bread_crumb}>{breadCrumbItems}</div>
+		<div className={styles.project}>
+			<Container>
+				<div className={styles.nav}>
+					<div className={styles.bread_crumb}>
+						<Link
+							href="/projects"
+							className={styles.item}
+							data-type="link"
+						>
+							projects
+						</Link>
+						/
+						<Link
+							href={`/projects/${params.projectId}`}
+							className={styles.item}
+							data-type="link"
+							data-variant="primary"
+						>
+							{project.projectName.toLowerCase()}
+						</Link>
+					</div>
+					{project.services.length > 0 && (
+						<div className={styles.select}>
+							<select onChange={handleChange} value={activePath}>
+								<option value="">Select a service</option>
+								{project.services.map((service) => {
+									return (
+										<option
+											key={service.id}
+											value={service.name}
+										>
+											{service.name}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+					)}
+				</div>
+			</Container>
 
-				{project.services.length > 0 && (
-					<select
-						onChange={handleChange}
-						value={activePath}
-						style={{ minWidth: "15rem" }}
-					>
-						<option value="">Select a service</option>
-
-						{project.services.map((service) => {
-							return (
-								<option key={service.id} value={service.name}>
-									{service.name}
-								</option>
-							);
-						})}
-					</select>
-				)}
-			</div>
-
-			{children}
-		</Container>
+			<div>{children}</div>
+		</div>
 	);
 };
 
