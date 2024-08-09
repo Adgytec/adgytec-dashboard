@@ -7,13 +7,13 @@
 	display: grid;
 	place-items: center;
 
-	background-image: url("../../../../public/mobile-login.png");
+	background-image: url("../../../../public/mobile-login.webp");
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center top;
 
 	@include ab.screen-64 {
-		background-image: url("../../../../public/login.png");
+		background-image: url("../../../../public/login.webp");
 		background-position: left center;
 		place-items: center end;
 
