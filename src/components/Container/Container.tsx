@@ -2,14 +2,14 @@ import React from "react";
 import styles from "./container.module.scss";
 
 interface ContainerProps {
-	type: "normal" | "wide" | "full" | "sm-full" | "lg-full" | "sm-full-wide";
-	children: React.ReactNode;
+	type?: "normal" | "wide" | "full" | "sm-full" | "lg-full" | "sm-full-wide";
+	children?: React.ReactNode;
 	className?: string;
 	style?: React.CSSProperties;
 }
 
 const Container = ({ type, children, className, style }: ContainerProps) => {
-	const getClassname = (type: string) => {
+	const getClassname = (type: string | undefined) => {
 		switch (type) {
 			case "normal":
 				return styles.normal;
@@ -23,6 +23,8 @@ const Container = ({ type, children, className, style }: ContainerProps) => {
 				return styles.lg_full;
 			case "sm-full-wide":
 				return styles.sm_full_wide;
+			default:
+				return styles.normal;
 		}
 	};
 
