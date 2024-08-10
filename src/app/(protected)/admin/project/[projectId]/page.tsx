@@ -22,6 +22,7 @@ import Services from "./components/Services/Services";
 import Image from "next/image";
 import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
 import Category from "./components/Category/Category";
+import LinkHeader, { LinkItem } from "@/components/LinkHeader/LinkHeader";
 
 interface ProjectDetailsProps {
 	params: { projectId: string };
@@ -64,6 +65,21 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 	const searchParams = useSearchParams();
 	const view = searchParams.get("view");
 	const manange = searchParams.get("manage");
+
+	const linkProps = useMemo(() => {
+		return [
+			{
+				href: `/admin/project/${params.projectId}?view=users`,
+				text: "Added Users",
+				view: "users",
+			},
+			{
+				href: `/admin/project/${params.projectId}?view=services`,
+				text: "Added Services",
+				view: "services",
+			},
+		] as LinkItem[];
+	}, [params.projectId]);
 
 	const getProjectDetail = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}`;
@@ -241,20 +257,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 			</Container>
 
 			<div className={styles.metadata}>
-				<div className={styles.options}>
-					<Container className={styles.links}>
-						<Link href="?view=users" data-active={view === "users"}>
-							Added Users
-						</Link>
-
-						<Link
-							href="?view=services"
-							data-active={view === "services"}
-						>
-							Added Services
-						</Link>
-					</Container>
-				</div>
+				<LinkHeader links={linkProps} />
 
 				<Container>
 					<div className={styles.info}>{handleInfo()}</div>

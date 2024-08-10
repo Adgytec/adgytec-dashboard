@@ -1,37 +1,29 @@
-"use client";
-
 import React from "react";
 import styles from "./projects.module.scss";
 import { usePathname } from "next/navigation";
 import Container from "@/components/Container/Container";
 import Link from "next/link";
+import LinkHeader from "@/components/LinkHeader/LinkHeader";
 
 interface ProjectLayoutProps {
 	children: React.ReactNode;
 }
 
-const ProjectsLayout = ({ children }: ProjectLayoutProps) => {
-	const pathname = usePathname();
+const linkProps = [
+	{
+		href: "/admin/project",
+		text: "Active Projects",
+	},
+	{
+		href: "/admin/project/create",
+		text: "Create New",
+	},
+];
 
+const ProjectsLayout = ({ children }: ProjectLayoutProps) => {
 	return (
 		<div className={styles.layout}>
-			<div className={styles.options}>
-				<Container className={styles.links}>
-					<Link
-						href="/admin/project"
-						data-active={pathname === "/admin/project"}
-					>
-						Active Projects
-					</Link>
-
-					<Link
-						href="/admin/project/create"
-						data-active={pathname === "/admin/project/create"}
-					>
-						Create New
-					</Link>
-				</Container>
-			</div>
+			<LinkHeader links={linkProps} />
 
 			<Container>{children}</Container>
 		</div>
