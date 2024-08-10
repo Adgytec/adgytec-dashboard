@@ -21,8 +21,9 @@
 			select {
 				--input-bg: var(--bg-400);
 
-				width: clamp(10rem, 35vi, 15rem);
-				font-size: var(--_text);
+				// width: clamp(10rem, 35vi, 15rem);
+				width: 15rem;
+				// font-size: var(--_text);
 			}
 		}
 
@@ -34,7 +35,7 @@
 			padding: 0.5em 0.75em;
 			border-radius: 0.25rem;
 
-			font-size: var(--_text);
+			// font-size: var(--_text);
 			font-weight: 600;
 		}
 	}
