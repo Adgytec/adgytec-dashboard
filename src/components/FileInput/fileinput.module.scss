@@ -12,8 +12,8 @@
 	width: min(100%, var(--_input-width, var(--input-width, 30em)));
 	transition: border-color 200ms;
 
-	max-height: var(--_height);
-	min-height: var(--_height);
+	max-height: var(--_height, 22.5rem);
+	min-height: var(--_height, 22.5rem);
 
 	display: grid;
 	gap: 1em;

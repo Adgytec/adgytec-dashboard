@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import BlogItem from "./components/blogItem/BlogItem";
 import Loader from "@/components/Loader/Loader";
+import Container from "@/components/Container/Container";
 
 export interface Blog {
 	title: string;
@@ -116,7 +117,17 @@ const Blogs = () => {
 						</span>
 					</p>
 				) : (
-					elements
+					<Container type="full" className={styles.table}>
+						<div className={styles.heading}>
+							<h4>Details</h4>
+
+							<h4>Edit</h4>
+
+							<h4>Delete</h4>
+						</div>
+
+						{elements}
+					</Container>
 				)}
 			</div>
 		</div>

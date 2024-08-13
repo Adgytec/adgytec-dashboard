@@ -17,3 +17,15 @@
 		@content;
 	}
 }
+
+@mixin blog-table {
+	@container blog (max-width: 48em) {
+		@content;
+	}
+}
+
+@mixin blog-item {
+	@container blog-item (max-width: 40em) {
+		@content;
+	}
+}

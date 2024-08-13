@@ -3,7 +3,7 @@
 .project {
 	display: grid;
 	gap: clamp(2em, 3vi, 3em);
-	height: 100%;
+	min-height: 100%;
 
 	grid-template-rows: auto 1fr;
 

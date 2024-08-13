@@ -13,6 +13,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useFile } from "@/components/FileInput/hooks/useFile";
 import FileInput, { FileElement } from "@/components/FileInput/FileInput";
+import { createPortal } from "react-dom";
+import Container from "@/components/Container/Container";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
 interface BlogItemProps {
 	blog: Blog;
@@ -198,114 +202,242 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 
 	return (
 		<>
-			<dialog
-				onKeyDown={handleEscModal}
-				ref={deleteConfirmRef}
-				className="delete-confirm"
-			>
-				<div className="delete-modal">
-					<div className="modal-menu">
-						<h2>Confirm Deletion</h2>
+			{createPortal(
+				<>
+					<dialog
+						onKeyDown={handleEscModal}
+						ref={deleteConfirmRef}
+						className="delete-confirm"
+					>
+						<div className="delete-modal">
+							<div className="modal-menu">
+								<h2>Confirm Deletion</h2>
 
-						<button
-							data-type="link"
-							onClick={() => handleClose(deleteConfirmRef)}
-							title="close"
-							disabled={deleting}
-						>
-							<FontAwesomeIcon icon={faXmark} />
-						</button>
-					</div>
+								<button
+									data-type="link"
+									onClick={() =>
+										handleClose(deleteConfirmRef)
+									}
+									title="close"
+									disabled={deleting}
+								>
+									<FontAwesomeIcon icon={faXmark} />
+								</button>
+							</div>
 
-					<div className="delete-content">
-						<p>Are you sure you want to delete?</p>
+							<div className="delete-content">
+								<p>Are you sure you want to delete?</p>
 
-						<p>
-							Deleting this will permanently remove this blog
-							item. This action cannot be undone.
-						</p>
-					</div>
+								<p>
+									Deleting this will permanently remove this
+									blog item. This action cannot be undone.
+								</p>
+							</div>
 
-					{error && <p className="error">{error}</p>}
+							{error && <p className="error">{error}</p>}
 
-					<div className="delete-action">
-						<button
-							data-type="link"
-							disabled={deleting}
-							onClick={() => handleClose(deleteConfirmRef)}
-						>
-							Cancel
-						</button>
+							<div className="delete-action">
+								<button
+									data-type="link"
+									disabled={deleting}
+									onClick={() =>
+										handleClose(deleteConfirmRef)
+									}
+								>
+									Cancel
+								</button>
 
-						<button
-							data-type="button"
-							className={styles.delete}
-							disabled={deleting}
-							data-load={deleting}
-							onClick={handleDelete}
-							data-variant="error"
-						>
-							{deleting ? <Loader variant="small" /> : "Delete"}
-						</button>
-					</div>
-				</div>
-			</dialog>
+								<button
+									data-type="button"
+									className={styles.delete}
+									disabled={deleting}
+									data-load={deleting}
+									onClick={handleDelete}
+									data-variant="error"
+								>
+									{deleting ? (
+										<Loader variant="small" />
+									) : (
+										"Delete"
+									)}
+								</button>
+							</div>
+						</div>
+					</dialog>
 
-			<dialog ref={updateCoverRef}>
-				<div className="modal">
-					<div className="modal-menu">
-						<h2>Update Blog Cover</h2>
+					<dialog ref={updateCoverRef}>
+						<div className="modal">
+							<div className="modal-menu">
+								<h2>Update Blog Cover</h2>
 
-						<button
-							data-type="link"
-							onClick={() => handleClose(updateCoverRef)}
-							title="close"
-							disabled={coverUpdating}
-						>
-							<FontAwesomeIcon icon={faXmark} />
-						</button>
-					</div>
+								<button
+									data-type="link"
+									onClick={() => handleClose(updateCoverRef)}
+									title="close"
+									disabled={coverUpdating}
+								>
+									<FontAwesomeIcon icon={faXmark} />
+								</button>
+							</div>
 
-					<div className={styles.updateCover}>
-						<label>Cover Image</label>
+							<div className={styles.updateCover}>
+								<label>Cover Image</label>
 
-						<FileInput
-							setFiles={setCover}
-							multiple={false}
-							disabled={coverUpdating}
-						/>
-					</div>
+								<FileInput
+									setFiles={setCover}
+									multiple={false}
+									disabled={coverUpdating}
+								/>
+							</div>
 
-					{coverError && <p className="error">{coverError}</p>}
-
-					<div className="action">
-						<button
-							data-type="link"
-							disabled={coverUpdating}
-							onClick={() => handleClose(updateCoverRef)}
-						>
-							Cancel
-						</button>
-
-						<button
-							data-type="button"
-							className={styles.delete}
-							disabled={coverUpdating || !cover}
-							data-load={coverUpdating}
-							onClick={handleCoverImage}
-							data-variant="primary"
-						>
-							{coverUpdating ? (
-								<Loader variant="small" />
-							) : (
-								"Update"
+							{coverError && (
+								<p className="error">{coverError}</p>
 							)}
-						</button>
-					</div>
-				</div>
-			</dialog>
 
-			<div className={styles.blog}>
+							<div className="action">
+								<button
+									data-type="link"
+									disabled={coverUpdating}
+									onClick={() => handleClose(updateCoverRef)}
+								>
+									Cancel
+								</button>
+
+								<button
+									data-type="button"
+									className={styles.delete}
+									disabled={coverUpdating || !cover.length}
+									data-load={coverUpdating}
+									onClick={handleCoverImage}
+									data-variant="primary"
+								>
+									{coverUpdating ? (
+										<Loader variant="small" />
+									) : (
+										"Update"
+									)}
+								</button>
+							</div>
+						</div>
+					</dialog>
+				</>,
+				document.body
+			)}
+
+			<div className={styles.container}>
+				<Container type="full" className={styles.details}>
+					<div className={styles.subContainer}>
+						<div className={styles.image} data-edit={isEdit}>
+							<img
+								src={blog.cover}
+								alt={blog.title}
+								width={250}
+								height={200}
+							/>
+							{isEdit && (
+								<button
+									data-type="link"
+									data-variant="primary"
+									disabled={updating}
+									onClick={() =>
+										updateCoverRef.current?.showModal()
+									}
+								>
+									Update Cover
+								</button>
+							)}
+						</div>
+						<div className={styles.data}>
+							<div className={styles.title}>
+								{isEdit ? (
+									<input
+										type="text"
+										placeholder="title..."
+										name="title"
+										value={blogDetails.title}
+										onChange={handleInputChange}
+										disabled={updating}
+									/>
+								) : (
+									<h2 className={styles.title}>
+										<Link
+											href={`blogs/${blog.blogId}`}
+											data-type="link"
+										>
+											{blog.title}
+										</Link>
+									</h2>
+								)}
+							</div>
+							<div className={styles.metadata}>
+								<p>{blog.author}</p>
+								<p>{d.toDateString()}</p>
+							</div>
+							<div className={styles.summary}>
+								{isEdit ? (
+									<textarea
+										name="summary"
+										value={blogDetails.summary}
+										onChange={handleInputChange}
+										placeholder="Summary for the blog..."
+										disabled={updating}
+									/>
+								) : (
+									blog.summary && (
+										<p className={styles.summary}>
+											{blog.summary}
+										</p>
+									)
+								)}
+							</div>
+							{isEdit && (
+								<div className={styles.update}>
+									<button
+										data-type="button"
+										data-variant="secondary"
+										disabled={isUpdateDisabled || updating}
+										onClick={handleUpdate}
+										data-load={updating}
+									>
+										{updating ? (
+											<Loader variant="small" />
+										) : (
+											"Update"
+										)}
+									</button>
+								</div>
+							)}
+						</div>
+					</div>
+				</Container>
+
+				<div className={styles.action}>
+					<button
+						data-type="link"
+						onClick={() => setIsEdit((prev) => !prev)}
+						disabled={updating}
+					>
+						{isEdit ? (
+							<FontAwesomeIcon icon={faXmark} />
+						) : (
+							<FontAwesomeIcon icon={faPenToSquare} />
+						)}
+					</button>
+				</div>
+
+				<div className={styles.action} data-delete>
+					<button
+						data-type="link"
+						data-variant="error"
+						disabled={updating}
+						onClick={() => deleteConfirmRef.current?.showModal()}
+					>
+						<FontAwesomeIcon icon={faTrashCan} />
+					</button>
+				</div>
+			</div>
+
+			{/* <div className={styles.blog}>
 				<div className={styles.manage}>
 					<button
 						data-type="link"
@@ -402,7 +534,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 						Delete
 					</button>
 				</div>
-			</div>
+			</div> */}
 		</>
 	);
 };
