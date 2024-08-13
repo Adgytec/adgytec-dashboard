@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./fileinput.module.scss";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ interface FileInputProps {
 	multiple?: boolean;
 	setFiles: React.Dispatch<React.SetStateAction<FileElement[]>>;
 	disabled?: boolean;
+	image?: File | null;
 }
 
 export interface FileElement {
@@ -19,11 +20,21 @@ export interface FileElement {
 const acceptedFormat = ["image/png", "image/jpg", "image/jpeg"];
 const LIMIT = 50;
 
-const FileInput = ({ multiple, setFiles, disabled }: FileInputProps) => {
+const FileInput = ({ multiple, setFiles, disabled, image }: FileInputProps) => {
 	const isMultipleAllowedRef = useRef(multiple ? true : false);
 	const dragAreaRef = useRef<HTMLDivElement | null>(null);
 
 	const [previewURL, setPreviewURL] = useState<string[]>([]);
+
+	useEffect(() => {
+		if (image) {
+			const dataTransfer = new DataTransfer();
+			dataTransfer.items.add(image);
+
+			const fileList = dataTransfer.files;
+			handleFiles(fileList);
+		}
+	}, [image]);
 
 	const handleFiles = (inputFiles: FileList) => {
 		let files: FileElement[] = [];
@@ -123,8 +134,8 @@ const FileInput = ({ multiple, setFiles, disabled }: FileInputProps) => {
 
 		removeClass("active");
 
-		const data = e.dataTransfer;
-		const files = data.files;
+		const dataTransfer = e.dataTransfer;
+		const files = dataTransfer.files;
 
 		if (files.length === 0) {
 			return;
