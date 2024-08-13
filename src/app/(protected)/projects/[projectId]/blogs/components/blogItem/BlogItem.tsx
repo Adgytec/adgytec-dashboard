@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 import Container from "@/components/Container/Container";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { trimStringWithEllipsis } from "@/helpers/helpers";
 
 interface BlogItemProps {
 	blog: Blog;
@@ -385,7 +386,9 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 								) : (
 									blog.summary && (
 										<p className={styles.summary}>
-											{blog.summary}
+											{trimStringWithEllipsis(
+												blog.summary
+											)}
 										</p>
 									)
 								)}

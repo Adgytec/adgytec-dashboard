@@ -21,6 +21,7 @@ const BlogLayout = ({ children }: BlogLayoutProps) => {
 			{
 				href: `/projects/${params.projectId}/blogs/create`,
 				text: "Create New",
+				view: ["editor", "metadata"],
 			},
 		] as LinkItem[];
 	}, [params.projectId]);

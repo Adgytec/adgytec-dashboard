@@ -44,6 +44,7 @@
 					}
 					img {
 						height: 100%;
+						transition: height 300ms;
 
 						@include ab.blog-item {
 							height: 200px;
@@ -54,8 +55,6 @@
 				img {
 					width: 100%;
 					object-fit: cover;
-
-					transition: height 300ms;
 				}
 			}
 
@@ -68,7 +67,7 @@
 				textarea {
 					--input-width: 100%;
 
-					resize: none;
+					// resize: none;
 				}
 
 				.metadata {

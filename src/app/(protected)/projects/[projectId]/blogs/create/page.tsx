@@ -8,12 +8,16 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import styles from "./create.module.scss";
 import Editor from "../components/editor/Editor";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
 import Details from "../components/details/Details";
-import { useParams } from "next/navigation";
+import {
+	useParams,
+	usePathname,
+	useRouter,
+	useSearchParams,
+} from "next/navigation";
 
 export type BlogDetails = {
 	title: string;
@@ -36,10 +40,10 @@ const CreateBlog = () => {
 	}, [userWithRole]);
 
 	const params = useParams<{ projectId: string }>();
-	const [obj, setObj] = useState<string>("");
+	const view = useSearchParams().get("view");
+	const router = useRouter();
+	const pathName = usePathname();
 
-	// multi-step blog
-	const [step, setStep] = useState<number>(1);
 	const [blogDetails, setBlogDetails] = useState<BlogDetails>({
 		title: "",
 		summary: "",
@@ -52,6 +56,16 @@ const CreateBlog = () => {
 	const [deletedImages, setDeletedImages] = useState<string[]>([]); // used when editing existing blog
 
 	const uuidRef = useRef<string | null>(null);
+
+	useEffect(() => {
+		if (
+			view === null ||
+			(view !== "editor" && view !== "metadata") ||
+			(view === "metadata" && blogDetails.content.length === 0)
+		) {
+			router.replace(`${pathName}?view=editor`);
+		}
+	}, [view, router, pathName, blogDetails.content.length]);
 
 	const generateUUID = useCallback(async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/uuid`;
@@ -80,33 +94,20 @@ const CreateBlog = () => {
 		generateUUID();
 	}, [generateUUID]);
 
-	const handleNext = () => {
-		setStep(2);
-	};
-	const handlePrevious = () => {
-		setStep(1);
-	};
-
-	let trial = {
-		__html: obj,
-	};
-
 	return (
-		<div className={styles.blog}>
+		<div>
 			<Editor
 				uuidRef={uuidRef}
-				handleNext={handleNext}
 				setBlogDetails={setBlogDetails}
 				newImagesRef={newImagesRef}
 				setDeletedImages={setDeletedImages}
-				hidden={step !== 1}
+				hidden={view !== "editor"}
 			/>
 
-			{step === 2 && (
-				<div className={styles.blogDetails}>
+			{view === "metadata" && (
+				<div>
 					<Details
 						uuidRef={uuidRef}
-						handlePrevious={handlePrevious}
 						blogDetails={blogDetails}
 						setBlogDetails={setBlogDetails}
 						newImagesRef={newImagesRef}

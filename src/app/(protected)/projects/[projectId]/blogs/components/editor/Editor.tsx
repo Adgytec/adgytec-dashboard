@@ -44,6 +44,9 @@ import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TreeView } from "@lexical/react/LexicalTreeView";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function Placeholder() {
 	return (
@@ -77,12 +80,13 @@ const editorConfig = {
 };
 
 interface EditorActionsProps {
-	handleNext: () => void;
 	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
 }
-function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
+function EditorActions({ setBlogDetails }: EditorActionsProps) {
 	const [editor] = useLexicalComposerContext();
 	const isEmpty = useLexicalIsTextContentEmpty(editor);
+	const pathName = usePathname();
+	const router = useRouter();
 
 	const previewRef = useRef<HTMLDialogElement | null>(null);
 	const [previewContent, setPreviewContent] = useState<string>(
@@ -100,7 +104,7 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 				};
 			});
 
-			handleNext();
+			router.push(`${pathName}?view=metadata`);
 		});
 	};
 
@@ -176,7 +180,6 @@ function EditorActions({ handleNext, setBlogDetails }: EditorActionsProps) {
 
 interface EditorProps {
 	uuidRef: MutableRefObject<string | null>;
-	handleNext: () => void;
 	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
 	newImagesRef: MutableRefObject<NewImages[]>;
 	setDeletedImages: Dispatch<SetStateAction<string[]>>;
@@ -185,7 +188,6 @@ interface EditorProps {
 
 export default function Editor({
 	uuidRef,
-	handleNext,
 	setBlogDetails,
 	newImagesRef,
 	setDeletedImages,
@@ -224,10 +226,7 @@ export default function Editor({
 						/>
 					</div>
 
-					<EditorActions
-						setBlogDetails={setBlogDetails}
-						handleNext={handleNext}
-					/>
+					<EditorActions setBlogDetails={setBlogDetails} />
 				</div>
 			</LexicalComposer>
 		</div>

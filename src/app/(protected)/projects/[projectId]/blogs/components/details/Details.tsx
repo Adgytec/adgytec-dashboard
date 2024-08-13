@@ -3,6 +3,7 @@ import React, {
 	MutableRefObject,
 	SetStateAction,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from "react";
@@ -12,11 +13,13 @@ import Image from "next/image";
 import { BlogDetails, NewImages } from "../../create/page";
 import { validateString } from "@/helpers/validation";
 import { UserContext } from "@/components/AuthContext/authContext";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
+import Link from "next/link";
+import { useFile } from "@/components/FileInput/hooks/useFile";
+import FileInput from "@/components/FileInput/FileInput";
 
 interface DetailsProps {
-	handlePrevious: () => void;
 	blogDetails: BlogDetails;
 	setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
 	newImagesRef: MutableRefObject<NewImages[]>;
@@ -25,7 +28,6 @@ interface DetailsProps {
 }
 
 const Details = ({
-	handlePrevious,
 	blogDetails,
 	setBlogDetails,
 	newImagesRef,
@@ -38,25 +40,35 @@ const Details = ({
 	}, [userWithRole]);
 
 	const params = useParams<{ projectId: string }>();
+	const pathName = usePathname();
+	const [cover, setCover] = useFile();
 
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [creating, setCreating] = useState<boolean>(false);
 
 	const router = useRouter();
 
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.target.files;
-		if (!files) {
-			toast.error("Something went wrong while seleting file");
-			return;
-		}
+	// const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	// 	const files = e.target.files;
+	// 	if (!files) {
+	// 		toast.error("Something went wrong while seleting file");
+	// 		return;
+	// 	}
 
-		setBlogDetails((prev) => {
-			return { ...prev, cover: files[0] };
-		});
-		const url = URL.createObjectURL(files[0]);
-		setImagePreview(url);
-	};
+	// 	setBlogDetails((prev) => {
+	// 		return { ...prev, cover: files[0] };
+	// 	});
+	// 	const url = URL.createObjectURL(files[0]);
+	// 	setImagePreview(url);
+	// };
+
+	useEffect(() => {
+		if (cover.length !== 0) {
+			setBlogDetails((prev) => {
+				return { ...prev, cover: cover[0].file };
+			});
+		}
+	}, [cover]);
 
 	const validateBlog = (): boolean => {
 		if (!validateString(blogDetails.content, 200)) {
@@ -273,36 +285,24 @@ const Details = ({
 				</div>
 
 				<div className={styles.input}>
-					<label htmlFor="image">Cover Image</label>
-					<input
-						type="file"
-						placeholder="File..."
-						id="image"
-						accept=".jpg, .jpeg, .png"
-						required
-						name="image"
-						onChange={handleImageChange}
+					<label>Cover Image</label>
+					<FileInput
+						setFiles={setCover}
+						multiple={false}
 						disabled={creating}
+						image={blogDetails.cover}
 					/>
-
-					{imagePreview && (
-						<div className={styles.image_preview}>
-							<Image
-								src={imagePreview}
-								alt="preview"
-								width={250}
-								height={125}
-							/>
-						</div>
-					)}
 				</div>
 
 				<div className={styles.actions}>
 					<button
 						data-type="link"
 						data-variant="secondary"
-						onClick={handlePrevious}
+						onClick={() => {
+							router.back();
+						}}
 						disabled={creating}
+						type="button"
 					>
 						Previous
 					</button>

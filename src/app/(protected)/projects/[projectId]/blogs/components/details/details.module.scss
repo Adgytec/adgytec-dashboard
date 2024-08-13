@@ -5,23 +5,14 @@
 	gap: 1em;
 
 	.form {
+		--input-width: 50rem;
+
 		display: grid;
 		gap: 1.5em;
 
 		.input {
 			display: grid;
 			gap: 0.5em;
-
-			// input,
-			// textarea {
-			// 	width: min(100%, 25rem);
-			// }
-
-			// textarea {
-			// 	resize: vertical;
-			// 	max-height: 14rem;
-			// 	min-height: 3rem;
-			// }
 		}
 
 		.image_preview {
