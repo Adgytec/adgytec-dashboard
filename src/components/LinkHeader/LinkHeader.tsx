@@ -9,7 +9,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 export interface LinkItem {
 	text: string;
 	href: string;
-	view?: string;
+	view?: string[];
 }
 
 interface LinkHeaderProps {
@@ -24,13 +24,19 @@ const LinkHeader = ({ links }: LinkHeaderProps) => {
 		<div className={styles.options}>
 			<Container className={styles.links}>
 				{links?.map((link) => {
+					let temphref = link.href;
+					let tempActive = pathname === link.href;
+
+					if (link.view && link.view.length !== 0) {
+						temphref += "?view=" + link.view[0];
+						tempActive = link.view.includes(view ?? "");
+					}
+
 					return (
 						<Link
 							key={link.href}
-							href={link.href}
-							data-active={
-								pathname === link.href || view === link.view
-							}
+							href={temphref}
+							data-active={tempActive}
 						>
 							{link.text}
 						</Link>
