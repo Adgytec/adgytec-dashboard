@@ -17,3 +17,10 @@ export function generateRandomString(): string {
 
 	return result;
 }
+
+export function trimStringWithEllipsis(str: string, maxLength = 400) {
+	if (str.length > maxLength) {
+		return str.slice(0, maxLength) + "...";
+	}
+	return str;
+}
