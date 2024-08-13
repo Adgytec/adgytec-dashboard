@@ -104,9 +104,18 @@ const ProjectAdmin = () => {
 					<div data-load="true">
 						<Loader />
 					</div>
-				) : elements.length === 0 || projects.length === 0 ? (
+				) : projects.length === 0 ? (
 					<div data-empty="true">
-						<h3>No project exist</h3>
+						<h3>There are no projects to display at this time.</h3>
+					</div>
+				) : elements.length === 0 ? (
+					<div data-empty="true">
+						<p>
+							There is no project named{" "}
+							<span className="italic">
+								<q>{search}</q>
+							</span>
+						</p>
 					</div>
 				) : (
 					<div className={styles.project_list}>{elements}</div>

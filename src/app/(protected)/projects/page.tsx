@@ -123,7 +123,7 @@ const Project = () => {
 				) : elements.length === 0 ? (
 					<p>
 						There is no project named{" "}
-						<span className={styles.italic}>
+						<span className="italic">
 							<q>{search}</q>
 						</span>
 					</p>

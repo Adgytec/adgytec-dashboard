@@ -48,7 +48,8 @@
 .content {
 	padding-block: 0.75em;
 
-	background-color: var(--bg-400);
+	background-color: hsl(from var(--bg-400) h s l / 0.5);
+	backdrop-filter: blur(7.5px);
 	border-radius: 0.5em;
 
 	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,

@@ -84,25 +84,17 @@ const Blogs = () => {
 
 	return (
 		<div className={styles.blogs}>
-			<div className={styles.link}>
-				<Link
-					href="blogs/create"
-					data-type="link"
-					data-variant="primary"
-				>
-					Create
-				</Link>
-			</div>
-
 			<div
 				className={styles.search}
 				title="search blogs by id, title or author"
 			>
+				<h2>Blog Overview</h2>
+
 				<input
 					type="text"
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
-					placeholder="Search blogs..."
+					placeholder="Type to search..."
 				/>
 			</div>
 
@@ -112,11 +104,17 @@ const Blogs = () => {
 				data-empty={allBlogs.length === 0 || elements.length === 0}
 				data-load={loading}
 			>
-				{loading && <Loader />}
-
-				{!loading &&
-				(elements.length === 0 || allBlogs.length === 0) ? (
+				{loading ? (
+					<Loader />
+				) : allBlogs.length === 0 ? (
 					<h3>No blogs exist for this project</h3>
+				) : elements.length === 0 ? (
+					<p>
+						There is no blog with title{" "}
+						<span className="italic">
+							<q>{search}</q>
+						</span>
+					</p>
 				) : (
 					elements
 				)}

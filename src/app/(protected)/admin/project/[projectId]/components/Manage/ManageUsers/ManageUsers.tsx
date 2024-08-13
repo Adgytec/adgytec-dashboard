@@ -296,7 +296,16 @@ const ManageUsers = ({
 						</div>
 					) : usersToAdd.length === 0 ? (
 						<div className={styles.empty}>
-							<h4>No user to add.</h4>
+							{search.length !== 0 ? (
+								<p>
+									There is no user named{" "}
+									<span className="italic">
+										<q>{search}</q>
+									</span>
+								</p>
+							) : (
+								<h4>No users to add.</h4>
+							)}
 						</div>
 					) : (
 						<div className={styles.table}>

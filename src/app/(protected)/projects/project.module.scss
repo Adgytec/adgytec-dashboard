@@ -15,11 +15,6 @@
 		display: grid;
 		gap: 1.5em;
 
-		.italic {
-			font-style: italic;
-			font-weight: 500;
-		}
-
 		&:not(&[data-empty="true"], &[data-load="true"]) {
 			grid-template-columns: repeat(
 				auto-fill,

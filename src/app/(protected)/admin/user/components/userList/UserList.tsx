@@ -100,8 +100,15 @@ const UserList = () => {
 			>
 				{loading ? (
 					<Loader />
-				) : usersList.length === 0 || users.length === 0 ? (
+				) : users.length === 0 ? (
 					<h3>No users exist</h3>
+				) : usersList.length === 0 ? (
+					<p>
+						There is no user named{" "}
+						<span className="italic">
+							<q>{search}</q>
+						</span>
+					</p>
 				) : (
 					<>
 						<div className={styles.list}>

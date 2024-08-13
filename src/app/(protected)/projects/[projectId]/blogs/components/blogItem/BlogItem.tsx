@@ -11,15 +11,12 @@ import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useFile } from "@/components/FileInput/hooks/useFile";
+import FileInput, { FileElement } from "@/components/FileInput/FileInput";
 
 interface BlogItemProps {
 	blog: Blog;
 	setAllBlogs: React.Dispatch<React.SetStateAction<Blog[]>>;
-}
-
-interface CoverImage {
-	file: File | null;
-	url: string | null;
 }
 
 const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
@@ -27,6 +24,9 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 	const user = useMemo(() => {
 		return userWithRole ? userWithRole.user : null;
 	}, [userWithRole]);
+
+	const [cover, setCover] = useFile();
+	const [coverError, setCoverError] = useState<null | string>(null);
 
 	const params = useParams<{ projectId: string }>();
 
@@ -41,11 +41,6 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 	const [deleting, setDeleting] = useState(false);
 	const [coverUpdating, setCoverUpdating] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-
-	const [coverImage, setCoverImage] = useState<CoverImage>({
-		file: null,
-		url: null,
-	});
 
 	const deleteConfirmRef = useRef<HTMLDialogElement | null>(null);
 	const updateCoverRef = useRef<HTMLDialogElement | null>(null);
@@ -162,26 +157,13 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 			.finally(() => setDeleting(false));
 	};
 
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.target.files;
-		if (!files) {
-			toast.error("Something went wrong while seleting file");
-			return;
-		}
-
-		const url = URL.createObjectURL(files[0]);
-		setCoverImage({
-			url: url,
-			file: files[0],
-		});
-	};
-
 	const handleCoverImage = async () => {
-		if (!coverImage.file) {
-			toast.error("no file selected.");
+		if (!cover[0].file) {
+			setCoverError("no file selected");
 			return;
 		}
 		setCoverUpdating(true);
+		setCoverError(null);
 		const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blog.blogId}/cover`;
 		const token = await user?.getIdToken();
 		const headers = {
@@ -189,7 +171,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 		};
 
 		const formData = new FormData();
-		formData.append("cover", coverImage.file);
+		formData.append("cover", cover[0].file);
 
 		fetch(url, {
 			method: "PATCH",
@@ -202,15 +184,12 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 
 				updateCoverRef.current?.close();
 				toast.success("successfully updated blog cover");
-				if (coverImage.url) blog.cover = coverImage.url;
+				if (cover[0].url) blog.cover = cover[0].url;
 
-				setCoverImage({
-					file: null,
-					url: null,
-				});
+				setCover([]);
 			})
 			.catch((err) => {
-				toast.error(err.message);
+				setCoverError(err.message);
 			})
 			.finally(() => {
 				setCoverUpdating(false);
@@ -288,29 +267,16 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 					</div>
 
 					<div className={styles.updateCover}>
-						<label htmlFor="image">Cover Image</label>
-						<input
-							type="file"
-							placeholder="File..."
-							id="image"
-							accept=".jpg, .jpeg, .png"
-							required
-							name="image"
-							onChange={handleImageChange}
+						<label>Cover Image</label>
+
+						<FileInput
+							setFiles={setCover}
+							multiple={false}
 							disabled={coverUpdating}
 						/>
-
-						{coverImage.url && (
-							<div className={styles.image_preview}>
-								<Image
-									src={coverImage.url}
-									alt="preview"
-									width={500}
-									height={250}
-								/>
-							</div>
-						)}
 					</div>
+
+					{coverError && <p className="error">{coverError}</p>}
 
 					<div className="action">
 						<button
@@ -324,7 +290,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 						<button
 							data-type="button"
 							className={styles.delete}
-							disabled={coverUpdating || !coverImage.file}
+							disabled={coverUpdating || !cover}
 							data-load={coverUpdating}
 							onClick={handleCoverImage}
 							data-variant="primary"
