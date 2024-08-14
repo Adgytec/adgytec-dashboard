@@ -365,7 +365,10 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 											href={`blogs/${blog.blogId}`}
 											data-type="link"
 										>
-											{blog.title}
+											{trimStringWithEllipsis(
+												blog.title,
+												50
+											)}
 										</Link>
 									</h2>
 								)}
@@ -387,7 +390,8 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 									blog.summary && (
 										<p className={styles.summary}>
 											{trimStringWithEllipsis(
-												blog.summary
+												blog.summary,
+												200
 											)}
 										</p>
 									)
