@@ -40,8 +40,8 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState(true);
 	const [activePath, setActivePath] = useState<string>("");
 
-	const getServicesByProjectId = useCallback(async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/client/projects/${params.projectId}/services`;
+	const getMetadataByProjectId = useCallback(async () => {
+		const url = `${process.env.NEXT_PUBLIC_API}/client/projects/${params.projectId}/metadata`;
 		const token = await user?.getIdToken();
 		const headers = {
 			Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
-
+				console.log(res.data.categories);
 				setProject(res.data);
 			})
 			.catch((err) => {
@@ -64,8 +64,8 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 	}, [user, params.projectId]);
 
 	useEffect(() => {
-		getServicesByProjectId();
-	}, [getServicesByProjectId]);
+		getMetadataByProjectId();
+	}, [getMetadataByProjectId]);
 
 	useEffect(() => {
 		const services = project?.services;
@@ -92,79 +92,11 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 		);
 	}
 
-	if (!project) {
-		return (
-			<Container
-				style={{
-					display: "grid",
-					placeItems: "center",
-					position: "absolute",
-					inset: "0",
-					background: "var(--bg-600)",
-					borderRadius: "0.75em",
-				}}
-			>
-				<h2>Something went wrong</h2>
-			</Container>
-		);
-	}
-
 	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const service = e.target.value;
 		setActivePath(service);
 		router.push(`/projects/${params.projectId}/${service}`);
 	};
-
-	const createLink = (ind: number) => {
-		let url = "/projects";
-		if (ind == 1) {
-			return url;
-		}
-
-		url = url + `/${params.projectId}`;
-		if (ind == 2) {
-			return url;
-		}
-
-		url = url + `/${activePath}`;
-		if (ind == 3) {
-			return url;
-		}
-
-		return "/projects";
-	};
-
-	let breadCrumbItems: React.JSX.Element[] = [];
-	paths.forEach((path, ind) => {
-		if (path === "") return;
-		if (ind === 4) return;
-
-		const url = createLink(ind);
-
-		if (ind !== paths.length - 1) {
-			let element = (
-				<Link
-					href={url}
-					className={styles.item}
-					key={`path-${path}-index-${ind}`}
-					data-type="link"
-					data-variant="primary"
-				>
-					{ind === 2 ? project.projectName : path}
-				</Link>
-			);
-
-			breadCrumbItems.push(element);
-			if (ind !== 3)
-				breadCrumbItems.push(<p key={`seperator-${ind}`}> / </p>);
-		} else {
-			breadCrumbItems.push(
-				<p key={`path-${path}-index-${ind}`} className={styles.item}>
-					{ind === 2 ? project.projectName : path}
-				</p>
-			);
-		}
-	});
 
 	return (
 		<div className={styles.project}>
@@ -179,16 +111,22 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 							projects
 						</Link>
 						/
-						<Link
-							href={`/projects/${params.projectId}`}
-							className={styles.item}
-							data-type="link"
-							data-variant="primary"
-						>
-							{project.projectName.toLowerCase()}
-						</Link>
+						{project ? (
+							<Link
+								href={`/projects/${params.projectId}`}
+								className={styles.item}
+								data-type="link"
+								data-variant="primary"
+							>
+								{project?.projectName.toLowerCase()}
+							</Link>
+						) : (
+							<p data-variant="primary" data-type="link">
+								Project not found
+							</p>
+						)}
 					</div>
-					{project.services.length > 0 && (
+					{project && project.services.length > 0 && (
 						<div className={styles.select}>
 							<select onChange={handleChange} value={activePath}>
 								<option value="">Select a service</option>
@@ -208,7 +146,25 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 				</div>
 			</Container>
 
-			<div>{children}</div>
+			{project ? (
+				<div>{children}</div>
+			) : (
+				<Container>
+					<div data-empty={true}>
+						<h3>
+							Oops, something went wrong! Give the page a refresh.
+							If that doesn't work, let us know at{" "}
+							<a
+								href="mailto:info@adgytec.in"
+								data-type="link"
+								data-variant="primary"
+							>
+								info@adgytec.in
+							</a>
+						</h3>
+					</div>
+				</Container>
+			)}
 		</div>
 	);
 };
