@@ -71,7 +71,7 @@ const Blogs = () => {
 
 	const elements: JSX.Element[] = [];
 	allBlogs.forEach((blog) => {
-		const { blogId, title, author } = blog;
+		const { blogId, title, author, category } = blog;
 		const element = (
 			<BlogItem key={blogId} blog={blog} setAllBlogs={setAllBlogs} />
 		);
@@ -84,7 +84,8 @@ const Blogs = () => {
 		if (
 			blogId.toLowerCase().includes(search.toLowerCase()) ||
 			title.toLowerCase().includes(search.toLowerCase()) ||
-			author.toLowerCase().includes(search.toLowerCase())
+			author.toLowerCase().includes(search.toLowerCase()) ||
+			category.name.toLowerCase().includes(search.toLowerCase())
 		)
 			elements.push(element);
 	});
