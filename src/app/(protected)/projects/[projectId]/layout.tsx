@@ -164,7 +164,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 					<div data-empty={true}>
 						<h3>
 							Oops, something went wrong! Give the page a refresh.
-							If that doesn't work, let us know at{" "}
+							If that doesn&apos;t work, let us know at{" "}
 							<a
 								href="mailto:info@adgytec.in"
 								data-type="link"
