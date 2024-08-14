@@ -14,6 +14,10 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import {
+	Category,
+	ProjectMetadataContext,
+} from "./context/projectMetadataContext";
 
 interface ProjectObj {
 	projectName: string;
@@ -21,6 +25,7 @@ interface ProjectObj {
 		id: string;
 		name: string;
 	}[];
+	categories: Category;
 }
 
 const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
@@ -54,7 +59,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.error) throw new Error(res.message);
-				console.log(res.data.categories);
+
 				setProject(res.data);
 			})
 			.catch((err) => {
@@ -147,7 +152,13 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 			</Container>
 
 			{project ? (
-				<div>{children}</div>
+				<ProjectMetadataContext.Provider
+					value={{
+						categories: project.categories,
+					}}
+				>
+					<div>{children}</div>
+				</ProjectMetadataContext.Provider>
 			) : (
 				<Container>
 					<div data-empty={true}>
