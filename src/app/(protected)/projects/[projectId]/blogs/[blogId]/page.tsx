@@ -27,6 +27,7 @@ export interface BlogItem {
 	createdAt: string;
 	updatedAt: string;
 	cover: string;
+	category: string;
 }
 
 const Blog = () => {
@@ -103,15 +104,20 @@ const Blog = () => {
 	return (
 		<div className={styles.blog}>
 			<div className={styles.metadata}>
-				<Image
+				<img
 					src={blogItem.cover}
 					width="500"
 					height="250"
 					alt={blogItem.title}
 				/>
-				<h1>{blogItem?.title}</h1>
+				<h1>{blogItem.title}</h1>
 
-				<p>{blogItem?.author}</p>
+				<p>{blogItem.author}</p>
+
+				<p>
+					<strong>Category: </strong>
+					{blogItem.category}
+				</p>
 
 				<p className={styles.date}>{createdAt.toDateString()}</p>
 

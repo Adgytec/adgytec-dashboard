@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 export interface Category {
-	categoryid: string;
+	categoryId: string;
 	categoryName: string;
 	subCategories: Category[];
 }

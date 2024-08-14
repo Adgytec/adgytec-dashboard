@@ -25,6 +25,7 @@ export type BlogDetails = {
 	cover: File | null;
 	content: string;
 	author: string;
+	category: string;
 };
 
 export interface NewImages {
@@ -50,6 +51,7 @@ const CreateBlog = () => {
 		content: "",
 		cover: null,
 		author: "",
+		category: params.projectId,
 	});
 
 	const newImagesRef = useRef<NewImages[]>([]);

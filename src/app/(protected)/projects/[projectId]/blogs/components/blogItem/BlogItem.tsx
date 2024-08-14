@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef, useState } from "react";
+import React, { Fragment, useContext, useMemo, useRef, useState } from "react";
 import styles from "./blogItem.module.scss";
 import { Blog } from "../../page";
 import Image from "next/image";
@@ -18,17 +18,24 @@ import Container from "@/components/Container/Container";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { trimStringWithEllipsis } from "@/helpers/helpers";
+import {
+	Category,
+	ProjectMetadataContext,
+} from "../../../context/projectMetadataContext";
 
 interface BlogItemProps {
 	blog: Blog;
 	setAllBlogs: React.Dispatch<React.SetStateAction<Blog[]>>;
 }
 
+type HandleCategories = (item: Category) => React.JSX.Element;
+
 const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(() => {
 		return userWithRole ? userWithRole.user : null;
 	}, [userWithRole]);
+	const projectMetadata = useContext(ProjectMetadataContext);
 
 	const [cover, setCover] = useFile();
 	const [coverError, setCoverError] = useState<null | string>(null);
@@ -40,6 +47,8 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 		return {
 			title: blog.title,
 			summary: blog.summary ? blog.summary : "",
+			category: blog.category.id,
+			categoryName: blog.category.name,
 		};
 	});
 	const [updating, setUpdating] = useState(false);
@@ -56,6 +65,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 		e:
 			| React.ChangeEvent<HTMLInputElement>
 			| React.ChangeEvent<HTMLTextAreaElement>
+			| React.ChangeEvent<HTMLSelectElement>
 	) => {
 		let key = e.target.name;
 		let value = e.target.value;
@@ -70,7 +80,8 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 
 	let isUpdateDisabled =
 		blogDetails.summary === blog.summary &&
-		blogDetails.title === blog.title;
+		blogDetails.title === blog.title &&
+		blogDetails.category === blog.category.id;
 
 	const validateInput = () => {
 		if (!validateString(blogDetails.title, 3)) {
@@ -102,6 +113,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 		const body = JSON.stringify({
 			title: blogDetails.title,
 			summary: blogDetails.summary,
+			category: blogDetails.category,
 		});
 
 		fetch(url, {
@@ -115,6 +127,8 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 				toast.success(res.message);
 				blog.title = blogDetails.title;
 				blog.summary = blogDetails.summary;
+				blog.category.id = blogDetails.category;
+				blog.category.name = blogDetails.categoryName;
 				setIsEdit(false);
 			})
 			.catch((err) => {
@@ -199,6 +213,29 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 			.finally(() => {
 				setCoverUpdating(false);
 			});
+	};
+
+	const handleCategories: HandleCategories = ({
+		categoryId,
+		categoryName,
+		subCategories,
+	}) => {
+		return (
+			<Fragment key={blog.blogId + categoryId}>
+				<option
+					value={categoryId}
+					onClick={() =>
+						setBlogDetails((prev) => {
+							return { ...prev, categoryName: categoryName };
+						})
+					}
+				>
+					{categoryName}
+				</option>
+				{subCategories.length > 0 &&
+					subCategories.map((item) => handleCategories(item))}
+			</Fragment>
+		);
 	};
 
 	return (
@@ -375,6 +412,27 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 							</div>
 							<div className={styles.metadata}>
 								<p>{blog.author}</p>
+								{isEdit ? (
+									<select
+										onChange={handleInputChange}
+										name="category"
+										value={blogDetails.category}
+										disabled={updating}
+									>
+										<option value={params.projectId}>
+											default
+										</option>
+
+										{projectMetadata &&
+											projectMetadata.categories
+												.subCategories.length > 0 &&
+											projectMetadata.categories.subCategories.map(
+												(item) => handleCategories(item)
+											)}
+									</select>
+								) : (
+									<p>{blog.category.name}</p>
+								)}
 								<p>{d.toDateString()}</p>
 							</div>
 							<div className={styles.summary}>

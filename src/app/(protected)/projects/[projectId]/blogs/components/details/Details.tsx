@@ -1,5 +1,6 @@
 import React, {
 	Dispatch,
+	Fragment,
 	MutableRefObject,
 	SetStateAction,
 	useContext,
@@ -18,6 +19,10 @@ import Loader from "@/components/Loader/Loader";
 import Link from "next/link";
 import { useFile } from "@/components/FileInput/hooks/useFile";
 import FileInput from "@/components/FileInput/FileInput";
+import {
+	Category,
+	ProjectMetadataContext,
+} from "../../../context/projectMetadataContext";
 
 interface DetailsProps {
 	blogDetails: BlogDetails;
@@ -26,6 +31,8 @@ interface DetailsProps {
 	deletedImages: string[];
 	uuidRef: MutableRefObject<string | null>;
 }
+
+type HandleCategories = (item: Category) => React.JSX.Element;
 
 const Details = ({
 	blogDetails,
@@ -39,6 +46,8 @@ const Details = ({
 		return userWithRole ? userWithRole.user : null;
 	}, [userWithRole]);
 
+	const projectMetadata = useContext(ProjectMetadataContext);
+
 	const params = useParams<{ projectId: string }>();
 	const pathName = usePathname();
 	const [cover, setCover] = useFile();
@@ -47,20 +56,6 @@ const Details = ({
 	const [creating, setCreating] = useState<boolean>(false);
 
 	const router = useRouter();
-
-	// const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const files = e.target.files;
-	// 	if (!files) {
-	// 		toast.error("Something went wrong while seleting file");
-	// 		return;
-	// 	}
-
-	// 	setBlogDetails((prev) => {
-	// 		return { ...prev, cover: files[0] };
-	// 	});
-	// 	const url = URL.createObjectURL(files[0]);
-	// 	setImagePreview(url);
-	// };
 
 	useEffect(() => {
 		if (cover.length !== 0) {
@@ -111,6 +106,7 @@ const Details = ({
 		blogData.append("summary", blogDetails.summary);
 		blogData.append("author", blogDetails.author);
 		blogData.append("content", blogDetails.content);
+		blogData.append("category", blogDetails.category);
 
 		const createBlogURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}`;
 		fetch(createBlogURL, {
@@ -226,6 +222,7 @@ const Details = ({
 		e:
 			| React.ChangeEvent<HTMLInputElement>
 			| React.ChangeEvent<HTMLTextAreaElement>
+			| React.ChangeEvent<HTMLSelectElement>
 	) => {
 		let key = e.target.name;
 		let value = e.target.value;
@@ -240,6 +237,20 @@ const Details = ({
 		!blogDetails.content ||
 		!blogDetails.cover ||
 		!blogDetails.author;
+
+	const handleCategories: HandleCategories = ({
+		categoryId,
+		categoryName,
+		subCategories,
+	}) => {
+		return (
+			<Fragment key={categoryId}>
+				<option value={categoryId}>{categoryName}</option>
+				{subCategories.length > 0 &&
+					subCategories.map((item) => handleCategories(item))}
+			</Fragment>
+		);
+	};
 
 	return (
 		<div className={styles.details}>
@@ -270,6 +281,27 @@ const Details = ({
 						required
 						disabled={creating}
 					/>
+				</div>
+
+				<div className={styles.input}>
+					<label htmlFor="category">Category</label>
+
+					<select
+						id="category"
+						name="category"
+						onChange={handleInputChange}
+						value={blogDetails.category}
+						disabled={creating}
+					>
+						<option value={params.projectId}>default</option>
+
+						{projectMetadata &&
+							projectMetadata.categories.subCategories.length >
+								0 &&
+							projectMetadata.categories.subCategories.map(
+								(item) => handleCategories(item)
+							)}
+					</select>
 				</div>
 
 				<div className={styles.input}>

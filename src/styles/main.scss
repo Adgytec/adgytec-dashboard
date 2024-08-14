@@ -110,7 +110,8 @@ div[data-empty="true"] {
 }
 
 input,
-textarea {
+textarea,
+select {
 	width: min(100%, var(--input-width));
 }
 

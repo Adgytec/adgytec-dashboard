@@ -70,6 +70,12 @@
 					// resize: none;
 				}
 
+				select {
+					--input-width: 15rem;
+
+					font-size: 1rem;
+				}
+
 				.metadata {
 					display: flex;
 					gap: 1em;

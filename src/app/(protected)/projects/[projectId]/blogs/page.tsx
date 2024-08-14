@@ -16,6 +16,11 @@ import BlogItem from "./components/blogItem/BlogItem";
 import Loader from "@/components/Loader/Loader";
 import Container from "@/components/Container/Container";
 
+interface CategroyDetail {
+	id: string;
+	name: string;
+}
+
 export interface Blog {
 	title: string;
 	summary?: string;
@@ -23,6 +28,7 @@ export interface Blog {
 	blogId: string;
 	createdAt: string;
 	cover: string;
+	category: CategroyDetail;
 }
 
 const Blogs = () => {
