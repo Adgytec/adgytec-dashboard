@@ -1,14 +1,20 @@
 import React from "react";
 import styles from "./container.module.scss";
 
-interface ContainerProps {
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 	type?: "normal" | "wide" | "full" | "sm-full" | "lg-full" | "sm-full-wide";
 	children?: React.ReactNode;
 	className?: string;
-	style?: React.CSSProperties;
+	// style?: React.CSSProperties;
 }
 
-const Container = ({ type, children, className, style }: ContainerProps) => {
+const Container = ({
+	type,
+	children,
+	className,
+	// style,
+	...restProps
+}: ContainerProps) => {
 	const getClassname = (type: string | undefined) => {
 		switch (type) {
 			case "normal":
@@ -33,7 +39,7 @@ const Container = ({ type, children, className, style }: ContainerProps) => {
 			className={`${getClassname(type)} ${className ? className : ""} ${
 				styles.container
 			}`}
-			style={style}
+			{...restProps}
 		>
 			{children}
 		</div>

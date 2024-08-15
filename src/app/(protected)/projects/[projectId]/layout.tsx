@@ -105,50 +105,48 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<div className={styles.project}>
-			<Container>
-				<div className={styles.nav}>
-					<div className={styles.bread_crumb}>
+			<Container className={styles.nav}>
+				<div className={styles.bread_crumb}>
+					<Link
+						href="/projects"
+						className={styles.item}
+						data-type="link"
+					>
+						projects
+					</Link>
+					/
+					{project ? (
 						<Link
-							href="/projects"
+							href={`/projects/${params.projectId}`}
 							className={styles.item}
 							data-type="link"
+							data-variant="primary"
 						>
-							projects
+							{project?.projectName.toLowerCase()}
 						</Link>
-						/
-						{project ? (
-							<Link
-								href={`/projects/${params.projectId}`}
-								className={styles.item}
-								data-type="link"
-								data-variant="primary"
-							>
-								{project?.projectName.toLowerCase()}
-							</Link>
-						) : (
-							<p data-variant="primary" data-type="link">
-								Project not found
-							</p>
-						)}
-					</div>
-					{project && project.services.length > 0 && (
-						<div className={styles.select}>
-							<select onChange={handleChange} value={activePath}>
-								<option value="">Select a service</option>
-								{project.services.map((service) => {
-									return (
-										<option
-											key={service.id}
-											value={service.name}
-										>
-											{service.name}
-										</option>
-									);
-								})}
-							</select>
-						</div>
+					) : (
+						<p data-variant="primary" data-type="link">
+							Project not found
+						</p>
 					)}
 				</div>
+				{project && project.services.length > 0 && (
+					<div className={styles.select}>
+						<select onChange={handleChange} value={activePath}>
+							<option value="">Select a service</option>
+							{project.services.map((service) => {
+								return (
+									<option
+										key={service.id}
+										value={service.name}
+									>
+										{service.name}
+									</option>
+								);
+							})}
+						</select>
+					</div>
+				)}
 			</Container>
 
 			{project ? (
@@ -157,23 +155,21 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 						categories: project.categories,
 					}}
 				>
-					<div>{children}</div>
+					{children}
 				</ProjectMetadataContext.Provider>
 			) : (
-				<Container>
-					<div data-empty={true}>
-						<h3>
-							Oops, something went wrong! Give the page a refresh.
-							If that doesn&apos;t work, let us know at{" "}
-							<a
-								href="mailto:info@adgytec.in"
-								data-type="link"
-								data-variant="primary"
-							>
-								info@adgytec.in
-							</a>
-						</h3>
-					</div>
+				<Container data-empty={true}>
+					<h3>
+						Oops, something went wrong! Give the page a refresh. If
+						that doesn&apos;t work, let us know at{" "}
+						<a
+							href="mailto:info@adgytec.in"
+							data-type="link"
+							data-variant="secondary"
+						>
+							info@adgytec.in
+						</a>
+					</h3>
 				</Container>
 			)}
 		</div>

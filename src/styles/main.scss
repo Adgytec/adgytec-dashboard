@@ -105,6 +105,8 @@ div[data-load="true"],
 div[data-empty="true"] {
 	display: grid;
 	min-height: 22rem;
+	max-height: 22rem;
+	height: 22rem;
 
 	place-items: center;
 }

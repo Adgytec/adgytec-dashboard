@@ -6,6 +6,7 @@
 	min-height: 100%;
 
 	grid-template-rows: auto 1fr;
+	align-content: start;
 
 	.nav {
 		--_text: clamp(0.8rem, 3.25vi, 1.25rem);
@@ -21,9 +22,7 @@
 			select {
 				--input-bg: var(--bg-400);
 
-				// width: clamp(10rem, 35vi, 15rem);
 				width: 15rem;
-				// font-size: var(--_text);
 			}
 		}
 
@@ -35,7 +34,6 @@
 			padding: 0.5em 0.75em;
 			border-radius: 0.25rem;
 
-			// font-size: var(--_text);
 			font-weight: 600;
 		}
 	}
@@ -43,7 +41,6 @@
 	.home {
 		display: grid;
 		gap: 2em;
-		height: 100%;
 		grid-template-rows: auto auto 1fr;
 
 		.info {
@@ -58,6 +55,7 @@
 
 		.image {
 			align-self: end;
+
 			img {
 				width: auto;
 				height: auto;
