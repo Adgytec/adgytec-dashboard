@@ -51,6 +51,7 @@ class ImageNode extends DecoratorNode<JSX.Element> {
 	}
 
 	static importDOM(): DOMConversionMap<any> | null {
+		return null;
 		return {
 			img: (node: HTMLElement): DOMConversion<HTMLElement> | null => {
 				if (node instanceof HTMLImageElement) {
