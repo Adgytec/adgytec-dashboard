@@ -1,6 +1,7 @@
 :root {
-	--_radius: 0.8em;
+	--_radius: 0.5em;
 	--_bg-select: var(--bg-200);
+	--_bg-editor: var(--bg-400);
 	--_link: var(--accent-secondary);
 }
 
@@ -38,7 +39,7 @@
 	position: relative;
 
 	// rohan
-	background-color: var(--bg-400);
+	background-color: var(--_bg-editor);
 	border-bottom-left-radius: var(--_radius);
 	border-bottom-right-radius: var(--_radius);
 
@@ -461,7 +462,7 @@ pre::-webkit-scrollbar-thumb {
 	background-color: rgba(223, 232, 250, 0.3);
 
 	// rohan
-	background-color: var(--bg-400);
+	background-color: var(--_bg-editor);
 }
 
 .toolbar button.toolbar-item.active i {
@@ -473,7 +474,7 @@ pre::-webkit-scrollbar-thumb {
 	background-color: #eee;
 
 	// rohan
-	background-color: var(--bg-400);
+	background-color: var(--_bg-editor);
 }
 
 .toolbar .divider {
@@ -673,7 +674,7 @@ i.chevron-down {
 	background-color: #eee;
 
 	// rohan
-	background-color: var(--bg-400);
+	background-color: var(--_bg-editor);
 }
 
 .dropdown .item .text {
@@ -728,7 +729,7 @@ i.chevron-down {
 	font-family: inherit;
 
 	// rohan
-	background-color: var(--bg-400);
+	background-color: var(--_bg-editor);
 	color: var(--text);
 }
 

@@ -155,7 +155,13 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
 						categories: project.categories,
 					}}
 				>
-					{children}
+					{/* 
+                    check parent styles
+                    need this div otherwise adding grid on children 
+                    will result in height being 100% and on less items 
+                    elements will be seperated
+                     */}
+					<div>{children}</div>
 				</ProjectMetadataContext.Provider>
 			) : (
 				<Container data-empty={true}>
