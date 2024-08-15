@@ -18,6 +18,8 @@ import styles from "./blog.module.scss";
 import Image from "next/image";
 import EditEditor from "../components/editor/EditEditor";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export interface BlogItem {
 	blogId: string;
@@ -110,26 +112,30 @@ const Blog = () => {
 					height="250"
 					alt={blogItem.title}
 				/>
+
 				<h1>{blogItem.title}</h1>
 
-				<p>{blogItem.author}</p>
-
-				<p>
-					<strong>Category: </strong>
-					{blogItem.category}
-				</p>
-
-				<p className={styles.date}>{createdAt.toDateString()}</p>
-
-				<div className={styles.edit}>
-					<button
-						onClick={() => setIsEdit((prev) => !prev)}
-						data-type="link"
-						data-variant="secondary"
-					>
-						{isEdit ? "Cancel" : "Edit"}
-					</button>
+				<div className={styles.more}>
+					<p>{blogItem.author}</p>
+					<p>{blogItem.category}</p>
+					<p>{createdAt.toDateString()}</p>
 				</div>
+			</div>
+
+			<div className={styles.action}>
+				<button
+					onClick={() => setIsEdit((prev) => !prev)}
+					data-type="link"
+					data-variant={isEdit ? "error" : "secondary"}
+				>
+					{isEdit ? (
+						"Cancel"
+					) : (
+						<>
+							Edit <FontAwesomeIcon icon={faPenToSquare} />
+						</>
+					)}
+				</button>
 			</div>
 
 			{!isEdit ? (
