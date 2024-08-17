@@ -96,6 +96,7 @@ const ProjectCreate = () => {
 						setFiles={setCover}
 						multiple={false}
 						disabled={creating}
+						files={cover}
 					/>
 				</div>
 

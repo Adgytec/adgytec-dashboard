@@ -325,6 +325,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 									setFiles={setCover}
 									multiple={false}
 									disabled={coverUpdating}
+									files={cover}
 								/>
 							</div>
 

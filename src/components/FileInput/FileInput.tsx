@@ -10,6 +10,7 @@ interface FileInputProps {
 	setFiles: React.Dispatch<React.SetStateAction<FileElement[]>>;
 	disabled?: boolean;
 	image?: File | null;
+	files: FileElement[];
 }
 
 export interface FileElement {
@@ -20,7 +21,13 @@ export interface FileElement {
 const acceptedFormat = ["image/png", "image/jpg", "image/jpeg"];
 const LIMIT = 50;
 
-const FileInput = ({ multiple, setFiles, disabled, image }: FileInputProps) => {
+const FileInput = ({
+	multiple,
+	setFiles,
+	disabled,
+	image,
+	files,
+}: FileInputProps) => {
 	const isMultipleAllowedRef = useRef(multiple ? true : false);
 	const dragAreaRef = useRef<HTMLDivElement | null>(null);
 
@@ -180,7 +187,7 @@ const FileInput = ({ multiple, setFiles, disabled, image }: FileInputProps) => {
 			onDragLeave={handleDragLeave}
 			ref={dragAreaRef}
 		>
-			{previewURL.length > 0 && (
+			{files.length > 0 && previewURL.length > 0 && (
 				<div className={styles.preview}>
 					{previewURL.map((url) => {
 						return (
@@ -207,7 +214,7 @@ const FileInput = ({ multiple, setFiles, disabled, image }: FileInputProps) => {
 					disabled={disabled}
 				/>
 
-				{previewURL.length > 0 && (
+				{files.length > 0 && previewURL.length > 0 && (
 					<span>File Selected: {previewURL.length}</span>
 				)}
 

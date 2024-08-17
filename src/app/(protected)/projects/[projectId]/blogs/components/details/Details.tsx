@@ -323,6 +323,7 @@ const Details = ({
 						multiple={false}
 						disabled={creating}
 						image={blogDetails.cover}
+						files={cover}
 					/>
 				</div>
 
