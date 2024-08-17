@@ -11,6 +11,7 @@ interface FileInputProps {
 	disabled?: boolean;
 	image?: File | null;
 	files: FileElement[];
+	id?: string;
 }
 
 export interface FileElement {
@@ -27,6 +28,7 @@ const FileInput = ({
 	disabled,
 	image,
 	files,
+	id,
 }: FileInputProps) => {
 	const isMultipleAllowedRef = useRef(multiple ? true : false);
 	const dragAreaRef = useRef<HTMLDivElement | null>(null);
@@ -68,6 +70,7 @@ const FileInput = ({
 				url,
 			});
 		} else {
+			toast.success("two");
 			let allUnsupported = true;
 			let ind = 0;
 
@@ -209,7 +212,7 @@ const FileInput = ({
 					accept=".jpg, .jpeg, .png"
 					required
 					onChange={handleFileChange}
-					id="user-file-input"
+					id={`user-file-input${id ? "-" + id : ""}`}
 					multiple={isMultipleAllowedRef.current}
 					disabled={disabled}
 				/>
@@ -219,8 +222,10 @@ const FileInput = ({
 				)}
 
 				<span>
-					<label htmlFor="user-file-input">Choose a file</label> or{" "}
-					<FontAwesomeIcon icon={faImage} /> drag and drop here
+					<label htmlFor={`user-file-input${id ? "-" + id : ""}`}>
+						Choose a file
+					</label>{" "}
+					or <FontAwesomeIcon icon={faImage} /> drag and drop here
 				</span>
 			</div>
 		</div>
