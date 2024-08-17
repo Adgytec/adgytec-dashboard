@@ -104,7 +104,11 @@ const ProjectCreate = () => {
 					<button
 						data-type="button"
 						data-variant="secondary"
-						disabled={creating}
+						disabled={
+							creating ||
+							cover.length === 0 ||
+							projectName.length === 0
+						}
 						data-load={creating}
 						type="submit"
 					>
