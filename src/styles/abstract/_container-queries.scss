@@ -29,3 +29,15 @@
 		@content;
 	}
 }
+
+@mixin album-table {
+	@container album (max-width: 40em) {
+		@content;
+	}
+}
+
+@mixin album-item {
+	@container album-item (max-width: 40em) {
+		@content;
+	}
+}

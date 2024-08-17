@@ -10,7 +10,6 @@ import React, {
 } from "react";
 import { toast } from "react-toastify";
 import styles from "./blogs.module.scss";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import BlogItem from "./components/blogItem/BlogItem";
 import Loader from "@/components/Loader/Loader";
