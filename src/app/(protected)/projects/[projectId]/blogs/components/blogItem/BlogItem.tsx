@@ -368,26 +368,45 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 			<div className={styles.container}>
 				<Container type="full" className={styles.details}>
 					<div className={styles.subContainer}>
-						<div className={styles.image} data-edit={isEdit}>
-							<img
-								src={blog.cover}
-								alt={blog.title}
-								width={250}
-								height={200}
-							/>
-							{isEdit && (
-								<button
-									data-type="link"
-									data-variant="primary"
-									disabled={updating}
-									onClick={() =>
-										updateCoverRef.current?.showModal()
-									}
-								>
-									Update Cover
-								</button>
-							)}
-						</div>
+						{blog.cover.length > 0 ? (
+							<div className={styles.image} data-edit={isEdit}>
+								<img
+									src={blog.cover}
+									alt={blog.title}
+									width={250}
+									height={200}
+								/>
+								{isEdit && (
+									<button
+										data-type="link"
+										data-variant="primary"
+										disabled={updating}
+										onClick={() =>
+											updateCoverRef.current?.showModal()
+										}
+									>
+										Update Cover
+									</button>
+								)}
+							</div>
+						) : (
+							<div>
+								{isEdit ? (
+									<button
+										data-type="link"
+										data-variant="primary"
+										disabled={updating}
+										onClick={() =>
+											updateCoverRef.current?.showModal()
+										}
+									>
+										Add Cover
+									</button>
+								) : (
+									<p>No cover image</p>
+								)}
+							</div>
+						)}
 						<div className={styles.data}>
 							<div className={styles.title}>
 								{isEdit ? (
@@ -414,7 +433,7 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 								)}
 							</div>
 							<div className={styles.metadata}>
-								<p>{blog.author}</p>
+								{blog.author.length > 0 && <p>{blog.author}</p>}
 								{isEdit ? (
 									<select
 										onChange={handleInputChange}

@@ -84,7 +84,7 @@ interface EditorActionsProps {
 }
 function EditorActions({ setBlogDetails }: EditorActionsProps) {
 	const [editor] = useLexicalComposerContext();
-	const isEmpty = useLexicalIsTextContentEmpty(editor);
+	// const isEmpty = useLexicalIsTextContentEmpty(editor);
 	const pathName = usePathname();
 	const router = useRouter();
 
@@ -158,7 +158,7 @@ function EditorActions({ setBlogDetails }: EditorActionsProps) {
 				<button
 					data-type="button"
 					data-variant="secondary"
-					disabled={isEmpty}
+					// disabled={isEmpty}
 					onClick={handleEditorContent}
 				>
 					Next

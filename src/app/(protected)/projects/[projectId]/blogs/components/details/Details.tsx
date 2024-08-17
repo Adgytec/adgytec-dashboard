@@ -66,12 +66,15 @@ const Details = ({
 	}, [cover]);
 
 	const validateBlog = (): boolean => {
-		if (!validateString(blogDetails.content, 200)) {
+		if (!validateString(blogDetails.content, 50)) {
 			toast.error("blog content too short!");
 			return false;
 		}
 
-		if (!validateString(blogDetails.author, 3)) {
+		if (
+			blogDetails.author.length > 0 &&
+			!validateString(blogDetails.author, 3)
+		) {
 			toast.error("name too short");
 			return false;
 		}
@@ -93,7 +96,7 @@ const Details = ({
 	};
 
 	const createBlog = async () => {
-		if (!blogDetails.cover) return;
+		// if (!blogDetails.cover) return;
 
 		const token = await user?.getIdToken();
 		const headers = {
@@ -102,7 +105,7 @@ const Details = ({
 
 		const blogData = new FormData();
 		blogData.append("title", blogDetails.title);
-		blogData.append("cover", blogDetails.cover);
+		if (blogDetails.cover) blogData.append("cover", blogDetails.cover);
 		blogData.append("summary", blogDetails.summary);
 		blogData.append("author", blogDetails.author);
 		blogData.append("content", blogDetails.content);
@@ -141,10 +144,10 @@ const Details = ({
 			return;
 		}
 
-		if (!blogDetails.cover) {
-			toast.error("cover image requried for blog");
-			return;
-		}
+		// if (!blogDetails.cover) {
+		// 	toast.error("cover image requried for blog");
+		// 	return;
+		// }
 
 		setCreating(true);
 		const validNewFiles = newImagesRef.current.filter(
@@ -232,11 +235,7 @@ const Details = ({
 		});
 	};
 
-	let isCreateDisabled =
-		!blogDetails.title ||
-		!blogDetails.content ||
-		!blogDetails.cover ||
-		!blogDetails.author;
+	let isCreateDisabled = !blogDetails.title || !blogDetails.content;
 
 	const handleCategories: HandleCategories = ({
 		categoryId,
@@ -278,7 +277,6 @@ const Details = ({
 						onChange={handleInputChange}
 						name="author"
 						id="author"
-						required
 						disabled={creating}
 					/>
 				</div>

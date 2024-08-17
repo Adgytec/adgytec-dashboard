@@ -210,7 +210,7 @@ const FileInput = ({
 				<input
 					type="file"
 					accept=".jpg, .jpeg, .png"
-					required
+					// required
 					onChange={handleFileChange}
 					id={`user-file-input${id ? "-" + id : ""}`}
 					multiple={isMultipleAllowedRef.current}

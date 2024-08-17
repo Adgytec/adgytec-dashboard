@@ -106,12 +106,14 @@ const Blog = () => {
 	return (
 		<div className={styles.blog}>
 			<div className={styles.metadata}>
-				<img
-					src={blogItem.cover}
-					width="500"
-					height="250"
-					alt={blogItem.title}
-				/>
+				{blogItem.cover.length > 0 && (
+					<img
+						src={blogItem.cover}
+						width="500"
+						height="250"
+						alt={blogItem.title}
+					/>
+				)}
 
 				<h1>{blogItem.title}</h1>
 
