@@ -112,6 +112,8 @@
 .editor-image {
 	object-fit: cover;
 	display: inline;
+	height: auto;
+	width: min(100%, 50rem);
 }
 
 // code when from toolbar
