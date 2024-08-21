@@ -298,7 +298,7 @@ function EditorActions({
 				<button
 					data-type="button"
 					data-variant="secondary"
-					disabled={isEmpty || updating}
+					disabled={updating}
 					onClick={handleEditorContent}
 					data-load={updating}
 				>
