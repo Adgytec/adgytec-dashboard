@@ -6,6 +6,7 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 import { toast } from "react-toastify";
@@ -14,6 +15,7 @@ import { useParams } from "next/navigation";
 import BlogItem from "./components/blogItem/BlogItem";
 import Loader from "@/components/Loader/Loader";
 import Container from "@/components/Container/Container";
+import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
 
 interface CategroyDetail {
 	id: string;
@@ -30,6 +32,8 @@ export interface Blog {
 	category: CategroyDetail;
 }
 
+const LIMIT = 20;
+
 const Blogs = () => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(() => {
@@ -41,31 +45,72 @@ const Blogs = () => {
 	const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
 	const [search, setSearch] = useState<string>("");
 	const [loading, setLoading] = useState(true);
+	const [allFetched, setAllFetched] = useState(false);
 
-	const getAllBlogs = useCallback(async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}`;
-		const token = await user?.getIdToken();
-		const headers = {
-			Authorization: `Bearer ${token}`,
-		};
+	const callback: IntersectionObserverCallback = useCallback(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting && search.length == 0) {
+					let lastInd = allBlogs.length;
+					if (lastInd <= 0) return;
 
-		fetch(url, {
-			method: "GET",
-			headers,
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				if (res.error) throw new Error(res.message);
-				setAllBlogs(res.data);
+					let newCursor = new Date(
+						allBlogs[lastInd - 1].createdAt
+					).toISOString();
+					getAllBlogs(newCursor);
+				}
+			});
+		},
+		[search, allBlogs]
+	);
+
+	const elementRef = useIntersection(
+		callback,
+		document.getElementById("content-root")
+	);
+
+	const getAllBlogs = useCallback(
+		async (cursor: string) => {
+			if (allFetched) return;
+
+			const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}?cursor=${cursor}`;
+			const token = await user?.getIdToken();
+			const headers = {
+				Authorization: `Bearer ${token}`,
+			};
+
+			fetch(url, {
+				method: "GET",
+				headers,
 			})
-			.catch((err) => {
-				toast.error(err.message);
-			})
-			.finally(() => setLoading(false));
-	}, [user, params.projectId]);
+				.then((res) => res.json())
+				.then((res) => {
+					if (res.error) throw new Error(res.message);
+					let len = res.data.length;
+					if (len < LIMIT) {
+						setAllFetched(true);
+					}
+					setAllBlogs((prev) => {
+						const newBlogs = res.data.filter(
+							(blog: Blog) =>
+								!prev.some(
+									(existingBlog) =>
+										existingBlog.blogId === blog.blogId
+								)
+						);
+						return [...prev, ...newBlogs];
+					});
+				})
+				.catch((err) => {
+					toast.error(err.message);
+				})
+				.finally(() => setLoading(false));
+		},
+		[user, params.projectId, allFetched]
+	);
 
 	useEffect(() => {
-		getAllBlogs();
+		getAllBlogs(new Date().toISOString());
 	}, [getAllBlogs]);
 
 	const elements: JSX.Element[] = [];
@@ -133,6 +178,8 @@ const Blogs = () => {
 						</div>
 
 						{elements}
+
+						<div ref={elementRef}></div>
 					</Container>
 				)}
 			</div>

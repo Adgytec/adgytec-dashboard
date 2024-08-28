@@ -1,29 +1,36 @@
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 
-type Callback = IntersectionObserverCallback;
 type UseIntersection = (
-	callback: Callback
-) => MutableRefObject<HTMLElement | null>;
+	callback: IntersectionObserverCallback,
+	root?: HTMLElement | null
+) => MutableRefObject<HTMLDivElement | null>;
 
-const useIntersection: UseIntersection = (callback) => {
-	const elementRef = useRef<HTMLElement | null>(null);
+export const useIntersection: UseIntersection = (callback, root = null) => {
+	const elementRef = useRef<HTMLDivElement | null>(null);
 
-	const options = useMemo(() => {
+	const options: IntersectionObserverInit = useMemo(() => {
 		return {
-			root: null,
-			rootMargin: "0 0 -100vb 0",
+			root: root,
+			rootMargin: "0px 0px 0px 0px",
 			threshold: 1,
-		} as IntersectionObserverInit;
+		};
 	}, []);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(callback, options);
-		if (elementRef.current) observer.observe(elementRef.current);
+
+		if (elementRef.current) {
+			// console.log("observing");
+			observer.observe(elementRef.current);
+		}
 
 		return () => {
-			if (elementRef.current) observer.unobserve(elementRef.current);
+			if (elementRef.current) {
+				// console.log("unobserving");
+				observer.unobserve(elementRef.current);
+			}
 		};
-	}, [elementRef, callback, options]);
+	}, [elementRef.current, callback, options]);
 
 	return elementRef;
 };

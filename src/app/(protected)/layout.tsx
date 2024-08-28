@@ -43,7 +43,9 @@ export default function ProtectedLayout({
 				<div className={styles.main} onClick={handleExpandClick}>
 					<Header />
 
-					<main className={styles.content}>{children}</main>
+					<main id="content-root" className={styles.content}>
+						{children}
+					</main>
 				</div>
 			</div>
 		</AuthProvider>
