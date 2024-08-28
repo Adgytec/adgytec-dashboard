@@ -11,7 +11,7 @@ export const useIntersection: UseIntersection = (callback, root = null) => {
 	const options: IntersectionObserverInit = useMemo(() => {
 		return {
 			root: root,
-			rootMargin: "0px 0px 0px 0px",
+			rootMargin: "0px 0px 100% 0px",
 			threshold: 1,
 		};
 	}, []);
