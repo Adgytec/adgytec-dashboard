@@ -24,3 +24,12 @@ export function trimStringWithEllipsis(str: string, maxLength = 400) {
 	}
 	return str;
 }
+
+const istOffset = 5.5 * 60 * 60 * 1000;
+export function getNow() {
+	const now = new Date();
+	const istDate = new Date(now.getTime() + istOffset);
+	const istISOString = istDate.toISOString().slice(0, -1);
+
+	return istISOString;
+}
