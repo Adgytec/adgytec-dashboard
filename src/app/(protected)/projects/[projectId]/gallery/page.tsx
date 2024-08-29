@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import AlbumItem from "./components/AlbumItem/AlbumItem";
 import Loader from "@/components/Loader/Loader";
 import Container from "@/components/Container/Container";
+import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
+import { getNow } from "@/helpers/helpers";
 
 export interface Album {
 	id: string;
@@ -21,6 +23,8 @@ export interface Album {
 	cover: string;
 	createdAt: string;
 }
+
+const LIMIT = 20;
 
 const GalleryPage = () => {
 	const userWithRole = useContext(UserContext);
@@ -33,31 +37,72 @@ const GalleryPage = () => {
 	const [search, setSearch] = useState<string>("");
 	const [allAlbums, setAllAlbums] = useState<Album[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [allFetched, setAllFetched] = useState(false);
 
-	const getAllAlbums = useCallback(async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums`;
-		const token = await user?.getIdToken();
-		const headers = {
-			Authorization: `Bearer ${token}`,
-		};
+	const callback: IntersectionObserverCallback = useCallback(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting && search.length == 0) {
+					let lastInd = allAlbums.length;
+					if (lastInd < LIMIT) return;
 
-		fetch(url, {
-			method: "GET",
-			headers,
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				if (res.error) throw new Error(res.message);
-				setAllAlbums(res.data);
+					let newCursor = new Date(
+						allAlbums[lastInd - 1].createdAt
+					).toISOString();
+					getAllAlbums(newCursor);
+				}
+			});
+		},
+		[search, allAlbums]
+	);
+
+	const elementRef = useIntersection(
+		callback,
+		document.getElementById("content-root")
+	);
+
+	const getAllAlbums = useCallback(
+		async (cursor: string) => {
+			if (allFetched) return;
+
+			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}`;
+			const token = await user?.getIdToken();
+			const headers = {
+				Authorization: `Bearer ${token}`,
+			};
+
+			fetch(url, {
+				method: "GET",
+				headers,
 			})
-			.catch((err) => {
-				toast.error(err.message);
-			})
-			.finally(() => setLoading(false));
-	}, [user, params.projectId]);
+				.then((res) => res.json())
+				.then((res) => {
+					if (res.error) throw new Error(res.message);
+					let len = res.data.length;
+					if (len < LIMIT) {
+						setAllFetched(true);
+					}
+					setAllAlbums((prev) => {
+						const newAlbums = res.data.filter(
+							(album: Album) =>
+								!prev.some(
+									(existingAlbum) =>
+										existingAlbum.id === album.id
+								)
+						);
+						return [...prev, ...newAlbums];
+					});
+				})
+				.catch((err) => {
+					toast.error(err.message);
+				})
+				.finally(() => setLoading(false));
+		},
+		[user, params.projectId, allFetched]
+	);
 
 	useEffect(() => {
-		getAllAlbums();
+		getAllAlbums(getNow());
 	}, [getAllAlbums]);
 
 	const elements: JSX.Element[] = [];
@@ -119,6 +164,8 @@ const GalleryPage = () => {
 						</div>
 
 						{elements}
+
+						<div ref={elementRef}></div>
 					</Container>
 				)}
 			</div>

@@ -16,6 +16,7 @@ import BlogItem from "./components/blogItem/BlogItem";
 import Loader from "@/components/Loader/Loader";
 import Container from "@/components/Container/Container";
 import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
+import { getNow } from "@/helpers/helpers";
 
 interface CategroyDetail {
 	id: string;
@@ -52,7 +53,7 @@ const Blogs = () => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting && search.length == 0) {
 					let lastInd = allBlogs.length;
-					if (lastInd <= 0) return;
+					if (lastInd < LIMIT) return;
 
 					let newCursor = new Date(
 						allBlogs[lastInd - 1].createdAt
@@ -110,7 +111,7 @@ const Blogs = () => {
 	);
 
 	useEffect(() => {
-		getAllBlogs(new Date().toISOString());
+		getAllBlogs(getNow());
 	}, [getAllBlogs]);
 
 	const elements: JSX.Element[] = [];
