@@ -27,6 +27,7 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<ViewPort />
 				<ToastContainer
+					stacked
 					position="bottom-right"
 					autoClose={5000}
 					limit={10}
