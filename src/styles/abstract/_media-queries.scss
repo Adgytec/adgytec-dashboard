@@ -53,6 +53,13 @@
 	}
 }
 
+// devices that support hover
+@mixin hover {
+	@media (hover: hover) and (pointer: fine) {
+		@content;
+	}
+}
+
 @mixin nav {
 	@include screen-64 {
 		@content;
