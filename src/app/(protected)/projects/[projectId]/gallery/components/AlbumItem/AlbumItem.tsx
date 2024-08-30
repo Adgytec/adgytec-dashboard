@@ -332,7 +332,7 @@ const AlbumItem = ({ album, setAllAlbums }: AlbumItemProps) => {
 								) : (
 									<h2 className={styles.title}>
 										<Link
-											href={`gallery/album/${album.id}`}
+											href={`gallery/album/${album.id}?name=${album.name}`}
 											data-type="link"
 										>
 											{trimStringWithEllipsis(
