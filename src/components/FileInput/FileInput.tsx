@@ -70,7 +70,6 @@ const FileInput = ({
 				url,
 			});
 		} else {
-			toast.success("two");
 			let allUnsupported = true;
 			let ind = 0;
 

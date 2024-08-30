@@ -1,7 +1,7 @@
 @use "/src/styles/abstract" as ab;
 
 .drop_area {
-	--_height: 22.5rem;
+	// --_height: 22.5rem;
 
 	padding: clamp(0.5em, 1.5vi, 1em);
 
@@ -20,8 +20,12 @@
 
 	grid-template-rows: 1fr auto;
 
+	span {
+		text-align: center;
+	}
+
 	.preview {
-		max-height: 20rem;
+		// max-height: 20rem;
 		overflow: auto;
 
 		display: grid;

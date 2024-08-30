@@ -1,0 +1,85 @@
+@use "/src/styles/abstract" as ab;
+
+.album {
+	display: grid;
+	gap: 2em;
+
+	.heading {
+		display: flex;
+		gap: 2em;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.container {
+		// outline: 2px solid lightblue;
+		display: grid;
+		gap: 1.5em;
+
+		.action {
+			text-align: right;
+		}
+
+		.images {
+			display: grid;
+			gap: 1em;
+
+			grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+			grid-auto-rows: 15rem;
+
+			@include ab.motion {
+				@include ab.hover {
+					&:hover {
+						> div {
+							scale: 0.9;
+						}
+					}
+				}
+			}
+
+			> div {
+				overflow: hidden;
+				border-radius: 0.5em;
+
+				transition: scale 200ms, border-radius 200ms;
+
+				@include ab.motion {
+					@include ab.hover {
+						&:hover {
+							scale: 1.1;
+							border-radius: 0;
+						}
+					}
+				}
+			}
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+
+				transition: scale 200ms;
+
+				@include ab.motion {
+					@include ab.hover {
+						&:hover {
+							scale: 1.1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.modal {
+	--_w: 70em;
+
+	.addImages {
+		--_input-width: 100%;
+		--_height: 70dvb;
+
+		display: grid;
+		gap: 0.5em;
+	}
+}

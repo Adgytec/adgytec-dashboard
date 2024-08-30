@@ -273,7 +273,6 @@ const AlbumItem = ({ album, setAllAlbums }: AlbumItemProps) => {
 
 								<button
 									data-type="button"
-									className={styles.delete}
 									disabled={coverUpdating || !cover.length}
 									data-load={coverUpdating}
 									onClick={handleCoverImage}
