@@ -70,6 +70,11 @@ const AlbumPage = () => {
 		success: 0,
 		failure: 0,
 	});
+	const [uploadStatus, setUploadStatus] = useState({
+		status: "pending",
+		success: 0,
+		failure: 0,
+	});
 
 	const [manage, setManage] = useState(false);
 	const [selected, setSelected] = useState<string[]>([]);
@@ -169,6 +174,12 @@ const AlbumPage = () => {
 				setAdding(false);
 				handleClose();
 
+				setUploadStatus({
+					success: 0,
+					failure: 0,
+					status: "pending",
+				});
+
 				if (uploadStatusRef.current.success > 0)
 					toast.success("successfully added images to the album");
 				else toast.error("failed to upload images");
@@ -211,10 +222,22 @@ const AlbumPage = () => {
 					const id = res.data.id;
 					setAddedPictures((prev) => [{ id, image }, ...prev]);
 					uploadStatusRef.current.success += 1;
+					setUploadStatus((prev) => {
+						return {
+							...prev,
+							success: uploadStatusRef.current.success,
+						};
+					});
 				})
 				.catch((err) => {
-					console.error("failed to upload one image");
+					console.error(err.message);
 					uploadStatusRef.current.failure += 1;
+					setUploadStatus((prev) => {
+						return {
+							...prev,
+							failure: uploadStatusRef.current.failure,
+						};
+					});
 				})
 				.finally(() => {
 					activeUploadRef.current--;
@@ -238,6 +261,11 @@ const AlbumPage = () => {
 			success: 0,
 			failure: 0,
 		};
+		setUploadStatus({
+			success: 0,
+			failure: 0,
+			status: "uploading",
+		});
 
 		uploadImages();
 	};
@@ -351,6 +379,28 @@ const AlbumPage = () => {
 						/>
 
 						{error && <p className="error">{error}</p>}
+
+						{uploadStatus.status === "uploading" && (
+							<div className={styles.status}>
+								<div>
+									<strong>Pending:</strong>{" "}
+									{images.length -
+										uploadStatus.success -
+										uploadStatus.failure}
+								</div>
+
+								<div className={styles.result}>
+									<div>
+										<strong>Successfull:</strong>{" "}
+										{uploadStatus.success}
+									</div>
+									<div>
+										<strong>Failed:</strong>{" "}
+										{uploadStatus.failure}
+									</div>
+								</div>
+							</div>
+						)}
 					</div>
 
 					<div className="action">
