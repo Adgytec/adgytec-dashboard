@@ -19,7 +19,7 @@ export interface FileElement {
 	url: string;
 }
 
-const acceptedFormat = ["image/png", "image/jpg", "image/jpeg"];
+const acceptedFormat = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 const LIMIT = 50;
 
 const FileInput = ({
@@ -208,7 +208,7 @@ const FileInput = ({
 			<div className={styles.input}>
 				<input
 					type="file"
-					accept=".jpg, .jpeg, .png"
+					accept=".jpg, .jpeg, .png, .webp"
 					// required
 					onChange={handleFileChange}
 					id={`user-file-input${id ? "-" + id : ""}`}
