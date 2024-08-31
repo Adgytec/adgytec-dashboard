@@ -606,17 +606,26 @@ export default function ToolbarPlugin({
 			const files = e.target.files;
 			if (!files) return;
 
-			const acceptedType = ["image/png", "image/jpg", "image/jpeg"];
+			const acceptedType = [
+				"image/png",
+				"image/jpg",
+				"image/jpeg",
+				"image/webp",
+				"image/svg+xml",
+				"image/gif",
+			];
 
 			let extension = files[0].type;
 
 			if (!acceptedType.includes(extension)) {
 				toast.error(
-					"You need to select either '.png' or '.jpg / .jpeg' images"
+					"You need to select either '.png', '.jpg / .jpeg', '.webp', '.svg' or '.gif' images"
 				);
 				return;
 			}
 			extension = extension.replace(/(.*)\//g, "");
+
+			if (extension == "svg+xml") extension = "svg";
 
 			const src = URL.createObjectURL(files[0]);
 			let path = `services/blogs/${params.projectId}/${
@@ -795,7 +804,7 @@ export default function ToolbarPlugin({
 					>
 						<input
 							type="file"
-							accept=".jpg, .jpeg, .png"
+							accept=".jpg, .jpeg, .png, .webp, .gif, .svg"
 							style={{ display: "none" }}
 							ref={mediaRef}
 							onChange={insertMedia}

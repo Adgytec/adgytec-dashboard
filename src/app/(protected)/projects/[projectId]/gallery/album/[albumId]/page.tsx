@@ -381,26 +381,52 @@ const AlbumPage = () => {
 											className={styles.imagesChild}
 										>
 											{pictures.map((picture, ind) => {
+												let isSvg =
+													picture.image.includes(
+														".svg"
+													);
+
+												// if(isSvg) return <img src={picture.image}>e
+
 												return (
 													<div key={picture.id}>
-														<Image
-															width="730"
-															height="640"
-															src={picture.image}
-															onClick={() =>
-																window.open(
-																	picture.image,
-																	"_blank"
-																)
-															}
-															alt=""
-															placeholder="blur"
-															blurDataURL={
-																blurDataUrl[
-																	ind % 2
-																]
-															}
-														/>
+														{isSvg ? (
+															<img
+																width="730"
+																height="640"
+																src={
+																	picture.image
+																}
+																onClick={() =>
+																	window.open(
+																		picture.image,
+																		"_blank"
+																	)
+																}
+																alt=""
+															/>
+														) : (
+															<Image
+																width="730"
+																height="640"
+																src={
+																	picture.image
+																}
+																onClick={() =>
+																	window.open(
+																		picture.image,
+																		"_blank"
+																	)
+																}
+																alt=""
+																placeholder="blur"
+																blurDataURL={
+																	blurDataUrl[
+																		ind % 2
+																	]
+																}
+															/>
+														)}
 													</div>
 												);
 											})}
