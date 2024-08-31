@@ -542,7 +542,12 @@ const AlbumPage = () => {
 								})}
 							</div>
 
-							<div ref={elementRef}></div>
+							<div
+								style={{
+									visibility: "hidden",
+								}}
+								ref={elementRef}
+							></div>
 						</>
 					)}
 				</Container>

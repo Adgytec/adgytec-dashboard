@@ -165,7 +165,12 @@ const GalleryPage = () => {
 
 						{elements}
 
-						<div ref={elementRef}></div>
+						<div
+							style={{
+								visibility: "hidden",
+							}}
+							ref={elementRef}
+						></div>
 					</Container>
 				)}
 			</div>
