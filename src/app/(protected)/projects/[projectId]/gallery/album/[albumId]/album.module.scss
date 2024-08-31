@@ -70,20 +70,22 @@
 			}
 
 			.item {
+				--_c: transparent;
+
 				overflow: hidden;
 				border-radius: 0.5em;
 				margin-block-end: 1em;
+
+				outline: 0.25em solid var(--_c);
 
 				transition: scale 200ms, border-radius 200ms;
 
 				&[data-manage="true"] {
 					--_o: 0.25;
-					--_c: transparent;
 
 					position: relative;
-					border: 0.25em solid var(--_c);
 
-					transition: border-color 200ms;
+					transition: outline-color 200ms;
 
 					&:has(input:checked) {
 						--_o: 0.75;
@@ -148,9 +150,21 @@
 
 	.addImages {
 		--_input-width: 100%;
-		--_height: 70dvb;
+		--_height: 55dvb;
 
 		display: grid;
 		gap: 0.5em;
+	}
+
+	.status {
+		margin-block-start: 0.5em;
+		display: grid;
+		gap: 1em;
+	}
+	.result {
+		display: flex;
+		gap: 1em;
+
+		flex-wrap: wrap;
 	}
 }
