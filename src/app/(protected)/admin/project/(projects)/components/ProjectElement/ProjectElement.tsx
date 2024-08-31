@@ -2,7 +2,6 @@ import React from "react";
 import styles from "./projectElement.module.scss";
 import Link from "next/link";
 import { Project } from "../../page";
-import Image from "next/image";
 
 interface ProjectElementProps {
 	project: Project;
@@ -14,7 +13,7 @@ function ProjectElement({ project }: ProjectElementProps) {
 	return (
 		<div className={styles.element}>
 			<div className={styles.image}>
-				<Image
+				<img
 					src={project.cover}
 					alt={project.projectName}
 					width={200}

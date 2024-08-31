@@ -492,64 +492,27 @@ const AlbumPage = () => {
 											className={styles.imagesChild}
 										>
 											{pictures.map((picture, ind) => {
-												let isSvg =
-													picture.image.includes(
-														".svg"
-													);
-
 												return (
 													<div
 														className={styles.item}
 														key={picture.id}
 														data-manage={manage}
 													>
-														{isSvg ? (
-															<img
-																data-manage={
-																	manage
-																}
-																width="730"
-																height="640"
-																src={
-																	picture.image
-																}
-																onClick={() => {
-																	if (manage)
-																		return;
-																	window.open(
-																		picture.image,
-																		"_blank"
-																	);
-																}}
-																alt=""
-															/>
-														) : (
-															<Image
-																width="730"
-																height="640"
-																src={
-																	picture.image
-																}
-																onClick={() => {
-																	if (manage)
-																		return;
-																	window.open(
-																		picture.image,
-																		"_blank"
-																	);
-																}}
-																alt=""
-																placeholder="blur"
-																blurDataURL={
-																	blurDataUrl[
-																		ind % 2
-																	]
-																}
-																data-manage={
-																	manage
-																}
-															/>
-														)}
+														<img
+															data-manage={manage}
+															width="730"
+															height="640"
+															src={picture.image}
+															onClick={() => {
+																if (manage)
+																	return;
+																window.open(
+																	picture.image,
+																	"_blank"
+																);
+															}}
+															alt=""
+														/>
 
 														{manage && (
 															<label>

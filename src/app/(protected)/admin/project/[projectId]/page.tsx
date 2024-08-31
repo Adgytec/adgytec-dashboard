@@ -19,7 +19,6 @@ import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import Link from "next/link";
 import Users from "./components/Users/Users";
 import Services from "./components/Services/Services";
-import Image from "next/image";
 import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
 import Category from "./components/Category/Category";
 import LinkHeader, { LinkItem } from "@/components/LinkHeader/LinkHeader";
@@ -184,7 +183,7 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 					<div className={styles.image}>
 						<label>Project Logo</label>
 
-						<Image
+						<img
 							src={details.cover}
 							alt={details.projectName}
 							width={200}

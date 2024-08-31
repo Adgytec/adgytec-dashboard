@@ -156,7 +156,7 @@ const CreateNews = () => {
 
 					{filePreview && (
 						<div className={styles.image_preview}>
-							<Image
+							<img
 								src={filePreview}
 								alt="preview"
 								width={250}

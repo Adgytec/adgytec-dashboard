@@ -203,15 +203,12 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
 			</dialog>
 			<div className={styles.item}>
 				<div className={styles.item_image}>
-					<Image
-						width={2}
-						height={1}
-						sizes="100vw"
+					<img
+						// width={2}
+						// height={1}
 						style={{ width: "100%", height: "auto" }}
 						src={news.image}
 						alt={userShow.title}
-						placeholder="blur"
-						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="
 					/>
 				</div>
 

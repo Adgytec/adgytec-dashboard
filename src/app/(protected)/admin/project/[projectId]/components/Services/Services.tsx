@@ -211,7 +211,7 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
 					disabled={adding}
 				/>
 				<label htmlFor={service.serviceId}>
-					<Image src={service.icon} alt="" width={17} height={17} />
+					<img src={service.icon} alt="" width={17} height={17} />
 					{service.serviceName}
 				</label>
 			</div>
@@ -267,7 +267,7 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
 												className={styles.item}
 												key={service.serviceId}
 											>
-												<Image
+												<img
 													src={service.icon}
 													alt=""
 													width={17}
@@ -387,7 +387,7 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
 									className={styles.item}
 									key={service.serviceId}
 								>
-									<Image
+									<img
 										width={17}
 										height={17}
 										src={service.icon}

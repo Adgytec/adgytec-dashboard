@@ -14,7 +14,7 @@ const ProjectItem = ({ project }: ProjectItemProps) => {
 	return (
 		<div className={styles.element}>
 			<div className={styles.image}>
-				<Image
+				<img
 					src={project.cover}
 					alt={project.projectName}
 					width={200}
