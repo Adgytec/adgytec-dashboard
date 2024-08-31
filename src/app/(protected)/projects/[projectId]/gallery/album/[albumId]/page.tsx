@@ -64,9 +64,9 @@ const AlbumPage = () => {
 	const [error, setError] = useState<string | null>(null);
 	const activeUploadRef = useRef<number>(0);
 	const currIndRef = useRef<number>(0);
-	const [uploadStatus, setUploadStatus] = useState({
+	const uploadStatusRef = useRef({
 		success: 0,
-		failed: 0,
+		failure: 0,
 	});
 
 	const initRef = useRef(false);
@@ -163,7 +163,7 @@ const AlbumPage = () => {
 				setAdding(false);
 				handleClose();
 
-				if (uploadStatus.success > 0)
+				if (uploadStatusRef.current.success > 0)
 					toast.success("successfully added images to the album");
 				else toast.error("failed to upload images");
 			}
@@ -204,15 +204,11 @@ const AlbumPage = () => {
 
 					const id = res.data.id;
 					setAddedPictures((prev) => [{ id, image }, ...prev]);
-					setUploadStatus((prev) => {
-						return { ...prev, success: prev.success + 1 };
-					});
+					uploadStatusRef.current.success += 1;
 				})
 				.catch((err) => {
 					console.error("failed to upload one image");
-					setUploadStatus((prev) => {
-						return { ...prev, failed: prev.failed + 1 };
-					});
+					uploadStatusRef.current.failure += 1;
 				})
 				.finally(() => {
 					activeUploadRef.current--;
@@ -232,10 +228,10 @@ const AlbumPage = () => {
 		setAdding(true);
 		activeUploadRef.current = 0;
 		currIndRef.current = 0;
-		setUploadStatus({
+		uploadStatusRef.current = {
 			success: 0,
-			failed: 0,
-		});
+			failure: 0,
+		};
 
 		uploadImages();
 	};
