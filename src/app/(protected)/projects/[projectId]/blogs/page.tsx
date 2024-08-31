@@ -48,28 +48,6 @@ const Blogs = () => {
 	const [loading, setLoading] = useState(true);
 	const [allFetched, setAllFetched] = useState(false);
 
-	const callback: IntersectionObserverCallback = useCallback(
-		(entries, observer) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting && search.length == 0) {
-					let lastInd = allBlogs.length;
-					if (lastInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allBlogs[lastInd - 1].createdAt
-					).toISOString();
-					getAllBlogs(newCursor);
-				}
-			});
-		},
-		[search, allBlogs]
-	);
-
-	const elementRef = useIntersection(
-		callback,
-		document.getElementById("content-root")
-	);
-
 	const getAllBlogs = useCallback(
 		async (cursor: string) => {
 			if (allFetched) return;
@@ -110,12 +88,34 @@ const Blogs = () => {
 		[user, params.projectId, allFetched]
 	);
 
+	const callback: IntersectionObserverCallback = useCallback(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting && search.length == 0) {
+					let lastInd = allBlogs.length;
+					if (lastInd < LIMIT) return;
+
+					let newCursor = new Date(
+						allBlogs[lastInd - 1].createdAt
+					).toISOString();
+					getAllBlogs(newCursor);
+				}
+			});
+		},
+		[search, allBlogs, getAllBlogs]
+	);
+
+	const elementRef = useIntersection(
+		callback,
+		document.getElementById("content-root")
+	);
+
 	useEffect(() => {
 		getAllBlogs(getNow());
 	}, [getAllBlogs]);
 
 	const elements: JSX.Element[] = [];
-	allBlogs.forEach((blog) => {
+	allBlogs.forEach((blog, ind) => {
 		const { blogId, title, author, category } = blog;
 		const element = (
 			<BlogItem key={blogId} blog={blog} setAllBlogs={setAllBlogs} />

@@ -63,7 +63,7 @@ const Details = ({
 				return { ...prev, cover: cover[0].file };
 			});
 		}
-	}, [cover]);
+	}, [cover, setBlogDetails]);
 
 	const validateBlog = (): boolean => {
 		if (!validateString(blogDetails.content, 50)) {

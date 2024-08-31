@@ -39,28 +39,6 @@ const GalleryPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [allFetched, setAllFetched] = useState(false);
 
-	const callback: IntersectionObserverCallback = useCallback(
-		(entries, observer) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting && search.length == 0) {
-					let lastInd = allAlbums.length;
-					if (lastInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allAlbums[lastInd - 1].createdAt
-					).toISOString();
-					getAllAlbums(newCursor);
-				}
-			});
-		},
-		[search, allAlbums]
-	);
-
-	const elementRef = useIntersection(
-		callback,
-		document.getElementById("content-root")
-	);
-
 	const getAllAlbums = useCallback(
 		async (cursor: string) => {
 			if (allFetched) return;
@@ -99,6 +77,28 @@ const GalleryPage = () => {
 				.finally(() => setLoading(false));
 		},
 		[user, params.projectId, allFetched]
+	);
+
+	const callback: IntersectionObserverCallback = useCallback(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting && search.length == 0) {
+					let lastInd = allAlbums.length;
+					if (lastInd < LIMIT) return;
+
+					let newCursor = new Date(
+						allAlbums[lastInd - 1].createdAt
+					).toISOString();
+					getAllAlbums(newCursor);
+				}
+			});
+		},
+		[search, allAlbums, getAllAlbums]
+	);
+
+	const elementRef = useIntersection(
+		callback,
+		document.getElementById("content-root")
 	);
 
 	useEffect(() => {

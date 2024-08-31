@@ -13,7 +13,7 @@ import React, {
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { toast } from "react-toastify";
-import { getNow } from "@/helpers/helpers";
+import { blurDataUrl, getNow } from "@/helpers/helpers";
 import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
 import {
 	handleEscModal,
@@ -40,11 +40,6 @@ interface AddedPicture {
 
 const LIMIT = 20;
 const UPLOAD_LIMIT = 5;
-
-const blurDataUrl = [
-	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8f5OhHgAHEAJZIKi0jAAAAABJRU5ErkJggg==",
-	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==",
-];
 
 const AlbumPage = () => {
 	const userWithRole = useContext(UserContext);
@@ -78,31 +73,6 @@ const AlbumPage = () => {
 
 	const addImageModalRef = useRef<HTMLDialogElement | null>(null);
 	const handleClose = () => handleModalClose(addImageModalRef);
-
-	const callback: IntersectionObserverCallback = useCallback(
-		(entries, observer) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					let lastInd = allPictures.length;
-					if (lastInd <= 0) return;
-
-					let lastItemInd = allPictures[lastInd - 1].length;
-					if (lastItemInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allPictures[lastInd - 1][lastItemInd - 1].createdAt
-					).toISOString();
-					getAllPictures(newCursor);
-				}
-			});
-		},
-		[allPictures]
-	);
-
-	const elementRef = useIntersection(
-		callback,
-		document.getElementById("content-root")
-	);
 
 	const getAllPictures = useCallback(
 		async (cursor: string, init?: boolean) => {
@@ -154,6 +124,31 @@ const AlbumPage = () => {
 				.finally(() => setLoading(false));
 		},
 		[user, params.projectId, params.albumId, allFetched]
+	);
+
+	const callback: IntersectionObserverCallback = useCallback(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					let lastInd = allPictures.length;
+					if (lastInd <= 0) return;
+
+					let lastItemInd = allPictures[lastInd - 1].length;
+					if (lastItemInd < LIMIT) return;
+
+					let newCursor = new Date(
+						allPictures[lastInd - 1][lastItemInd - 1].createdAt
+					).toISOString();
+					getAllPictures(newCursor);
+				}
+			});
+		},
+		[allPictures, getAllPictures]
+	);
+
+	const elementRef = useIntersection(
+		callback,
+		document.getElementById("content-root")
 	);
 
 	useEffect(() => {
@@ -349,7 +344,10 @@ const AlbumPage = () => {
 									{addedPictures.map((picture) => {
 										return (
 											<div key={picture.id}>
-												<img src={picture.image} />
+												<img
+													src={picture.image}
+													alt=""
+												/>
 											</div>
 										);
 									})}

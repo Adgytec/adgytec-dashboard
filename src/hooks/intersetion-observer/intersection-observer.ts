@@ -14,7 +14,7 @@ export const useIntersection: UseIntersection = (callback, root = null) => {
 			rootMargin: "0px 0px 100% 0px",
 			threshold: 1,
 		};
-	}, []);
+	}, [root]);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(callback, options);

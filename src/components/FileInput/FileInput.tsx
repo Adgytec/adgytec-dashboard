@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./fileinput.module.scss";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,6 +42,70 @@ const FileInput = ({
 
 	const [previewURL, setPreviewURL] = useState<string[]>([]);
 
+	const handleFiles = useCallback(
+		(inputFiles: FileList) => {
+			let files: FileElement[] = [];
+			let urls: string[] = [];
+
+			if (!isMultipleAllowedRef.current) {
+				const file = inputFiles[0];
+				const type = file.type;
+
+				if (!acceptedFormat.includes(type)) {
+					addClass("error");
+
+					setTimeout(() => {
+						removeClass("error");
+					}, 1000);
+					toast.error("Unsupported media file added");
+					return;
+				}
+
+				const url = URL.createObjectURL(file);
+				urls.push(url);
+				files.push({
+					file,
+					url,
+				});
+			} else {
+				let allUnsupported = true;
+				let ind = 0;
+
+				for (const file of inputFiles) {
+					if (ind >= LIMIT) break;
+
+					const type = file.type;
+
+					if (!acceptedFormat.includes(type)) {
+						continue;
+					}
+
+					allUnsupported = false;
+					const url = URL.createObjectURL(file);
+					urls.push(url);
+					files.push({
+						file,
+						url,
+					});
+					ind++;
+				}
+
+				if (allUnsupported) {
+					addClass("error");
+					setTimeout(() => {
+						removeClass("error");
+					}, 1000);
+					toast.error("Unsupported media files added");
+					return;
+				}
+			}
+
+			setFiles(files);
+			setPreviewURL(urls);
+		},
+		[setFiles]
+	);
+
 	useEffect(() => {
 		if (image) {
 			const dataTransfer = new DataTransfer();
@@ -50,68 +114,7 @@ const FileInput = ({
 			const fileList = dataTransfer.files;
 			handleFiles(fileList);
 		}
-	}, [image]);
-
-	const handleFiles = (inputFiles: FileList) => {
-		let files: FileElement[] = [];
-		let urls: string[] = [];
-
-		if (!isMultipleAllowedRef.current) {
-			const file = inputFiles[0];
-			const type = file.type;
-
-			if (!acceptedFormat.includes(type)) {
-				addClass("error");
-
-				setTimeout(() => {
-					removeClass("error");
-				}, 1000);
-				toast.error("Unsupported media file added");
-				return;
-			}
-
-			const url = URL.createObjectURL(file);
-			urls.push(url);
-			files.push({
-				file,
-				url,
-			});
-		} else {
-			let allUnsupported = true;
-			let ind = 0;
-
-			for (const file of inputFiles) {
-				if (ind >= LIMIT) break;
-
-				const type = file.type;
-
-				if (!acceptedFormat.includes(type)) {
-					continue;
-				}
-
-				allUnsupported = false;
-				const url = URL.createObjectURL(file);
-				urls.push(url);
-				files.push({
-					file,
-					url,
-				});
-				ind++;
-			}
-
-			if (allUnsupported) {
-				addClass("error");
-				setTimeout(() => {
-					removeClass("error");
-				}, 1000);
-				toast.error("Unsupported media files added");
-				return;
-			}
-		}
-
-		setFiles(files);
-		setPreviewURL(urls);
-	};
+	}, [image, handleFiles]);
 
 	const addClass = (variant: string) => {
 		switch (variant) {

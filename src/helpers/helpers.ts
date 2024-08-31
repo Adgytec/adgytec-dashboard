@@ -33,3 +33,8 @@ export function getNow() {
 
 	return istISOString;
 }
+
+export const blurDataUrl = [
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8f5OhHgAHEAJZIKi0jAAAAABJRU5ErkJggg==",
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==",
+];

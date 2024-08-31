@@ -4,7 +4,7 @@ import AuthProvider from "@/components/AuthContext/AuthProvider";
 import Header from "@/components/header/Header";
 import styles from "./home.module.scss";
 import Nav from "@/components/Nav/Nav";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export default function ProtectedLayout({
@@ -15,15 +15,13 @@ export default function ProtectedLayout({
 	const [expand, setExpand] = useState(false);
 	const pathname = usePathname();
 
-	const handleExpandClick = () => {
-		if (expand) {
-			setExpand(false);
-		}
-	};
+	const handleExpandClick = useCallback(() => {
+		setExpand((prev) => (prev ? false : prev));
+	}, []);
 
 	useEffect(() => {
 		handleExpandClick();
-	}, [pathname]);
+	}, [pathname, handleExpandClick]);
 
 	return (
 		<AuthProvider>
