@@ -41,3 +41,15 @@
 		@content;
 	}
 }
+
+@mixin album-image-40 {
+	@container album-image (min-width: 40em) {
+		@content;
+	}
+}
+
+@mixin album-image-64 {
+	@container album-image (min-width: 48em) {
+		@content;
+	}
+}

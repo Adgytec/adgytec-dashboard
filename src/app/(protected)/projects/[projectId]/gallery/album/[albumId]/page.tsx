@@ -24,6 +24,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useFile } from "@/components/FileInput/hooks/useFile";
 import FileInput from "@/components/FileInput/FileInput";
+import Image from "next/image";
+import Container from "@/components/Container/Container";
 
 export interface Picture {
 	id: string;
@@ -300,7 +302,8 @@ const AlbumPage = () => {
 					</button>
 				</div>
 
-				<div
+				<Container
+					type="full"
 					className={styles.container}
 					data-load={loading}
 					data-empty={
@@ -332,7 +335,19 @@ const AlbumPage = () => {
 								{allPictures.map((picture) => {
 									return (
 										<div key={picture.id}>
-											<img src={picture.image} />
+											<Image
+												width="730"
+												height="640"
+												src={picture.image}
+												loading="lazy"
+												onClick={() =>
+													window.open(
+														picture.image,
+														"_blank"
+													)
+												}
+												alt=""
+											/>
 										</div>
 									);
 								})}
@@ -341,7 +356,7 @@ const AlbumPage = () => {
 							<div ref={elementRef}></div>
 						</>
 					)}
-				</div>
+				</Container>
 			</div>
 		</>
 	);
