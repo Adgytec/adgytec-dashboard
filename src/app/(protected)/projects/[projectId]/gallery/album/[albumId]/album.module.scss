@@ -23,6 +23,20 @@
 		}
 
 		.images {
+			display: grid;
+			gap: 1em;
+
+			@include ab.motion {
+				@include ab.hover {
+					&:hover {
+						.imagesChild > div {
+							scale: 0.9;
+						}
+					}
+				}
+			}
+		}
+		.imagesChild {
 			--_count: 1;
 			// display: grid;
 			// gap: 1em;
@@ -41,16 +55,6 @@
 				--_count: 3;
 			}
 
-			@include ab.motion {
-				@include ab.hover {
-					&:hover {
-						> div {
-							scale: 0.9;
-						}
-					}
-				}
-			}
-
 			> div {
 				overflow: hidden;
 				border-radius: 0.5em;
@@ -60,7 +64,7 @@
 
 				@include ab.motion {
 					@include ab.hover {
-						&:hover {
+						&:hover:hover {
 							scale: 1.1;
 							border-radius: 0;
 						}

@@ -56,7 +56,7 @@ const AlbumPage = () => {
 	const [images, setImages] = useFile();
 
 	const [loading, setLoading] = useState(true);
-	const [allPictures, setAllPictures] = useState<Picture[]>([]);
+	const [allPictures, setAllPictures] = useState<Picture[][]>([]);
 	const [addedPictures, setAddedPictures] = useState<AddedPicture[]>([]);
 	const [allFetched, setAllFetched] = useState(false);
 
@@ -69,6 +69,8 @@ const AlbumPage = () => {
 		failed: 0,
 	});
 
+	const initRef = useRef(false);
+
 	const addImageModalRef = useRef<HTMLDialogElement | null>(null);
 	const handleClose = () => handleModalClose(addImageModalRef);
 
@@ -77,10 +79,13 @@ const AlbumPage = () => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					let lastInd = allPictures.length;
-					if (lastInd < LIMIT) return;
+					if (lastInd <= 0) return;
+
+					let lastItemInd = allPictures[lastInd - 1].length;
+					if (lastItemInd < LIMIT) return;
 
 					let newCursor = new Date(
-						allPictures[lastInd - 1].createdAt
+						allPictures[lastInd - 1][lastItemInd - 1].createdAt
 					).toISOString();
 					getAllPictures(newCursor);
 				}
@@ -95,8 +100,12 @@ const AlbumPage = () => {
 	);
 
 	const getAllPictures = useCallback(
-		async (cursor: string) => {
+		async (cursor: string, init?: boolean) => {
 			if (allFetched) return;
+
+			if (initRef.current && init) return;
+
+			if (init) initRef.current = init;
 
 			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/album/${params.albumId}?cursor=${cursor}`;
 			const token = await user?.getIdToken();
@@ -115,17 +124,24 @@ const AlbumPage = () => {
 					if (len < LIMIT) {
 						setAllFetched(true);
 					}
+					if (len === 0) return;
 
 					setAllPictures((prev) => {
-						const newPiectures = res.data.filter(
-							(picture: Picture) =>
-								!prev.some(
-									(exitingPicture) =>
-										exitingPicture.id === picture.id
-								)
-						);
-						return [...prev, ...newPiectures];
+						if (prev.length === 0) return [res.data];
+
+						return [...prev, res.data];
 					});
+
+					// setAllPictures((prev) => {
+					// 	const newPiectures = res.data.filter(
+					// 		(picture: Picture) =>
+					// 			!prev.some(
+					// 				(exitingPicture) =>
+					// 					exitingPicture.id === picture.id
+					// 			)
+					// 	);
+					// 	return [...prev, ...newPiectures];
+					// });
 				})
 				.catch((err) => {
 					toast.error(err.message);
@@ -136,7 +152,7 @@ const AlbumPage = () => {
 	);
 
 	useEffect(() => {
-		getAllPictures(getNow());
+		getAllPictures(getNow(), true);
 	}, [getAllPictures]);
 
 	const uploadImages = async () => {
@@ -324,15 +340,17 @@ const AlbumPage = () => {
 							</div>
 
 							<div className={styles.images}>
-								{addedPictures.map((picture) => {
-									return (
-										<div key={picture.id}>
-											<img src={picture.image} />
-										</div>
-									);
-								})}
+								<div className={styles.imagesChild}>
+									{addedPictures.map((picture) => {
+										return (
+											<div key={picture.id}>
+												<img src={picture.image} />
+											</div>
+										);
+									})}
+								</div>
 
-								{allPictures.map((picture) => {
+								{/* {allPictures.map((picture) => {
 									return (
 										<div key={picture.id}>
 											<Image
@@ -348,6 +366,36 @@ const AlbumPage = () => {
 												}
 												alt=""
 											/>
+										</div>
+									);
+								})} */}
+								{allPictures.map((pictures, ind) => {
+									return (
+										<div
+											key={`allpictures${ind}${pictures.length}`}
+											className={styles.imagesChild}
+										>
+											{pictures.map((picture) => {
+												return (
+													<div key={picture.id}>
+														<Image
+															width="730"
+															height="640"
+															src={picture.image}
+															onClick={() =>
+																window.open(
+																	picture.image,
+																	"_blank"
+																)
+															}
+															alt=""
+															loading="eager"
+															placeholder="blur"
+															blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="
+														/>
+													</div>
+												);
+											})}
 										</div>
 									);
 								})}
