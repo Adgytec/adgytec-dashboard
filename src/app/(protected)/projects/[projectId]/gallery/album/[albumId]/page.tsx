@@ -41,6 +41,11 @@ interface AddedPicture {
 const LIMIT = 20;
 const UPLOAD_LIMIT = 5;
 
+const blurDataUrl = [
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8f5OhHgAHEAJZIKi0jAAAAABJRU5ErkJggg==",
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==",
+];
+
 const AlbumPage = () => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(() => {
@@ -375,7 +380,7 @@ const AlbumPage = () => {
 											key={`allpictures${ind}${pictures.length}`}
 											className={styles.imagesChild}
 										>
-											{pictures.map((picture) => {
+											{pictures.map((picture, ind) => {
 												return (
 													<div key={picture.id}>
 														<Image
@@ -389,9 +394,12 @@ const AlbumPage = () => {
 																)
 															}
 															alt=""
-															loading="eager"
 															placeholder="blur"
-															blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="
+															blurDataURL={
+																blurDataUrl[
+																	ind % 2
+																]
+															}
 														/>
 													</div>
 												);
