@@ -1,5 +1,24 @@
 @use "/src/styles/abstract" as ab;
 
+.selection {
+	position: fixed;
+
+	background-color: hsl(from var(--success) h s l / 0.25);
+	bottom: 1em;
+	right: 1em;
+
+	padding-inline: 1em;
+	padding-block: 0.5em;
+	backdrop-filter: blur(7.5px);
+
+	border-radius: 0.5em;
+
+	min-width: max-content;
+
+	display: flex;
+	gap: 2em;
+}
+
 .album {
 	display: grid;
 	gap: 2em;
@@ -29,7 +48,7 @@
 			@include ab.motion {
 				@include ab.hover {
 					&:hover {
-						.imagesChild > div {
+						.item:not([data-manage="true"]) {
 							scale: 0.9;
 						}
 					}
@@ -38,11 +57,6 @@
 		}
 		.imagesChild {
 			--_count: 1;
-			// display: grid;
-			// gap: 1em;
-
-			// grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-			// grid-auto-rows: auto;
 
 			column-count: var(--_count);
 			column-gap: 1em;
@@ -55,16 +69,54 @@
 				--_count: 3;
 			}
 
-			> div {
+			.item {
 				overflow: hidden;
 				border-radius: 0.5em;
 				margin-block-end: 1em;
 
 				transition: scale 200ms, border-radius 200ms;
 
+				&[data-manage="true"] {
+					--_o: 0.25;
+					--_c: transparent;
+
+					position: relative;
+					border: 0.25em solid var(--_c);
+
+					transition: border-color 200ms;
+
+					&:has(input:checked) {
+						--_o: 0.75;
+
+						--_c: var(--accent-secondary);
+					}
+
+					&::before {
+						content: "";
+						position: absolute;
+						inset: 0;
+						background-color: hsl(
+							from var(--bg-800) h s l / var(--_o)
+						);
+
+						transition: background-color 300ms;
+					}
+
+					label {
+						position: absolute;
+						inset: 0;
+
+						padding-inline: 0.5rem;
+					}
+
+					input[type="checkbox"] {
+						scale: 1.25;
+					}
+				}
+
 				@include ab.motion {
 					@include ab.hover {
-						&:hover:hover {
+						&:hover:not([data-manage="true"]) {
 							scale: 1.1;
 							border-radius: 0;
 						}
@@ -81,7 +133,7 @@
 
 				@include ab.motion {
 					@include ab.hover {
-						&:hover {
+						&:hover:not([data-manage="true"]) {
 							scale: 1.1;
 						}
 					}

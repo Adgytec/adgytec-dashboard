@@ -21,11 +21,12 @@ import {
 	lightDismiss,
 } from "@/helpers/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useFile } from "@/components/FileInput/hooks/useFile";
 import FileInput from "@/components/FileInput/FileInput";
 import Image from "next/image";
 import Container from "@/components/Container/Container";
+import { createPortal } from "react-dom";
 
 export interface Picture {
 	id: string;
@@ -40,6 +41,7 @@ interface AddedPicture {
 
 const LIMIT = 20;
 const UPLOAD_LIMIT = 5;
+const SELECT_LIMIT = 50;
 
 const AlbumPage = () => {
 	const userWithRole = useContext(UserContext);
@@ -68,6 +70,10 @@ const AlbumPage = () => {
 		success: 0,
 		failure: 0,
 	});
+
+	const [manage, setManage] = useState(false);
+	const [selected, setSelected] = useState<string[]>([]);
+	const [deleting, setDeleting] = useState(false);
 
 	const initRef = useRef(false);
 
@@ -236,6 +242,75 @@ const AlbumPage = () => {
 		uploadImages();
 	};
 
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		const checked = e.target.checked;
+
+		if (checked) {
+			setSelected((prev) => {
+				return [...prev, value];
+			});
+		} else {
+			// remove from selected
+			setSelected((prev) => {
+				return prev.filter((item) => item !== value);
+			});
+		}
+	};
+
+	const handleDelete = async () => {
+		if (selected.length === 0) {
+			toast.error(
+				"You need to select at least one item to perform this action."
+			);
+			return;
+		}
+
+		const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/album/${params.albumId}`;
+		const token = await user?.getIdToken();
+		const headers = {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
+		};
+		const body = JSON.stringify({
+			id: selected,
+		});
+
+		fetch(url, {
+			method: "DELETE",
+			headers,
+			body,
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				if (res.error) throw new Error(res.message);
+
+				toast.success(res.message);
+
+				setAddedPictures((prev) => {
+					return prev.filter(
+						(picture) => !selected.includes(picture.id)
+					);
+				});
+
+				const newAllPictures = allPictures
+					.map((pictures) =>
+						pictures.filter(
+							(picture) => !selected.includes(picture.id)
+						)
+					)
+					.filter((pictures) => pictures.length > 0);
+
+				setAllPictures(newAllPictures);
+				setSelected([]);
+				setManage(false);
+			})
+			.catch((err) => {
+				toast.error(err.message);
+			})
+			.finally(() => setDeleting(false));
+	};
+
 	return (
 		<>
 			<dialog
@@ -300,12 +375,33 @@ const AlbumPage = () => {
 				</div>
 			</dialog>
 
+			{manage &&
+				createPortal(
+					<div className={styles.selection}>
+						<h4>Selected Images: {selected.length}</h4>
+						<button
+							data-type="link"
+							data-variant="error"
+							title="delete"
+							disabled={selected.length === 0 || deleting}
+							onClick={handleDelete}
+						>
+							{deleting ? (
+								<Loader variant="small" />
+							) : (
+								<FontAwesomeIcon icon={faTrashCan} />
+							)}
+						</button>
+					</div>,
+					document.body
+				)}
+
 			<div className={styles.album}>
 				<div className={styles.heading}>
 					<h2>{albumName}</h2>
 
 					<button
-						disabled={loading}
+						disabled={loading || deleting}
 						data-type="button"
 						data-variant="secondary"
 						onClick={() => addImageModalRef.current?.showModal()}
@@ -330,8 +426,17 @@ const AlbumPage = () => {
 					) : (
 						<>
 							<div className={styles.action}>
-								<button data-type="link" data-variant="primary">
-									Manage
+								<button
+									data-type="link"
+									data-variant={manage ? "error" : "primary"}
+									onClick={() => {
+										if (manage) setSelected([]);
+
+										setManage((prev) => !prev);
+									}}
+									disabled={deleting}
+								>
+									{manage ? "Cancel" : "Manage"}
 								</button>
 							</div>
 
@@ -339,35 +444,47 @@ const AlbumPage = () => {
 								<div className={styles.imagesChild}>
 									{addedPictures.map((picture) => {
 										return (
-											<div key={picture.id}>
+											<div
+												className={styles.item}
+												key={picture.id}
+												data-manage={manage}
+											>
 												<img
+													data-manage={manage}
 													src={picture.image}
 													alt=""
+													onClick={() => {
+														if (manage) return;
+														window.open(
+															picture.image,
+															"_blank"
+														);
+													}}
 												/>
+
+												{manage && (
+													<label>
+														<input
+															type="checkbox"
+															value={picture.id}
+															onChange={
+																handleInputChange
+															}
+															disabled={
+																selected.length ===
+																	SELECT_LIMIT &&
+																!selected.includes(
+																	picture.id
+																)
+															}
+														/>
+													</label>
+												)}
 											</div>
 										);
 									})}
 								</div>
 
-								{/* {allPictures.map((picture) => {
-									return (
-										<div key={picture.id}>
-											<Image
-												width="730"
-												height="640"
-												src={picture.image}
-												loading="lazy"
-												onClick={() =>
-													window.open(
-														picture.image,
-														"_blank"
-													)
-												}
-												alt=""
-											/>
-										</div>
-									);
-								})} */}
 								{allPictures.map((pictures, ind) => {
 									return (
 										<div
@@ -380,23 +497,30 @@ const AlbumPage = () => {
 														".svg"
 													);
 
-												// if(isSvg) return <img src={picture.image}>e
-
 												return (
-													<div key={picture.id}>
+													<div
+														className={styles.item}
+														key={picture.id}
+														data-manage={manage}
+													>
 														{isSvg ? (
 															<img
+																data-manage={
+																	manage
+																}
 																width="730"
 																height="640"
 																src={
 																	picture.image
 																}
-																onClick={() =>
+																onClick={() => {
+																	if (manage)
+																		return;
 																	window.open(
 																		picture.image,
 																		"_blank"
-																	)
-																}
+																	);
+																}}
 																alt=""
 															/>
 														) : (
@@ -406,12 +530,14 @@ const AlbumPage = () => {
 																src={
 																	picture.image
 																}
-																onClick={() =>
+																onClick={() => {
+																	if (manage)
+																		return;
 																	window.open(
 																		picture.image,
 																		"_blank"
-																	)
-																}
+																	);
+																}}
 																alt=""
 																placeholder="blur"
 																blurDataURL={
@@ -419,7 +545,31 @@ const AlbumPage = () => {
 																		ind % 2
 																	]
 																}
+																data-manage={
+																	manage
+																}
 															/>
+														)}
+
+														{manage && (
+															<label>
+																<input
+																	type="checkbox"
+																	value={
+																		picture.id
+																	}
+																	onChange={
+																		handleInputChange
+																	}
+																	disabled={
+																		selected.length ===
+																			SELECT_LIMIT &&
+																		!selected.includes(
+																			picture.id
+																		)
+																	}
+																/>
+															</label>
 														)}
 													</div>
 												);
