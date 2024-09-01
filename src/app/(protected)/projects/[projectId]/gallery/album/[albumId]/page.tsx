@@ -562,6 +562,7 @@ const AlbumPage = () => {
 																);
 															}}
 															alt=""
+															loading="lazy"
 														/>
 
 														{manage && (
