@@ -42,6 +42,7 @@ interface AddedPicture {
 const LIMIT = 20;
 const UPLOAD_LIMIT = 5;
 const SELECT_LIMIT = 50;
+const LONG_PRESS_DELAY = 500;
 
 const AlbumPage = () => {
 	const userWithRole = useContext(UserContext);
@@ -79,6 +80,8 @@ const AlbumPage = () => {
 	const [manage, setManage] = useState(false);
 	const [selected, setSelected] = useState<string[]>([]);
 	const [deleting, setDeleting] = useState(false);
+	const isLongPresRef = useRef(false);
+	const timeoutRef = useRef<NodeJS.Timeout>();
 
 	const initRef = useRef(false);
 
@@ -339,6 +342,27 @@ const AlbumPage = () => {
 			.finally(() => setDeleting(false));
 	};
 
+	const handleMouseDown = (
+		e:
+			| React.MouseEvent<HTMLImageElement, MouseEvent>
+			| React.TouchEvent<HTMLImageElement>,
+		pressId: string
+	) => {
+		e.preventDefault();
+		timeoutRef.current = setTimeout(() => {
+			if (!manage) setManage(true);
+			isLongPresRef.current = true;
+			setSelected([pressId]);
+		}, LONG_PRESS_DELAY);
+	};
+
+	const handleMouseUp = () => {
+		if (timeoutRef.current) clearTimeout(timeoutRef.current);
+		setTimeout(() => {
+			isLongPresRef.current = false;
+		}, 100);
+	};
+
 	return (
 		<>
 			<dialog
@@ -505,11 +529,31 @@ const AlbumPage = () => {
 													alt=""
 													onClick={() => {
 														if (manage) return;
+														if (
+															isLongPresRef.current
+														)
+															return;
 														window.open(
 															picture.image,
 															"_blank"
 														);
 													}}
+													onMouseDown={(e) =>
+														handleMouseDown(
+															e,
+															picture.id
+														)
+													}
+													onTouchStart={(e) =>
+														handleMouseDown(
+															e,
+															picture.id
+														)
+													}
+													onMouseUp={handleMouseUp}
+													onTouchEnd={handleMouseUp}
+													onMouseOut={handleMouseUp}
+													onTouchMove={handleMouseUp}
 												/>
 
 												{manage && (
@@ -520,6 +564,9 @@ const AlbumPage = () => {
 															onChange={
 																handleInputChange
 															}
+															checked={selected.includes(
+																picture.id
+															)}
 															disabled={
 																selected.length ===
 																	SELECT_LIMIT &&
@@ -556,6 +603,10 @@ const AlbumPage = () => {
 															onClick={() => {
 																if (manage)
 																	return;
+																if (
+																	isLongPresRef.current
+																)
+																	return;
 																window.open(
 																	picture.image,
 																	"_blank"
@@ -563,6 +614,30 @@ const AlbumPage = () => {
 															}}
 															alt=""
 															loading="lazy"
+															onMouseDown={(e) =>
+																handleMouseDown(
+																	e,
+																	picture.id
+																)
+															}
+															onTouchStart={(e) =>
+																handleMouseDown(
+																	e,
+																	picture.id
+																)
+															}
+															onMouseUp={
+																handleMouseUp
+															}
+															onTouchEnd={
+																handleMouseUp
+															}
+															onMouseOut={
+																handleMouseUp
+															}
+															onTouchMove={
+																handleMouseUp
+															}
 														/>
 
 														{manage && (
@@ -575,6 +650,9 @@ const AlbumPage = () => {
 																	onChange={
 																		handleInputChange
 																	}
+																	checked={selected.includes(
+																		picture.id
+																	)}
 																	disabled={
 																		selected.length ===
 																			SELECT_LIMIT &&
