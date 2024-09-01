@@ -361,7 +361,6 @@ const AlbumPage = () => {
 			| React.MouseEvent<HTMLImageElement, MouseEvent>
 			| React.TouchEvent<HTMLImageElement>
 	) => {
-		e.preventDefault();
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		setTimeout(() => {
 			isLongPresRef.current = false;
