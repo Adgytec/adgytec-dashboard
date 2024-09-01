@@ -356,7 +356,12 @@ const AlbumPage = () => {
 		}, LONG_PRESS_DELAY);
 	};
 
-	const handleMouseUp = () => {
+	const handleMouseUp = (
+		e:
+			| React.MouseEvent<HTMLImageElement, MouseEvent>
+			| React.TouchEvent<HTMLImageElement>
+	) => {
+		e.preventDefault();
 		if (timeoutRef.current) clearTimeout(timeoutRef.current);
 		setTimeout(() => {
 			isLongPresRef.current = false;
