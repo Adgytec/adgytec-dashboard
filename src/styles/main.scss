@@ -55,10 +55,10 @@
 	// accent-2
 	--accent-secondary: var(--blue);
 	--accent-secondary-hover: hsl(
-		from var(--accent-secondary) h s calc(l + 10)
+					from var(--accent-secondary) h s calc(l + 10)
 	);
 	--accent-secondary-active: hsl(
-		from var(--accent-secondary) h s calc(l - 10)
+					from var(--accent-secondary) h s calc(l - 10)
 	);
 
 	// scroll bar
@@ -86,16 +86,16 @@ body {
 
 .error {
 	font-size: 0.9rem;
-	color: var(--error);
-
 	text-align: center;
+
+	color: var(--error);
 }
 
 .message {
 	font-size: 0.9rem;
-	color: var(--success);
-
 	text-align: center;
+
+	color: var(--success);
 }
 
 .firebase-emulator-warning {
@@ -105,9 +105,9 @@ body {
 div[data-load="true"],
 div[data-empty="true"] {
 	display: grid;
+	height: 22rem;
 	min-height: 22rem;
 	max-height: 22rem;
-	height: 22rem;
 
 	place-items: center;
 }
@@ -127,28 +127,28 @@ label {
 input,
 select,
 textarea {
+	font-size: 1.25rem;
+	border-width: 2px;
+
+	border-style: solid;
+	border-color: var(--input-border);
+	border-radius: 0.25em;
+
+	background-color: var(--input-bg);
 	--_pi: 0.5em;
 	--_pb: 0.4em;
 
-	font-size: 1.25rem;
 	padding-inline: var(--_pi);
 	padding-block: var(--_pb);
-
-	border-radius: 0.25em;
-	border-style: solid;
-	border-width: 2px;
-
-	background-color: var(--input-bg);
-	border-color: var(--input-border);
 }
 
 select {
-	appearance: none;
-
 	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2ZmZDkwMCIgZD0iTTIwMS40IDM3NC42YzEyLjUgMTIuNSAzMi44IDEyLjUgNDUuMyAwbDE2MC0xNjBjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDBMMjI0IDMwNi43IDg2LjYgMTY5LjRjLTEyLjUtMTIuNS0zMi44LTEyLjUtNDUuMyAwcy0xMi41IDMyLjggMCA0NS4zbDE2MCAxNjB6Ii8+PC9zdmc+);
+
 	background-repeat: no-repeat;
 	background-position: calc(100% - var(--_pi)) center;
 	background-size: 1.5ch;
+	appearance: none;
 }
 
 input[type="checkbox"] {
@@ -156,9 +156,9 @@ input[type="checkbox"] {
 }
 
 textarea {
-	resize: vertical;
-	max-height: 20rem;
 	min-height: 10rem;
+	max-height: 20rem;
+	resize: vertical;
 
 	&:disabled {
 		resize: none;
@@ -178,6 +178,6 @@ h3 {
 }
 
 .italic {
-	font-style: italic;
 	font-weight: 500;
+	font-style: italic;
 }
