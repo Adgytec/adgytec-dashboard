@@ -95,6 +95,7 @@ const AlbumPage = () => {
 			if (initRef.current && init) return;
 
 			if (init) initRef.current = init;
+			setLoading(true);
 
 			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/album/${params.albumId}?cursor=${cursor}`;
 			const token = await user?.getIdToken();
@@ -496,7 +497,7 @@ const AlbumPage = () => {
 						allPictures.length === 0 && addedPictures.length === 0
 					}
 				>
-					{loading ? (
+					{loading && allPictures.length === 0 ? (
 						<Loader />
 					) : allPictures.length === 0 &&
 					  addedPictures.length === 0 ? (
@@ -684,6 +685,10 @@ const AlbumPage = () => {
 						</>
 					)}
 				</Container>
+
+				{loading && allPictures.length > 0 && (
+					<Loader variant="small" />
+				)}
 			</div>
 		</>
 	);

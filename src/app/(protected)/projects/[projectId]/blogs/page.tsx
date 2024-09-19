@@ -46,11 +46,14 @@ const Blogs = () => {
 	const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
 	const [search, setSearch] = useState<string>("");
 	const [loading, setLoading] = useState(true);
+
 	const [allFetched, setAllFetched] = useState(false);
 
 	const getAllBlogs = useCallback(
 		async (cursor: string) => {
 			if (allFetched) return;
+
+			setLoading(true);
 
 			const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}?cursor=${cursor}`;
 			const token = await user?.getIdToken();
@@ -157,7 +160,7 @@ const Blogs = () => {
 				data-empty={allBlogs.length === 0 || elements.length === 0}
 				data-load={loading}
 			>
-				{loading ? (
+				{loading && allBlogs.length === 0 ? (
 					<Loader />
 				) : allBlogs.length === 0 ? (
 					<h3>No blogs exist for this project</h3>
@@ -189,6 +192,8 @@ const Blogs = () => {
 					</Container>
 				)}
 			</div>
+
+			{loading && allBlogs.length > 0 && <Loader variant="small" />}
 		</div>
 	);
 };

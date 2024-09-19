@@ -43,6 +43,8 @@ const GalleryPage = () => {
 		async (cursor: string) => {
 			if (allFetched) return;
 
+			setLoading(true);
+
 			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}`;
 			const token = await user?.getIdToken();
 			const headers = {
@@ -142,7 +144,7 @@ const GalleryPage = () => {
 				data-empty={allAlbums.length === 0 || elements.length === 0}
 				data-load={loading}
 			>
-				{loading ? (
+				{loading && allAlbums.length === 0 ? (
 					<Loader />
 				) : allAlbums.length === 0 ? (
 					<h3>No albums exist for this project</h3>
@@ -174,6 +176,8 @@ const GalleryPage = () => {
 					</Container>
 				)}
 			</div>
+
+			{loading && allAlbums.length > 0 && <Loader variant="small" />}
 		</div>
 	);
 };
