@@ -142,7 +142,7 @@ const GalleryPage = () => {
 			<div
 				className={styles.container}
 				data-empty={allAlbums.length === 0 || elements.length === 0}
-				data-load={loading}
+				data-load={loading && allAlbums.length === 0}
 			>
 				{loading && allAlbums.length === 0 ? (
 					<Loader />

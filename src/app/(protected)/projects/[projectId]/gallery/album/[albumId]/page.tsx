@@ -492,7 +492,7 @@ const AlbumPage = () => {
 				<Container
 					type="full"
 					className={styles.container}
-					data-load={loading}
+					data-load={loading && allPictures.length === 0}
 					data-empty={
 						allPictures.length === 0 && addedPictures.length === 0
 					}

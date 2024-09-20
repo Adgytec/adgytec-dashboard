@@ -158,7 +158,7 @@ const Blogs = () => {
 			<div
 				className={styles.container}
 				data-empty={allBlogs.length === 0 || elements.length === 0}
-				data-load={loading}
+				data-load={loading && allBlogs.length === 0}
 			>
 				{loading && allBlogs.length === 0 ? (
 					<Loader />
