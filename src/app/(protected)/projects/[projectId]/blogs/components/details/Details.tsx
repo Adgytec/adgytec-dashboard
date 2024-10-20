@@ -23,6 +23,9 @@ import {
 	Category,
 	ProjectMetadataContext,
 } from "../../../context/projectMetadataContext";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 interface DetailsProps {
 	blogDetails: BlogDetails;
@@ -52,8 +55,8 @@ const Details = ({
 	const pathName = usePathname();
 	const [cover, setCover] = useFile();
 
-	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [creating, setCreating] = useState<boolean>(false);
+	const [selectedCategory, setSelectedCategory] = useState<string>("default");
 
 	const router = useRouter();
 
@@ -244,23 +247,64 @@ const Details = ({
 	}) => {
 		if (subCategories.length > 0) {
 			return (
-				<optgroup key={categoryId} label={categoryName}>
-					<option value={categoryId}>{categoryName}</option>
+				<DropdownMenu.Sub key={categoryId}>
+					<DropdownMenu.SubTrigger className="dropdown-menu__item sub-trigger">
+						{categoryName}
 
-					{subCategories.length > 0 &&
-						subCategories.map((item) => handleCategories(item))}
-				</optgroup>
+						<div className="dropdown-icon">
+							<FontAwesomeIcon icon={faAngleDown} />
+						</div>
+					</DropdownMenu.SubTrigger>
+
+					<DropdownMenu.Portal>
+						<DropdownMenu.SubContent
+							className="dropdown-menu"
+							sideOffset={12.5}
+						>
+							<DropdownMenu.Item
+								className="dropdown-menu__item"
+								onClick={() => {
+									setSelectedCategory(categoryName);
+									setBlogDetails((prev) => {
+										return {
+											...prev,
+											category: categoryId,
+										};
+									});
+								}}
+							>
+								{categoryName}
+							</DropdownMenu.Item>
+
+							{subCategories.map((item) =>
+								handleCategories(item)
+							)}
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Portal>
+				</DropdownMenu.Sub>
 			);
 		}
 
 		return (
-			<Fragment key={categoryId}>
-				<option value={categoryId}>{categoryName}</option>
-				{subCategories.length > 0 &&
-					subCategories.map((item) => handleCategories(item))}
-			</Fragment>
+			<DropdownMenu.Item
+				className="dropdown-menu__item"
+				key={categoryId}
+				onClick={() => {
+					setSelectedCategory(categoryName);
+					setBlogDetails((prev) => {
+						return {
+							...prev,
+							category: categoryId,
+						};
+					});
+				}}
+			>
+				{categoryName}
+			</DropdownMenu.Item>
 		);
 	};
+
+	console.log(projectMetadata);
 
 	return (
 		<div className={styles.details}>
@@ -295,24 +339,47 @@ const Details = ({
 				<div className={styles.input}>
 					<label htmlFor="category">Category</label>
 
-					<select
-						id="category"
-						name="category"
-						onChange={handleInputChange}
-						value={blogDetails.category}
-						disabled={creating}
-					>
-						<optgroup label="default">
-							<option value={params.projectId}>default</option>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger asChild>
+							<button
+								className={styles.menuTrigger}
+								aria-label="Customise options"
+								data-type="button"
+								data-variant="select"
+							>
+								{selectedCategory}
+							</button>
+						</DropdownMenu.Trigger>
 
-							{projectMetadata &&
-								projectMetadata.categories.subCategories
-									.length > 0 &&
-								projectMetadata.categories.subCategories.map(
-									(item) => handleCategories(item)
-								)}
-						</optgroup>
-					</select>
+						<DropdownMenu.Portal>
+							<DropdownMenu.Content
+								className="dropdown-menu"
+								sideOffset={5}
+							>
+								<DropdownMenu.Item
+									className="dropdown-menu__item"
+									onClick={() => {
+										setSelectedCategory("default");
+										setBlogDetails((prev) => {
+											return {
+												...prev,
+												category: params.projectId,
+											};
+										});
+									}}
+								>
+									default
+								</DropdownMenu.Item>
+
+								{projectMetadata &&
+									projectMetadata.categories.subCategories
+										.length > 0 &&
+									projectMetadata.categories.subCategories.map(
+										(item) => handleCategories(item)
+									)}
+							</DropdownMenu.Content>
+						</DropdownMenu.Portal>
+					</DropdownMenu.Root>
 				</div>
 
 				<div className={styles.input}>

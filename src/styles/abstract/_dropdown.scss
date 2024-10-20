@@ -1,0 +1,40 @@
+.dropdown-menu {
+	background-color: var(--input-bg);
+	min-width: 18rem;
+
+	padding-inline: 0.5rem;
+	padding-block: 0.5rem;
+
+	border-style: solid;
+	border-color: var(--input-border);
+	border-radius: 0.125em;
+
+	display: grid;
+	gap: 0.25rem;
+
+	&__item {
+		cursor: pointer;
+		padding-block: 0.25rem;
+		padding-inline: 0.5rem;
+		border-radius: 0.15rem;
+
+		&.sub-trigger {
+			cursor: context-menu;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			&[data-state="open"] {
+				background-color: var(--bg-200);
+			}
+
+			&[data-highlighted] {
+				background-color: var(--bg-400);
+			}
+		}
+
+		&:hover {
+			background-color: var(--bg-400);
+		}
+	}
+}

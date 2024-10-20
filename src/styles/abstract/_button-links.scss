@@ -74,6 +74,11 @@
 		}
 	}
 
+	&[data-variant="select"] {
+		--_c: var(--white);
+		font-weight: 400;
+	}
+
 	&[data-load="true"] {
 		width: 4.65em;
 		height: 2em;

@@ -8,7 +8,7 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useFile } from "@/components/FileInput/hooks/useFile";
@@ -22,6 +22,7 @@ import {
 	Category,
 	ProjectMetadataContext,
 } from "../../../context/projectMetadataContext";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface BlogItemProps {
 	blog: Blog;
@@ -223,39 +224,60 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 	}) => {
 		if (subCategories.length > 0) {
 			return (
-				<optgroup key={blog.blogId + categoryId} label={categoryName}>
-					<option
-						value={categoryId}
-						onClick={() =>
-							setBlogDetails((prev) => {
-								return { ...prev, categoryName: categoryName };
-							})
-						}
-					>
+				<DropdownMenu.Sub key={categoryId}>
+					<DropdownMenu.SubTrigger className="dropdown-menu__item sub-trigger">
 						{categoryName}
-					</option>
 
-					{subCategories.length > 0 &&
-						subCategories.map((item) => handleCategories(item))}
-				</optgroup>
+						<div className="dropdown-icon">
+							<FontAwesomeIcon icon={faAngleDown} />
+						</div>
+					</DropdownMenu.SubTrigger>
+
+					<DropdownMenu.Portal>
+						<DropdownMenu.SubContent
+							className="dropdown-menu"
+							sideOffset={12.5}
+						>
+							<DropdownMenu.Item
+								className="dropdown-menu__item"
+								onClick={() => {
+									setBlogDetails((prev) => {
+										return {
+											...prev,
+											category: categoryId,
+											categoryName: categoryName,
+										};
+									});
+								}}
+							>
+								{categoryName}
+							</DropdownMenu.Item>
+
+							{subCategories.map((item) =>
+								handleCategories(item)
+							)}
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Portal>
+				</DropdownMenu.Sub>
 			);
 		}
 
 		return (
-			<Fragment key={blog.blogId + categoryId}>
-				<option
-					value={categoryId}
-					onClick={() =>
-						setBlogDetails((prev) => {
-							return { ...prev, categoryName: categoryName };
-						})
-					}
-				>
-					{categoryName}
-				</option>
-				{subCategories.length > 0 &&
-					subCategories.map((item) => handleCategories(item))}
-			</Fragment>
+			<DropdownMenu.Item
+				className="dropdown-menu__item"
+				key={categoryId}
+				onClick={() => {
+					setBlogDetails((prev) => {
+						return {
+							...prev,
+							category: categoryId,
+							categoryName: categoryName,
+						};
+					});
+				}}
+			>
+				{categoryName}
+			</DropdownMenu.Item>
 		);
 	};
 
@@ -455,26 +477,60 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 							<div className={styles.metadata}>
 								{blog.author.length > 0 && <p>{blog.author}</p>}
 								{isEdit ? (
-									<select
-										onChange={handleInputChange}
-										name="category"
-										value={blogDetails.category}
-										disabled={updating}
-									>
-										<optgroup label="default">
-											<option value={params.projectId}>
-												default
-											</option>
+									<>
+										<DropdownMenu.Root>
+											<DropdownMenu.Trigger asChild>
+												<button
+													className={
+														styles.menuTrigger
+													}
+													aria-label="Customise options"
+													data-type="button"
+													data-variant="select"
+												>
+													{blogDetails.categoryName}
+												</button>
+											</DropdownMenu.Trigger>
 
-											{projectMetadata &&
-												projectMetadata.categories
-													.subCategories.length > 0 &&
-												projectMetadata.categories.subCategories.map(
-													(item) =>
-														handleCategories(item)
-												)}
-										</optgroup>
-									</select>
+											<DropdownMenu.Portal>
+												<DropdownMenu.Content
+													className="dropdown-menu"
+													sideOffset={5}
+												>
+													<DropdownMenu.Item
+														className="dropdown-menu__item"
+														onClick={() => {
+															setBlogDetails(
+																(prev) => {
+																	return {
+																		...prev,
+																		category:
+																			params.projectId,
+																		categoryName:
+																			"default",
+																	};
+																}
+															);
+														}}
+													>
+														default
+													</DropdownMenu.Item>
+
+													{projectMetadata &&
+														projectMetadata
+															.categories
+															.subCategories
+															.length > 0 &&
+														projectMetadata.categories.subCategories.map(
+															(item) =>
+																handleCategories(
+																	item
+																)
+														)}
+												</DropdownMenu.Content>
+											</DropdownMenu.Portal>
+										</DropdownMenu.Root>
+									</>
 								) : (
 									<p>{blog.category.name}</p>
 								)}
