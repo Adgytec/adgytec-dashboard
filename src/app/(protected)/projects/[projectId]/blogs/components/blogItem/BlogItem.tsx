@@ -221,6 +221,26 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 		categoryName,
 		subCategories,
 	}) => {
+		if (subCategories.length > 0) {
+			return (
+				<optgroup key={blog.blogId + categoryId} label={categoryName}>
+					<option
+						value={categoryId}
+						onClick={() =>
+							setBlogDetails((prev) => {
+								return { ...prev, categoryName: categoryName };
+							})
+						}
+					>
+						{categoryName}
+					</option>
+
+					{subCategories.length > 0 &&
+						subCategories.map((item) => handleCategories(item))}
+				</optgroup>
+			);
+		}
+
 		return (
 			<Fragment key={blog.blogId + categoryId}>
 				<option
@@ -441,16 +461,19 @@ const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
 										value={blogDetails.category}
 										disabled={updating}
 									>
-										<option value={params.projectId}>
-											default
-										</option>
+										<optgroup label="default">
+											<option value={params.projectId}>
+												default
+											</option>
 
-										{projectMetadata &&
-											projectMetadata.categories
-												.subCategories.length > 0 &&
-											projectMetadata.categories.subCategories.map(
-												(item) => handleCategories(item)
-											)}
+											{projectMetadata &&
+												projectMetadata.categories
+													.subCategories.length > 0 &&
+												projectMetadata.categories.subCategories.map(
+													(item) =>
+														handleCategories(item)
+												)}
+										</optgroup>
 									</select>
 								) : (
 									<p>{blog.category.name}</p>

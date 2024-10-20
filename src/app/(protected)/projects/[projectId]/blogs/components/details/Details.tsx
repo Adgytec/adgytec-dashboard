@@ -242,6 +242,17 @@ const Details = ({
 		categoryName,
 		subCategories,
 	}) => {
+		if (subCategories.length > 0) {
+			return (
+				<optgroup key={categoryId} label={categoryName}>
+					<option value={categoryId}>{categoryName}</option>
+
+					{subCategories.length > 0 &&
+						subCategories.map((item) => handleCategories(item))}
+				</optgroup>
+			);
+		}
+
 		return (
 			<Fragment key={categoryId}>
 				<option value={categoryId}>{categoryName}</option>
@@ -291,14 +302,16 @@ const Details = ({
 						value={blogDetails.category}
 						disabled={creating}
 					>
-						<option value={params.projectId}>default</option>
+						<optgroup label="default">
+							<option value={params.projectId}>default</option>
 
-						{projectMetadata &&
-							projectMetadata.categories.subCategories.length >
-								0 &&
-							projectMetadata.categories.subCategories.map(
-								(item) => handleCategories(item)
-							)}
+							{projectMetadata &&
+								projectMetadata.categories.subCategories
+									.length > 0 &&
+								projectMetadata.categories.subCategories.map(
+									(item) => handleCategories(item)
+								)}
+						</optgroup>
 					</select>
 				</div>
 
