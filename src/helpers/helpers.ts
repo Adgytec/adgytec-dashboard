@@ -1,5 +1,7 @@
 import { CopyToClipboard } from "./type";
 
+export const KEYLIMIT = 6;
+
 export const copyToClipboard: CopyToClipboard = (text) => {
 	navigator.clipboard.writeText(text);
 };

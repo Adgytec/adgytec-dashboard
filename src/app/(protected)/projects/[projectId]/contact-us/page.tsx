@@ -15,18 +15,17 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
-import { getNow, trimStringWithEllipsis } from "@/helpers/helpers";
+import { getNow, KEYLIMIT, trimStringWithEllipsis } from "@/helpers/helpers";
 import Loader from "@/components/Loader/Loader";
 import ContactUsItem from "./components/contactUsItem/contactUsItem";
 
-export interface ContactUsItem {
+export interface IContactUsItem {
 	id: string;
 	createdAt: string;
 	data: string;
 }
 
 const LIMIT = 20;
-export const KEYLIMIT = 6;
 
 const ContactUsPage = () => {
 	const userWithRole = useContext(UserContext);
@@ -36,7 +35,7 @@ const ContactUsPage = () => {
 
 	const params = useParams<{ projectId: string }>();
 
-	const [allItems, setAllItems] = useState<ContactUsItem[]>([]);
+	const [allItems, setAllItems] = useState<IContactUsItem[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	const allFetchedRef = useRef(false);
@@ -67,7 +66,7 @@ const ContactUsPage = () => {
 
 					setAllItems((prev) => {
 						const newItems = res.data.filter(
-							(item: ContactUsItem) =>
+							(item: IContactUsItem) =>
 								!prev.some(
 									(existingItem) =>
 										existingItem.id === item.id

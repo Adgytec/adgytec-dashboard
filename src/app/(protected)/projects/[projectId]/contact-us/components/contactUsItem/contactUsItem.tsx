@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { ContactUsItem, KEYLIMIT } from "../../page";
+import { IContactUsItem } from "../../page";
 import styles from "./contact-us-item.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
@@ -10,13 +10,14 @@ import { useParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import Loader from "@/components/Loader/Loader";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { KEYLIMIT } from "@/helpers/helpers";
 
 interface ContactUsItemProps {
-	data: ContactUsItem;
-	setAllItems: React.Dispatch<React.SetStateAction<ContactUsItem[]>>;
+	data: IContactUsItem;
+	setAllItems: React.Dispatch<React.SetStateAction<IContactUsItem[]>>;
 }
 
-const contactUsItem = ({ data, setAllItems }: ContactUsItemProps) => {
+const ContactUsItem = ({ data, setAllItems }: ContactUsItemProps) => {
 	const userWithRole = useContext(UserContext);
 	const myUser = userWithRole ? userWithRole.user : null;
 
@@ -159,4 +160,4 @@ const contactUsItem = ({ data, setAllItems }: ContactUsItemProps) => {
 	);
 };
 
-export default contactUsItem;
+export default ContactUsItem;
