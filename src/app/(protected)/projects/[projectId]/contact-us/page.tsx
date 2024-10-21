@@ -131,6 +131,7 @@ const ContactUsPage = () => {
 			<div
 				data-empty={allItems.length === 0}
 				data-load={loading && allItems.length === 0}
+				id="form-table"
 			>
 				{loading && allItems.length === 0 ? (
 					<Loader />
@@ -140,7 +141,6 @@ const ContactUsPage = () => {
 					<Container
 						type="full"
 						className={styles.table}
-						id="form-table"
 						data-responsive={keyLength <= KEYLIMIT}
 					>
 						{keyLength <= KEYLIMIT && (
