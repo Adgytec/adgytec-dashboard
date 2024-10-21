@@ -5,6 +5,7 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 import styles from "./gallery.module.scss";
@@ -37,11 +38,11 @@ const GalleryPage = () => {
 	const [search, setSearch] = useState<string>("");
 	const [allAlbums, setAllAlbums] = useState<Album[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [allFetched, setAllFetched] = useState(false);
+	const allFetchedRef = useRef(false);
 
 	const getAllAlbums = useCallback(
 		async (cursor: string) => {
-			if (allFetched) return;
+			if (allFetchedRef.current) return;
 
 			setLoading(true);
 
@@ -60,7 +61,7 @@ const GalleryPage = () => {
 					if (res.error) throw new Error(res.message);
 					let len = res.data.length;
 					if (len < LIMIT) {
-						setAllFetched(true);
+						allFetchedRef.current = true;
 					}
 					setAllAlbums((prev) => {
 						const newAlbums = res.data.filter(
@@ -78,7 +79,7 @@ const GalleryPage = () => {
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, allFetched]
+		[user, params.projectId, allFetchedRef.current]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(

@@ -61,7 +61,7 @@ const AlbumPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [allPictures, setAllPictures] = useState<Picture[][]>([]);
 	const [addedPictures, setAddedPictures] = useState<AddedPicture[]>([]);
-	const [allFetched, setAllFetched] = useState(false);
+	const allFetchedRef = useRef(false);
 
 	const [adding, setAdding] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -90,7 +90,7 @@ const AlbumPage = () => {
 
 	const getAllPictures = useCallback(
 		async (cursor: string, init?: boolean) => {
-			if (allFetched) return;
+			if (allFetchedRef.current) return;
 
 			if (initRef.current && init) return;
 
@@ -112,7 +112,7 @@ const AlbumPage = () => {
 					if (res.error) throw new Error(res.message);
 					let len = res.data.length;
 					if (len < LIMIT) {
-						setAllFetched(true);
+						allFetchedRef.current = true;
 					}
 					if (len === 0) return;
 
@@ -138,7 +138,7 @@ const AlbumPage = () => {
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, params.albumId, allFetched]
+		[user, params.projectId, params.albumId, allFetchedRef.current]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(

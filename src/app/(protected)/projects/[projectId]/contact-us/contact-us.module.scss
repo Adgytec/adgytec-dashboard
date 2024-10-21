@@ -1,0 +1,62 @@
+@use "/src/styles/abstract" as ab;
+
+.contactUs {
+	display: grid;
+	gap: 1rem;
+
+	.table {
+		--_pi: clamp(0.75rem, 1rem, 1rem);
+		--_pb: 1.25rem;
+		--_r: 0.15rem;
+
+		display: grid;
+		gap: 0.15em;
+
+		> :nth-child(n) {
+			background-color: var(--bg-400);
+		}
+
+        &[data-responsive="true"] {
+            @include ab.container-table {
+                --_items: calc(var(--table-items) - 0)
+                grid-template-columns: repeat(var(--_items), 1fr);
+                gap: 1.5rem;
+                row-gap: 0.25em;
+    
+                > :nth-child(n) {
+                    background-color: transparent;
+                }
+    
+                > :nth-child(odd) {
+                    background-color: var(--bg-400);
+                }
+            }
+        }
+		
+
+		.heading {
+			display: none;
+			@include ab.container-table {
+				display: grid;
+			}
+			--_items: calc(var(--table-items) + 0);
+
+			grid-template-columns: subgrid;
+			grid-column: span var(--_items);
+
+			padding-inline: var(--_pi);
+			padding-block: var(--_pb);
+			border-radius: var(--_r);
+
+			h4 {
+				font-size: clamp(1.15rem, 1.25vi, 1.25rem);
+				color: var(--accent-secondary);
+				user-select: none;
+			}
+
+			> * {
+				grid-column: span 1;
+			}
+		}
+	}
+}

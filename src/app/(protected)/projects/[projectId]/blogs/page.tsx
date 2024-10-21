@@ -47,11 +47,11 @@ const Blogs = () => {
 	const [search, setSearch] = useState<string>("");
 	const [loading, setLoading] = useState(true);
 
-	const [allFetched, setAllFetched] = useState(false);
+	const allFetchedRef = useRef(false);
 
 	const getAllBlogs = useCallback(
 		async (cursor: string) => {
-			if (allFetched) return;
+			if (allFetchedRef.current) return;
 
 			setLoading(true);
 
@@ -70,7 +70,7 @@ const Blogs = () => {
 					if (res.error) throw new Error(res.message);
 					let len = res.data.length;
 					if (len < LIMIT) {
-						setAllFetched(true);
+						allFetchedRef.current = true;
 					}
 					setAllBlogs((prev) => {
 						const newBlogs = res.data.filter(
@@ -88,7 +88,7 @@ const Blogs = () => {
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, allFetched]
+		[user, params.projectId, allFetchedRef.current]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(

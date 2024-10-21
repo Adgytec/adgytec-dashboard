@@ -1,0 +1,59 @@
+@use "/src/styles/abstract" as ab;
+
+.tableItem {
+	--_p: clamp(0.75em, 1.5vi, 1.25em);
+	display: grid;
+	row-gap: 0.675em;
+
+	padding: calc(var(--_p) + 0.5em) clamp(0.75em, 1.5vi, 1.25em);
+
+	border-radius: 0.5em;
+
+	border-bottom: 1.5px solid var(--white);
+
+	&[data-responsive="true"] {
+		@include ab.container-table {
+			--_items: calc(var(--table-items) + 0);
+
+			grid-template-columns: subgrid;
+			grid-column: span var(--_items);
+
+			border: 0;
+
+			padding-inline: var(--_pi);
+			padding-block: var(--_pb);
+			border-radius: var(--_r);
+
+			> * {
+				grid-column: span 1;
+			}
+		}
+
+		p {
+			@include ab.container-table {
+				font-size: clamp(1rem, 1.15vi, 1.15rem);
+				display: block;
+
+				&::before {
+					display: none;
+				}
+			}
+		}
+	}
+
+	p {
+		font-size: clamp(1rem, 1.5vi, 1.25rem);
+		display: grid;
+		grid-template-columns: 12ch auto;
+
+		justify-items: start;
+
+		&::before {
+			content: attr(data-label);
+			font-weight: 700;
+			color: var(--accent-secondary);
+		}
+
+		word-break: break-all;
+	}
+}
