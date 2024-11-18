@@ -27,6 +27,7 @@ import FileInput from "@/components/FileInput/FileInput";
 import Image from "next/image";
 import Container from "@/components/Container/Container";
 import { createPortal } from "react-dom";
+import { PageInfo } from "@/helpers/type";
 
 export interface Picture {
 	id: string;
@@ -55,13 +56,16 @@ const AlbumPage = () => {
 		albumId: string;
 	}>();
 	const albumName = useSearchParams().get("name");
+	const pageInfoRef = useRef<PageInfo>({
+		nextPage: false,
+		cursor: "",
+	});
 
 	const [images, setImages] = useFile();
 
 	const [loading, setLoading] = useState(true);
 	const [allPictures, setAllPictures] = useState<Picture[][]>([]);
 	const [addedPictures, setAddedPictures] = useState<AddedPicture[]>([]);
-	const allFetchedRef = useRef(false);
 
 	const [adding, setAdding] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -90,8 +94,6 @@ const AlbumPage = () => {
 
 	const getAllPictures = useCallback(
 		async (cursor: string, init?: boolean) => {
-			if (allFetchedRef.current) return;
-
 			if (initRef.current && init) return;
 
 			if (init) initRef.current = init;
@@ -110,51 +112,28 @@ const AlbumPage = () => {
 				.then((res) => res.json())
 				.then((res) => {
 					if (res.error) throw new Error(res.message);
-					let len = res.data.length;
-					if (len < LIMIT) {
-						allFetchedRef.current = true;
-					}
-					if (len === 0) return;
+					pageInfoRef.current = res.data.pageInfo;
 
 					setAllPictures((prev) => {
-						if (prev.length === 0) return [res.data];
+						if (prev.length === 0) return [res.data.photos];
 
-						return [...prev, res.data];
+						return [...prev, res.data.photos];
 					});
-
-					// setAllPictures((prev) => {
-					// 	const newPiectures = res.data.filter(
-					// 		(picture: Picture) =>
-					// 			!prev.some(
-					// 				(exitingPicture) =>
-					// 					exitingPicture.id === picture.id
-					// 			)
-					// 	);
-					// 	return [...prev, ...newPiectures];
-					// });
 				})
 				.catch((err) => {
 					toast.error(err.message);
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, params.albumId, allFetchedRef.current]
+		[user, params.projectId, params.albumId]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(
 		(entries, observer) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
-					let lastInd = allPictures.length;
-					if (lastInd <= 0) return;
-
-					let lastItemInd = allPictures[lastInd - 1].length;
-					if (lastItemInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allPictures[lastInd - 1][lastItemInd - 1].createdAt
-					).toISOString();
-					getAllPictures(newCursor);
+					if (pageInfoRef.current.nextPage)
+						getAllPictures(pageInfoRef.current.cursor);
 				}
 			});
 		},

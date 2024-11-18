@@ -17,3 +17,8 @@ export type ValidateURL = (url: string) => boolean;
 export type ValidateString = (str: string, length: number) => boolean;
 
 export type CopyToClipboard = (text: string) => void;
+
+export interface PageInfo {
+	nextPage: boolean;
+	cursor: string;
+}

@@ -17,6 +17,7 @@ import Loader from "@/components/Loader/Loader";
 import Container from "@/components/Container/Container";
 import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
 import { getNow } from "@/helpers/helpers";
+import { PageInfo } from "@/helpers/type";
 
 export interface Album {
 	id: string;
@@ -25,8 +26,6 @@ export interface Album {
 	createdAt: string;
 }
 
-const LIMIT = 20;
-
 const GalleryPage = () => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(() => {
@@ -34,19 +33,20 @@ const GalleryPage = () => {
 	}, [userWithRole]);
 
 	const params = useParams<{ projectId: string }>();
+	const pageInfoRef = useRef<PageInfo>({
+		nextPage: false,
+		cursor: "",
+	});
 
 	const [search, setSearch] = useState<string>("");
 	const [allAlbums, setAllAlbums] = useState<Album[]>([]);
 	const [loading, setLoading] = useState(true);
-	const allFetchedRef = useRef(false);
 
 	const getAllAlbums = useCallback(
 		async (cursor: string) => {
-			if (allFetchedRef.current) return;
-
 			setLoading(true);
 
-			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}`;
+			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}&limit=1`;
 			const token = await user?.getIdToken();
 			const headers = {
 				Authorization: `Bearer ${token}`,
@@ -59,12 +59,10 @@ const GalleryPage = () => {
 				.then((res) => res.json())
 				.then((res) => {
 					if (res.error) throw new Error(res.message);
-					let len = res.data.length;
-					if (len < LIMIT) {
-						allFetchedRef.current = true;
-					}
+					pageInfoRef.current = res.data.pageInfo;
+
 					setAllAlbums((prev) => {
-						const newAlbums = res.data.filter(
+						const newAlbums = res.data.albums.filter(
 							(album: Album) =>
 								!prev.some(
 									(existingAlbum) =>
@@ -79,20 +77,15 @@ const GalleryPage = () => {
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, allFetchedRef.current]
+		[user, params.projectId]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(
 		(entries, observer) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting && search.length == 0) {
-					let lastInd = allAlbums.length;
-					if (lastInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allAlbums[lastInd - 1].createdAt
-					).toISOString();
-					getAllAlbums(newCursor);
+					if (pageInfoRef.current.nextPage)
+						getAllAlbums(pageInfoRef.current.cursor);
 				}
 			});
 		},

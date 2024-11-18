@@ -17,6 +17,9 @@ import Loader from "@/components/Loader/Loader";
 import Container from "@/components/Container/Container";
 import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
 import { getNow } from "@/helpers/helpers";
+import { PageInfo } from "@/helpers/type";
+import { cursorTo } from "readline";
+import { Contrail_One } from "next/font/google";
 
 interface CategroyDetail {
 	id: string;
@@ -33,8 +36,6 @@ export interface Blog {
 	category: CategroyDetail;
 }
 
-const LIMIT = 20;
-
 const Blogs = () => {
 	const userWithRole = useContext(UserContext);
 	const user = useMemo(() => {
@@ -42,17 +43,17 @@ const Blogs = () => {
 	}, [userWithRole]);
 
 	const params = useParams<{ projectId: string }>();
+	const pageInfoRef = useRef<PageInfo>({
+		nextPage: false,
+		cursor: "",
+	});
 
 	const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
 	const [search, setSearch] = useState<string>("");
 	const [loading, setLoading] = useState(true);
 
-	const allFetchedRef = useRef(false);
-
 	const getAllBlogs = useCallback(
 		async (cursor: string) => {
-			if (allFetchedRef.current) return;
-
 			setLoading(true);
 
 			const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}?cursor=${cursor}`;
@@ -68,12 +69,10 @@ const Blogs = () => {
 				.then((res) => res.json())
 				.then((res) => {
 					if (res.error) throw new Error(res.message);
-					let len = res.data.length;
-					if (len < LIMIT) {
-						allFetchedRef.current = true;
-					}
+					pageInfoRef.current = res.data.pageInfo;
+
 					setAllBlogs((prev) => {
-						const newBlogs = res.data.filter(
+						const newBlogs = res.data.blogs.filter(
 							(blog: Blog) =>
 								!prev.some(
 									(existingBlog) =>
@@ -88,24 +87,19 @@ const Blogs = () => {
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, allFetchedRef.current]
+		[user, params.projectId]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(
 		(entries, observer) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting && search.length == 0) {
-					let lastInd = allBlogs.length;
-					if (lastInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allBlogs[lastInd - 1].createdAt
-					).toISOString();
-					getAllBlogs(newCursor);
+					if (pageInfoRef.current.nextPage)
+						getAllBlogs(pageInfoRef.current.cursor);
 				}
 			});
 		},
-		[search, allBlogs, getAllBlogs]
+		[search, allBlogs, pageInfoRef.current]
 	);
 
 	const elementRef = useIntersection(
