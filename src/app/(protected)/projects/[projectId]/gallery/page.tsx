@@ -46,7 +46,7 @@ const GalleryPage = () => {
 		async (cursor: string) => {
 			setLoading(true);
 
-			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}&limit=1`;
+			const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}`;
 			const token = await user?.getIdToken();
 			const headers = {
 				Authorization: `Bearer ${token}`,
@@ -89,7 +89,7 @@ const GalleryPage = () => {
 				}
 			});
 		},
-		[search, allAlbums, getAllAlbums]
+		[search, allAlbums, getAllAlbums, pageInfoRef.current]
 	);
 
 	const elementRef = useIntersection(

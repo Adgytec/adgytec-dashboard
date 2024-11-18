@@ -137,7 +137,7 @@ const AlbumPage = () => {
 				}
 			});
 		},
-		[allPictures, getAllPictures]
+		[allPictures, getAllPictures, pageInfoRef.current]
 	);
 
 	const elementRef = useIntersection(

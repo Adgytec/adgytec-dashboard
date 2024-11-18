@@ -18,6 +18,7 @@ import { useIntersection } from "@/hooks/intersetion-observer/intersection-obser
 import { getNow, KEYLIMIT, trimStringWithEllipsis } from "@/helpers/helpers";
 import Loader from "@/components/Loader/Loader";
 import ContactUsItem from "./components/contactUsItem/contactUsItem";
+import { PageInfo } from "@/helpers/type";
 
 export interface IContactUsItem {
 	id: string;
@@ -34,16 +35,16 @@ const ContactUsPage = () => {
 	}, [userWithRole]);
 
 	const params = useParams<{ projectId: string }>();
+	const pageInfoRef = useRef<PageInfo>({
+		nextPage: false,
+		cursor: "",
+	});
 
 	const [allItems, setAllItems] = useState<IContactUsItem[]>([]);
 	const [loading, setLoading] = useState(true);
 
-	const allFetchedRef = useRef(false);
-
 	const getAllItems = useCallback(
 		async (cursor: string) => {
-			if (allFetchedRef.current) return;
-
 			setLoading(true);
 
 			const url = `${process.env.NEXT_PUBLIC_API}/services/contact-us/${params.projectId}?cursor=${cursor}`;
@@ -59,13 +60,11 @@ const ContactUsPage = () => {
 				.then((res) => res.json())
 				.then((res) => {
 					if (res.error) throw new Error(res.message);
-					let len = res.data.length;
-					if (len < LIMIT) {
-						allFetchedRef.current = true;
-					}
+					pageInfoRef.current = res.data.pageInfo;
+					let len = res.data.responses.length;
 
 					setAllItems((prev) => {
-						const newItems = res.data.filter(
+						const newItems = res.data.responses.filter(
 							(item: IContactUsItem) =>
 								!prev.some(
 									(existingItem) =>
@@ -75,7 +74,8 @@ const ContactUsPage = () => {
 						return [...prev, ...newItems];
 					});
 					if (len > 0) {
-						let keyCount = 2 + Object.keys(res.data[0].data).length;
+						let keyCount =
+							2 + Object.keys(res.data.responses[0].data).length;
 						let tableParent = document.getElementById("form-table");
 						if (tableParent) {
 							tableParent.style.setProperty(
@@ -90,24 +90,19 @@ const ContactUsPage = () => {
 				})
 				.finally(() => setLoading(false));
 		},
-		[user, params.projectId, allFetchedRef.current]
+		[user, params.projectId]
 	);
 
 	const callback: IntersectionObserverCallback = useCallback(
 		(entries, observer) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
-					let lastInd = allItems.length;
-					if (lastInd < LIMIT) return;
-
-					let newCursor = new Date(
-						allItems[lastInd - 1].createdAt
-					).toISOString();
-					getAllItems(newCursor);
+					if (pageInfoRef.current.nextPage)
+						getAllItems(pageInfoRef.current.cursor);
 				}
 			});
 		},
-		[allItems, getAllItems]
+		[allItems, getAllItems, pageInfoRef.current]
 	);
 
 	const elementRef = useIntersection(
