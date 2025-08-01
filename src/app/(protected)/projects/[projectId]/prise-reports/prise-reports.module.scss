@@ -1,0 +1,26 @@
+.container {
+  margin-block: 1rem;
+}
+
+.select-region {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.label {
+  display: grid;
+  gap: 0.5rem;
+
+  input {
+    width: 100%;
+  }
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.submit {
+  text-align: center;
+}
