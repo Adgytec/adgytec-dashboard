@@ -18,7 +18,7 @@ const Input = ({ label, ...props }: InputProps) => {
   );
 };
 
-const page = () => {
+const PriseReportCreate = () => {
   const userWithRole = useContext(UserContext);
   const user = userWithRole ? userWithRole.user : null;
 
@@ -112,4 +112,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default PriseReportCreate;

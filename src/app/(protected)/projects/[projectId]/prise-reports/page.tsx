@@ -6,7 +6,7 @@ import { regions } from "./types";
 import React, { ReactEventHandler, useEffect } from "react";
 import styles from "./prise-reports.module.scss";
 
-const page = () => {
+const PriseReportPage = () => {
   const searchParams = useSearchParams();
   const region = searchParams.get("region") ?? "";
   const pathname = usePathname();
@@ -45,4 +45,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default PriseReportPage;
