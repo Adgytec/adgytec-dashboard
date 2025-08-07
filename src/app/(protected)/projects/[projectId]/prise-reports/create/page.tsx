@@ -30,10 +30,19 @@ const page = () => {
     e.preventDefault();
     if (submitting) return;
 
+    const form = e.currentTarget;
+
     const formdata = new FormData(e.currentTarget);
+    let region = "";
+    if (formdata.has("region")) {
+      region = formdata.get("region")! as string;
+    } else {
+      toast.error("Region value not found.");
+      return;
+    }
 
     setSubmitting(true);
-    const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${params.projectId}`;
+    const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${params.projectId}/${region}`;
     const token = await user?.getIdToken();
     const body = JSON.stringify(Object.fromEntries(formdata.entries()));
     const headers = {
@@ -49,9 +58,8 @@ const page = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.error) throw new Error(res.message);
-        toast.success("Successfully created new user");
-
-        e.currentTarget.reset();
+        toast.success("Successfully created new record");
+        form.reset();
       })
       .catch((err) => {
         toast.error(err.message);
