@@ -1,16 +1,29 @@
 "use client";
 
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useSearchParams,
+  useRouter,
+} from "next/navigation";
 import { regions } from "./types";
 
-import React, { ReactEventHandler, useEffect } from "react";
+import React, {
+  useContext,
+  useMemo,
+  ReactEventHandler,
+  useEffect,
+} from "react";
 import styles from "./prise-reports.module.scss";
+import { UserContext } from "@/components/AuthContext/authContext";
+import PriseReports from "@/components/PriseReports/PriseReports";
 
 const PriseReportPage = () => {
   const searchParams = useSearchParams();
   const region = searchParams.get("region") ?? "";
   const pathname = usePathname();
   const router = useRouter();
+  const params = useParams<{ projectId: string }>();
 
   useEffect(() => {
     if (region.length === 0 || !regions.some((val) => region === val.value)) {
@@ -41,6 +54,8 @@ const PriseReportPage = () => {
           })}
         </select>
       </div>
+
+      <PriseReports key={region} projectId={params.projectId} region={region} />
     </div>
   );
 };

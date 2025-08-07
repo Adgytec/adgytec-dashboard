@@ -1,5 +1,9 @@
 .container {
   margin-block: 1rem;
+  display: grid;
+  gap: 2rem;
+
+  overflow: auto;
 }
 
 .select-region {

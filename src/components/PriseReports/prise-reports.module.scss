@@ -1,0 +1,64 @@
+@use "/src/styles/abstract" as ab;
+
+
+.table {
+  display: grid;
+  column-gap: 1.5rem;
+  row-gap: 0.25rem;
+
+  > :nth-child(even) {
+    background-color: var(--bg-400);
+  }
+
+
+  >div {
+    --_span: 3;
+
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: span var(--_span);
+
+    padding-block: 1rem;
+    padding-inline: 0.5rem 0.25rem;
+
+    > :nth-child(n + 4) {
+      display: none;
+    }
+
+    @include ab.screen-40 {
+      --_span: 4;
+
+      > :nth-child(n) {
+        display: block;
+      }
+
+      > :nth-child(n + 5) {
+        display: none;
+      }
+    }
+
+    @include ab.screen-48 {
+      --_span: 7;
+
+      > :nth-child(n) {
+        display: block;
+      }
+
+      > :nth-child(n + 6) {
+        display: none;
+      }
+    }
+
+    @include ab.screen-64 {
+      --_span: 11;
+
+      > :nth-child(n) {
+        display: block;
+      }
+    }
+
+    >* {
+      grid-column: span 1;
+    }
+  }
+}
