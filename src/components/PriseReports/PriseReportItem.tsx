@@ -26,9 +26,6 @@ const PriseReportItemComp = ({
   const [deleting, sepeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [isEdit, setIsEdit] = useState(false);
-  const [updating, setUpdating] = useState(false);
-
   const handleDelete = async () => {
     sepeleting(true);
 
@@ -133,18 +130,8 @@ const PriseReportItemComp = ({
       <p>
         <button
           data-type="link"
-          data-variant="secondary"
-          onClick={() => setIsEdit((prev) => !prev)}
-          disabled={updating || deleting}
-        >
-          <FontAwesomeIcon icon={isEdit ? faXmark : faPenToSquare} />
-        </button>
-      </p>
-      <p>
-        <button
-          data-type="link"
           onClick={() => deleteConfirmRef.current?.showModal()}
-          disabled={updating || deleting}
+          disabled={deleting}
           data-variant="error"
         >
           <FontAwesomeIcon icon={faTrashCan} />

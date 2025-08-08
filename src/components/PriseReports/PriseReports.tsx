@@ -67,7 +67,6 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
             <h4>{"Lieu d'implantation"}</h4>
             <h4>Secteur</h4>
             <h4>{"Site d'intervention"}</h4>
-            <h4>Edit</h4>
             <h4>Delete</h4>
           </div>
 
