@@ -44,13 +44,13 @@
         display: block;
       }
 
-      > :nth-child(n + 6) {
+      > :nth-child(n + 8) {
         display: none;
       }
     }
 
     @include ab.screen-64 {
-      --_span: 11;
+      --_span: 7;
 
       > :nth-child(n) {
         display: block;

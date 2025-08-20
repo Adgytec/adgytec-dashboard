@@ -119,14 +119,16 @@ const PriseReportItemComp = ({
       )}
 
       <p>{ind}</p>
-      <p>{getRegionDisplayValue(item.region)}</p>
-      <p>{item.Ouvrage || "-"}</p>
+      {/* <p>{getRegionDisplayValue(item.region)}</p> */}
+      {/* <p>{item.Ouvrage || "-"}</p> */}
       <p>{item.Territoire || "-"}</p>
-      <p>{item["Coordonnées"] || "-"}</p>
-      <p>{item.Infrastructures || "-"}</p>
-      <p>{item["Lieu d'implantation"] || "-"}</p>
-      <p>{item.Secteur || "-"}</p>
       <p>{item["Site d'intervention"] || "-"}</p>
+      {/* <p>{item["Coordonnées"] || "-"}</p> */}
+      <p>{item.Infrastructures || "-"}</p>
+      {/* <p>{item["Lieu d'implantation"] || "-"}</p> */}
+      {/* <p>{item.Secteur || "-"}</p> */}
+      <p>{item["Latitude"] || "-"}</p>
+      <p>{item["Longitude"] || "-"}</p>
       <p>
         <button
           data-type="link"

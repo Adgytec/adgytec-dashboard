@@ -58,15 +58,17 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
       ) : (
         <div className={styles.table}>
           <div className={styles.table_heading}>
-            <h4>No.</h4>
-            <h4>Region</h4>
-            <h4>Ouvrage</h4>
+            <h4>N°</h4>
+            {/* <h4>Region</h4> */}
+            {/* <h4>Ouvrage</h4> */}
             <h4>Territoire</h4>
-            <h4>Coordonnées</h4>
-            <h4>Infrastructures</h4>
-            <h4>{"Lieu d'implantation"}</h4>
-            <h4>Secteur</h4>
             <h4>{"Site d'intervention"}</h4>
+            {/* <h4>Coordonnées</h4> */}
+            <h4>Infrastructures</h4>
+            {/* <h4>{"Lieu d'implantation"}</h4> */}
+            {/* <h4>Secteur</h4> */}
+            <h4>Latitude</h4>
+            <h4>Longitude</h4>
             <h4>Delete</h4>
           </div>
 
