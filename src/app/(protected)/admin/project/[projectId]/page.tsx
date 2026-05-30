@@ -1,21 +1,27 @@
 "use client";
 
-import {UserContext} from "@/components/AuthContext/authContext";
-import Loader from "@/components/Loader/Loader";
-import React, {useCallback, useContext, useEffect, useMemo, useState,} from "react";
-import {toast} from "react-toastify";
-import {useRouter, useSearchParams} from "next/navigation";
-import Container from "@/components/Container/Container";
-import styles from "./project.module.scss";
-import {copyToClipboard} from "@/helpers/helpers";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCopy} from "@fortawesome/free-regular-svg-icons";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import Users from "./components/Users/Users";
-import Services from "./components/Services/Services";
-import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+import { toast } from "react-toastify";
+import { UserContext } from "@/components/AuthContext/authContext";
+import Container from "@/components/Container/Container";
+import LinkHeader, { type LinkItem } from "@/components/LinkHeader/LinkHeader";
+import Loader from "@/components/Loader/Loader";
+import { copyToClipboard } from "@/helpers/helpers";
 import Category from "./components/Category/Category";
-import LinkHeader, {LinkItem} from "@/components/LinkHeader/LinkHeader";
+import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
+import Services from "./components/Services/Services";
+import Users from "./components/Users/Users";
+import styles from "./project.module.scss";
 
 interface ProjectDetailsProps {
     params: { projectId: string };
@@ -42,7 +48,7 @@ export interface ProjectDetails {
     cover: string;
 }
 
-const ProjectDetails = ({params}: ProjectDetailsProps) => {
+const ProjectDetails = ({ params }: ProjectDetailsProps) => {
     const userWithRole = useContext(UserContext);
     const user = useMemo(
         () => (userWithRole ? userWithRole.user : null),
@@ -111,7 +117,7 @@ const ProjectDetails = ({params}: ProjectDetailsProps) => {
     if (loading) {
         return (
             <Container className={styles.empty}>
-                <Loader/>
+                <Loader />
             </Container>
         );
     }
@@ -134,7 +140,7 @@ const ProjectDetails = ({params}: ProjectDetailsProps) => {
         );
     }
 
-    let createdAt = new Date(details.createdAt);
+    const createdAt = new Date(details.createdAt);
 
     const handleMouseOver = () => {
         setIsText(true);
@@ -154,9 +160,9 @@ const ProjectDetails = ({params}: ProjectDetailsProps) => {
     const handleInfo = () => {
         switch (view) {
             case "users":
-                return <Users users={details.users}/>;
+                return <Users users={details.users} />;
             case "services":
-                return <Services details={details} setDetails={setDetails}/>;
+                return <Services details={details} setDetails={setDetails} />;
             default:
                 return <h3>Please select an option to view the details.</h3>;
         }
@@ -235,7 +241,7 @@ const ProjectDetails = ({params}: ProjectDetailsProps) => {
                                     onClick={handleClick}
                                     className={styles.copy}
                                 >
-                                    <FontAwesomeIcon icon={faCopy}/>
+                                    <FontAwesomeIcon icon={faCopy} />
                                 </button>
                             )}
                         </div>
@@ -245,12 +251,12 @@ const ProjectDetails = ({params}: ProjectDetailsProps) => {
                 <div className={styles.category}>
                     <h2>Category</h2>
 
-                    <Category/>
+                    <Category />
                 </div>
             </Container>
 
             <div className={styles.metadata}>
-                <LinkHeader links={linkProps}/>
+                <LinkHeader links={linkProps} />
 
                 <Container>
                     <div className={styles.info}>{handleInfo()}</div>

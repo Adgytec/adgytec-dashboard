@@ -1,5 +1,5 @@
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 
 export interface UserPopoverProps {
-	user: User | null;
+    user: User | null;
 }

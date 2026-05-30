@@ -1,58 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-
-import { auth, signoutUser } from "@/firebase/auth/auth";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import Loader from "@/components/Loader/Loader";
+import { auth, signoutUser } from "@/firebase/auth/auth";
 
 const withAuth = (Component: any) => {
-	const AuthenticatedComponent = (props: any) => {
-		const [authUser, setAuthUser] = useState<User | null>(null);
-		const [loading, setLoading] = useState<boolean>(true);
+    const AuthenticatedComponent = (props: any) => {
+        const [authUser, setAuthUser] = useState<User | null>(null);
+        const [loading, setLoading] = useState<boolean>(true);
 
-		const router = useRouter();
+        const router = useRouter();
 
-		useEffect(() => {
-			const authState = onAuthStateChanged(auth, async (user) => {
-				if (!user) {
-					router.push("/login");
-				} else {
-					if (!user.emailVerified) {
-						await signoutUser();
-						return;
-					}
+        useEffect(() => {
+            const authState = onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    router.push("/login");
+                } else {
+                    if (!user.emailVerified) {
+                        await signoutUser();
+                        return;
+                    }
 
-					setLoading(false);
-					setAuthUser(user);
-				}
-			});
+                    setLoading(false);
+                    setAuthUser(user);
+                }
+            });
 
-			return () => authState();
-		}, [router]);
+            return () => authState();
+        }, [router]);
 
-		if (loading) {
-			return (
-				<div
-					style={{
-						width: "calc(var(--vw) * 100)",
-						height: "100vb",
-						display: "grid",
-						placeItems: "center",
-					}}
-				>
-					<Loader />
-				</div>
-			);
-		}
+        if (loading) {
+            return (
+                <div
+                    style={{
+                        width: "calc(var(--vw) * 100)",
+                        height: "100vb",
+                        display: "grid",
+                        placeItems: "center",
+                    }}
+                >
+                    <Loader />
+                </div>
+            );
+        }
 
-		return (
-			<>
-				<Component {...props} user={authUser} />
-			</>
-		);
-	};
+        return (
+            <>
+                <Component {...props} user={authUser} />
+            </>
+        );
+    };
 
-	return AuthenticatedComponent;
+    return AuthenticatedComponent;
 };
 
 export default withAuth;

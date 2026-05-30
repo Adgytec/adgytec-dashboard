@@ -1,7 +1,7 @@
 export const userRoles = {
-	superAdmin: "super_admin",
-	admin: "admin",
-	user: "user",
+    superAdmin: "super_admin",
+    admin: "admin",
+    user: "user",
 };
 
 export type ValidateEmail = (email: string) => boolean;
@@ -19,6 +19,6 @@ export type ValidateString = (str: string, length: number) => boolean;
 export type CopyToClipboard = (text: string) => void;
 
 export interface PageInfo {
-	nextPage: boolean;
-	cursor: string;
+    nextPage: boolean;
+    cursor: string;
 }

@@ -1,91 +1,91 @@
-@use "/src/styles/abstract" as ab;
+@use "../../../../../styles/abstract" as ab;
 
 .empty {
-	min-height: 25rem;
+  min-height: 25rem;
 
-	display: grid;
-	place-items: center;
+  display: grid;
+  place-items: center;
 }
 
 .container {
-	display: grid;
-	gap: clamp(2.5em, 4vi, 3.5em);
+  display: grid;
+  gap: clamp(2.5em, 4vi, 3.5em);
 
-	.project {
-		display: grid;
-		gap: 3em;
-	}
+  .project {
+    display: grid;
+    gap: 3em;
+  }
 
-	.back {
-		display: flex;
-		justify-content: flex-end;
+  .back {
+    display: flex;
+    justify-content: flex-end;
 
-		button {
-			font-weight: 500;
-			font-size: clamp(1rem, 1.5vi, 1.25rem);
-		}
-	}
+    button {
+      font-weight: 500;
+      font-size: clamp(1rem, 1.5vi, 1.25rem);
+    }
+  }
 
-	.category {
-		display: grid;
-		gap: 1em;
-	}
+  .category {
+    display: grid;
+    gap: 1em;
+  }
 
-	.details {
-		--_w: 50rem;
-		--_g: 1.5em;
+  .details {
+    --_w: 50rem;
+    --_g: 1.5em;
 
-		display: grid;
-		gap: var(--_g);
+    display: grid;
+    gap: var(--_g);
 
-		.image {
-			display: flex;
-			align-items: center;
-			gap: clamp(0.5em, 1.25vi, 1em);
+    .image {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.5em, 1.25vi, 1em);
 
-			img {
-				width: auto;
-				height: auto;
+      img {
+        width: auto;
+        height: auto;
 
-				max-height: 4rem;
-				max-width: 15rem;
-			}
-		}
+        max-height: 4rem;
+        max-width: 15rem;
+      }
+    }
 
-		.item_group {
-			display: grid;
-			gap: var(--_g);
+    .item_group {
+      display: grid;
+      gap: var(--_g);
 
-			width: min(100%, var(--_w));
+      width: min(100%, var(--_w));
 
-			grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 
-			.copy {
-				position: absolute;
-				right: 2.5px;
-				bottom: 0;
+      .copy {
+        position: absolute;
+        right: 2.5px;
+        bottom: 0;
 
-				translate: -50% -50%;
-			}
-		}
+        translate: -50% -50%;
+      }
+    }
 
-		.item {
-			display: grid;
-			gap: 0.5em;
-			position: relative;
+    .item {
+      display: grid;
+      gap: 0.5em;
+      position: relative;
 
-			input {
-				width: min(100%, var(--_w));
+      input {
+        width: min(100%, var(--_w));
 
-				&[data-hidden="true"] {
-					-webkit-text-security: disc;
-				}
-			}
-		}
-	}
+        &[data-hidden="true"] {
+          -webkit-text-security: disc;
+        }
+      }
+    }
+  }
 
-	.metadata {
-		display: grid;
-		gap: 1em;
-	}
+  .metadata {
+    display: grid;
+    gap: 1em;
+  }
 }

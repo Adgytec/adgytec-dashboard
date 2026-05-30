@@ -1,15 +1,11 @@
-import React from 'react';
+import type React from "react";
 
 interface DocumentLayoutProps {
     children: React.ReactNode;
 }
 
-const DocumentLayout = ({children}: DocumentLayoutProps) => {
-    return (
-        <div>
-            {children}
-        </div>
-    );
+const DocumentLayout = ({ children }: DocumentLayoutProps) => {
+    return <div>{children}</div>;
 };
 
 export default DocumentLayout;

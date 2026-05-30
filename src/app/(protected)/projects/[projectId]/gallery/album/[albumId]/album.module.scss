@@ -1,170 +1,170 @@
-@use "/src/styles/abstract" as ab;
+@use "../../../../../../../styles/abstract" as ab;
 
 .selection {
-	position: fixed;
+  position: fixed;
 
-	background-color: hsl(from var(--success) h s l / 0.25);
-	bottom: 1em;
-	right: 1em;
+  background-color: hsl(from var(--success) h s l / 0.25);
+  bottom: 1em;
+  right: 1em;
 
-	padding-inline: 1em;
-	padding-block: 0.5em;
-	backdrop-filter: blur(7.5px);
+  padding-inline: 1em;
+  padding-block: 0.5em;
+  backdrop-filter: blur(7.5px);
 
-	border-radius: 0.5em;
+  border-radius: 0.5em;
 
-	min-width: max-content;
+  min-width: max-content;
 
-	display: flex;
-	gap: 2em;
+  display: flex;
+  gap: 2em;
 }
 
 .album {
-	display: grid;
-	gap: 2em;
+  display: grid;
+  gap: 2em;
 
-	.heading {
-		display: flex;
-		gap: 2em;
-		align-items: center;
-		justify-content: space-between;
-	}
+  .heading {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-	.container {
-		// outline: 2px solid lightblue;
-		container-name: album-image;
+  .container {
+    // outline: 2px solid lightblue;
+    container-name: album-image;
 
-		display: grid;
-		gap: 1.5em;
+    display: grid;
+    gap: 1.5em;
 
-		.action {
-			text-align: right;
-		}
+    .action {
+      text-align: right;
+    }
 
-		.images {
-			display: grid;
-			gap: 1em;
+    .images {
+      display: grid;
+      gap: 1em;
 
-			@include ab.motion {
-				@include ab.hover {
-					&:hover {
-						.item:not([data-manage="true"]) {
-							scale: 0.9;
-						}
-					}
-				}
-			}
-		}
-		.imagesChild {
-			--_count: 1;
+      @include ab.motion {
+        @include ab.hover {
+          &:hover {
+            .item:not([data-manage="true"]) {
+              scale: 0.9;
+            }
+          }
+        }
+      }
+    }
 
-			column-count: var(--_count);
-			column-gap: 1em;
+    .imagesChild {
+      --_count: 1;
 
-			@include ab.album-image-40 {
-				--_count: 2;
-			}
+      column-count: var(--_count);
+      column-gap: 1em;
 
-			@include ab.album-image-64 {
-				--_count: 3;
-			}
+      @include ab.album-image-40 {
+        --_count: 2;
+      }
 
-			.item {
-				--_c: transparent;
+      @include ab.album-image-64 {
+        --_count: 3;
+      }
 
-				overflow: hidden;
-				border-radius: 0.5em;
-				margin-block-end: 1em;
+      .item {
+        --_c: transparent;
 
-				outline: 0.25em solid var(--_c);
+        overflow: hidden;
+        border-radius: 0.5em;
+        margin-block-end: 1em;
 
-				transition: scale 200ms, border-radius 200ms;
+        outline: 0.25em solid var(--_c);
 
-				&[data-manage="true"] {
-					--_o: 0.25;
+        transition: scale 200ms, border-radius 200ms;
 
-					position: relative;
+        &[data-manage="true"] {
+          --_o: 0.25;
 
-					transition: outline-color 200ms;
+          position: relative;
 
-					&:has(input:checked) {
-						--_o: 0.75;
+          transition: outline-color 200ms;
 
-						--_c: var(--accent-secondary);
-					}
+          &:has(input:checked) {
+            --_o: 0.75;
 
-					&::before {
-						content: "";
-						position: absolute;
-						inset: 0;
-						background-color: hsl(
-							from var(--bg-800) h s l / var(--_o)
-						);
+            --_c: var(--accent-secondary);
+          }
 
-						transition: background-color 300ms;
-					}
+          &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: hsl(from var(--bg-800) h s l / var(--_o));
 
-					label {
-						position: absolute;
-						inset: 0;
+            transition: background-color 300ms;
+          }
 
-						padding: 0.5rem;
-					}
+          label {
+            position: absolute;
+            inset: 0;
 
-					input[type="checkbox"] {
-						scale: 1.25;
-					}
-				}
+            padding: 0.5rem;
+          }
 
-				@include ab.motion {
-					@include ab.hover {
-						&:hover:not([data-manage="true"]) {
-							scale: 1.1;
-							border-radius: 0;
-						}
-					}
-				}
-			}
+          input[type="checkbox"] {
+            scale: 1.25;
+          }
+        }
 
-			img {
-				width: 100%;
-				height: auto;
-				object-fit: cover;
+        @include ab.motion {
+          @include ab.hover {
+            &:hover:not([data-manage="true"]) {
+              scale: 1.1;
+              border-radius: 0;
+            }
+          }
+        }
+      }
 
-				transition: scale 200ms;
+      img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
 
-				@include ab.motion {
-					@include ab.hover {
-						&:hover:not([data-manage="true"]) {
-							scale: 1.1;
-						}
-					}
-				}
-			}
-		}
-	}
+        transition: scale 200ms;
+
+        @include ab.motion {
+          @include ab.hover {
+            &:hover:not([data-manage="true"]) {
+              scale: 1.1;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .modal {
-	--_w: 70em;
+  --_w: 70em;
 
-	.addImages {
-		--_input-width: 100%;
-		--_height: 55dvb;
+  .addImages {
+    --_input-width: 100%;
+    --_height: 55dvb;
 
-		display: grid;
-		gap: 0.5em;
-	}
+    display: grid;
+    gap: 0.5em;
+  }
 
-	.status {
-		margin-block-start: 0.5em;
-		display: grid;
-		gap: 1em;
-	}
-	.result {
-		display: flex;
-		gap: 1em;
+  .status {
+    margin-block-start: 0.5em;
+    display: grid;
+    gap: 1em;
+  }
 
-		flex-wrap: wrap;
-	}
+  .result {
+    display: flex;
+    gap: 1em;
+
+    flex-wrap: wrap;
+  }
 }

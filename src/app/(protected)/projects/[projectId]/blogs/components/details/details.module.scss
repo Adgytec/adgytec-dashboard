@@ -1,36 +1,36 @@
-@use "/src/styles/abstract" as ab;
+@use "../../../../../../../styles/abstract" as ab;
 
 .details {
-	display: grid;
-	gap: 1em;
+  display: grid;
+  gap: 1em;
 
-	.form {
-		--input-width: 50rem;
+  .form {
+    --input-width: 50rem;
 
-		display: grid;
-		gap: 1.5em;
+    display: grid;
+    gap: 1.5em;
 
-		.input {
-			display: grid;
-			gap: 0.5em;
-		}
+    .input {
+      display: grid;
+      gap: 0.5em;
+    }
 
-		.image_preview {
-			max-height: 20rem;
+    .image_preview {
+      max-height: 20rem;
 
-			img {
-				width: auto;
-				height: 100%;
+      img {
+        width: auto;
+        height: 100%;
 
-				object-fit: contain;
-			}
-		}
-	}
+        object-fit: contain;
+      }
+    }
+  }
 
-	.actions {
-		display: flex;
-		gap: 1em;
+  .actions {
+    display: flex;
+    gap: 1em;
 
-		justify-content: space-between;
-	}
+    justify-content: space-between;
+  }
 }

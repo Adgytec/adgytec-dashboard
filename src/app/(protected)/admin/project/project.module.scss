@@ -1,6 +1,6 @@
-@use "/src/styles/abstract" as ab;
+@use "../../../../styles/abstract" as ab;
 
 .layout {
-	display: grid;
-	gap: 2em;
+  display: grid;
+  gap: 2em;
 }

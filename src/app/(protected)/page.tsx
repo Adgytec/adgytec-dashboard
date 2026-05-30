@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
-import styles from "./home.module.scss";
-import Container from "@/components/Container/Container";
 import Image from "next/image";
+import React from "react";
 import { Changelog } from "@/components/Changelog/Changelog";
+import Container from "@/components/Container/Container";
+import styles from "./home.module.scss";
 
 const Home = () => {
     return (

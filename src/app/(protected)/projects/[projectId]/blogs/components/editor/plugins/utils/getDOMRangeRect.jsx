@@ -1,17 +1,17 @@
 export function getDOMRangeRect(nativeSelection, rootElement) {
-  const domRange = nativeSelection.getRangeAt(0);
+    const domRange = nativeSelection.getRangeAt(0);
 
-  let rect;
+    let rect;
 
-  if (nativeSelection.anchorNode === rootElement) {
-    let inner = rootElement;
-    while (inner.firstElementChild != null) {
-      inner = inner.firstElementChild;
+    if (nativeSelection.anchorNode === rootElement) {
+        let inner = rootElement;
+        while (inner.firstElementChild != null) {
+            inner = inner.firstElementChild;
+        }
+        rect = inner.getBoundingClientRect();
+    } else {
+        rect = domRange.getBoundingClientRect();
     }
-    rect = inner.getBoundingClientRect();
-  } else {
-    rect = domRange.getBoundingClientRect();
-  }
 
-  return rect;
+    return rect;
 }

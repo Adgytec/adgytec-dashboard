@@ -1,17 +1,18 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
-import {UserContext, UserWithRole} from "./authContext";
-import {auth, signoutUser} from "@/firebase/auth/auth";
-import {onAuthStateChanged} from "firebase/auth";
-import {useRouter} from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { auth, signoutUser } from "@/firebase/auth/auth";
 import Loader from "../Loader/Loader";
+import { UserContext, type UserWithRole } from "./authContext";
 
 interface AuthProviderProps {
     children: React.ReactNode;
 }
 
-function AuthProvider({children}: AuthProviderProps) {
+function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<UserWithRole | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -29,8 +30,8 @@ function AuthProvider({children}: AuthProviderProps) {
                 } else {
                     setLoading(false);
 
-                    let idTokenResult = await user.getIdTokenResult();
-                    let role = idTokenResult?.claims.role;
+                    const idTokenResult = await user.getIdTokenResult();
+                    const role = idTokenResult?.claims.role;
 
                     setUser({
                         user,
@@ -53,7 +54,7 @@ function AuthProvider({children}: AuthProviderProps) {
                     placeItems: "center",
                 }}
             >
-                <Loader/>
+                <Loader />
             </div>
         );
     }

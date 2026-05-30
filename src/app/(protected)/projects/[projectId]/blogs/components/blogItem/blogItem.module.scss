@@ -1,105 +1,107 @@
-@use "/src/styles/abstract" as ab;
+@use "../../../../../../../styles/abstract" as ab;
 
 .container {
-	.details {
-		container-name: blog-item;
+  .details {
+    container-name: blog-item;
 
-		.subContainer {
-			display: grid;
-			gap: 1em;
-			grid-template-columns: 15rem 1fr;
+    .subContainer {
+      display: grid;
+      gap: 1em;
+      grid-template-columns: 15rem 1fr;
 
-			@include ab.blog-item {
-				grid-template-columns: none;
-			}
+      @include ab.blog-item {
+        grid-template-columns: none;
+      }
 
-			p {
-				color: var(--text-grey);
-			}
+      p {
+        color: var(--text-grey);
+      }
 
-			.image {
-				position: relative;
+      .image {
+        position: relative;
 
-				button {
-					position: absolute;
-					z-index: 1;
-					top: 50%;
-					left: 50%;
-					translate: -50% -50%;
-				}
-				&::before {
-					content: "";
-					position: absolute;
-					background-color: hsl(from var(--bg-800) h s l / 0.75);
-					inset: 0;
-					backdrop-filter: blur(5px);
-					opacity: 0;
+        button {
+          position: absolute;
+          z-index: 1;
+          top: 50%;
+          left: 50%;
+          translate: -50% -50%;
+        }
 
-					transition: opacity 300ms;
-				}
+        &::before {
+          content: "";
+          position: absolute;
+          background-color: hsl(from var(--bg-800) h s l / 0.75);
+          inset: 0;
+          backdrop-filter: blur(5px);
+          opacity: 0;
 
-				&[data-edit="true"] {
-					&::before {
-						opacity: 1;
-					}
-					img {
-						height: 100%;
-						transition: height 300ms;
+          transition: opacity 300ms;
+        }
 
-						@include ab.blog-item {
-							height: 200px;
-						}
-					}
-				}
+        &[data-edit="true"] {
+          &::before {
+            opacity: 1;
+          }
 
-				img {
-					width: 100%;
-					object-fit: cover;
-				}
-			}
+          img {
+            height: 100%;
+            transition: height 300ms;
 
-			.data {
-				display: grid;
-				gap: 0.5rem;
-				align-content: start;
+            @include ab.blog-item {
+              height: 200px;
+            }
+          }
+        }
 
-				input,
-				textarea {
-					--input-width: 100%;
+        img {
+          width: 100%;
+          object-fit: cover;
+        }
+      }
 
-					// resize: none;
-				}
+      .data {
+        display: grid;
+        gap: 0.5rem;
+        align-content: start;
 
-				select {
-					--input-width: 15rem;
+        input,
+        textarea {
+          --input-width: 100%;
 
-					font-size: 1rem;
-				}
+          // resize: none;
+        }
 
-				.metadata {
-					display: flex;
-					gap: 1em;
-				}
-			}
-		}
-	}
+        select {
+          --input-width: 15rem;
 
-	.action {
-		text-align: center;
+          font-size: 1rem;
+        }
 
-		@include ab.blog-table {
-			text-align: left;
+        .metadata {
+          display: flex;
+          gap: 1em;
+        }
+      }
+    }
+  }
 
-			&[data-delete] {
-				text-align: right;
-			}
-		}
-	}
+  .action {
+    text-align: center;
+
+    @include ab.blog-table {
+      text-align: left;
+
+      &[data-delete] {
+        text-align: right;
+      }
+    }
+  }
 }
 
 .updateCover {
-	--_input-width: 100%;
+  --_input-width: 100%;
 
-	display: grid;
-	gap: 0.5em;
+  display: grid;
+  gap: 0.5em;
 }

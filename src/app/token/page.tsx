@@ -1,7 +1,7 @@
 "use client";
 
-import { signin } from "@/firebase/auth/auth";
 import React, { useState } from "react";
+import { signin } from "@/firebase/auth/auth";
 
 const email = "rohanverma031@gmail.com";
 const password = "Y_U+uv}JYC";
@@ -13,65 +13,65 @@ const adminPassword = "TxQ8-at6<^";
 // const adminPassword = "3U~=BlF@}6";
 
 const Page = () => {
-	const [token, setToken] = useState<string>("");
-	const [nonToken, setNonToken] = useState<string>("");
+    const [token, setToken] = useState<string>("");
+    const [nonToken, setNonToken] = useState<string>("");
 
-	const handleLogin = async () => {
-		const { user, error } = await signin(email, password, remember);
+    const handleLogin = async () => {
+        const { user, error } = await signin(email, password, remember);
 
-		if (error) {
-			console.error(error.message);
-			return;
-		}
+        if (error) {
+            console.error(error.message);
+            return;
+        }
 
-		if (!user) return;
+        if (!user) return;
 
-		const token = await user.user.getIdToken();
-		setToken(token);
-	};
+        const token = await user.user.getIdToken();
+        setToken(token);
+    };
 
-	const handleLoginNonAdmin = async () => {
-		const { user, error } = await signin(
-			adminEmail,
-			adminPassword,
-			remember
-		);
+    const handleLoginNonAdmin = async () => {
+        const { user, error } = await signin(
+            adminEmail,
+            adminPassword,
+            remember
+        );
 
-		if (error) {
-			console.error(error.message);
-			return;
-		}
+        if (error) {
+            console.error(error.message);
+            return;
+        }
 
-		if (!user) return;
+        if (!user) return;
 
-		const token = await user.user.getIdToken();
-		setNonToken(token);
-	};
+        const token = await user.user.getIdToken();
+        setNonToken(token);
+    };
 
-	return (
-		<div>
-			{/* Adgytec-Dashboard */}
-			<button onClick={handleLogin}>Get id token</button>
-			<p
-				style={{
-					wordBreak: "break-all",
-				}}
-			>
-				{token}
-			</p>
+    return (
+        <div>
+            {/* Adgytec-Dashboard */}
+            <button onClick={handleLogin}>Get id token</button>
+            <p
+                style={{
+                    wordBreak: "break-all",
+                }}
+            >
+                {token}
+            </p>
 
-			<button onClick={handleLoginNonAdmin}>
-				Get id token non-superadmin
-			</button>
-			<p
-				style={{
-					wordBreak: "break-all",
-				}}
-			>
-				{nonToken}
-			</p>
-		</div>
-	);
+            <button onClick={handleLoginNonAdmin}>
+                Get id token non-superadmin
+            </button>
+            <p
+                style={{
+                    wordBreak: "break-all",
+                }}
+            >
+                {nonToken}
+            </p>
+        </div>
+    );
 };
 
 export default Page;

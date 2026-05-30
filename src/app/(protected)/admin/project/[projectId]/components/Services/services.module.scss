@@ -1,128 +1,129 @@
-@use "/src/styles/abstract" as ab;
+@use "../../../../../../../styles/abstract" as ab;
 
 .services {
-	display: grid;
-	gap: 1em;
+  display: grid;
+  gap: 1em;
 
-	.action {
-		display: flex;
-		justify-content: flex-end;
-	}
+  .action {
+    display: flex;
+    justify-content: flex-end;
+  }
 
-	.list {
-		display: flex;
-		gap: clamp(1em, 1.75vi, 1.5em);
+  .list {
+    display: flex;
+    gap: clamp(1em, 1.75vi, 1.5em);
 
-		flex-wrap: wrap;
+    flex-wrap: wrap;
 
-		.item {
-			padding-inline: 1.5em;
-			padding-block: 0.25em;
+    .item {
+      padding-inline: 1.5em;
+      padding-block: 0.25em;
 
-			font-size: clamp(1rem, 1.5vi, 1.25rem);
-			color: var(--accent-secondary);
+      font-size: clamp(1rem, 1.5vi, 1.25rem);
+      color: var(--accent-secondary);
 
-			border-radius: 50vi;
-			background-color: var(--bg-400);
+      border-radius: 50vi;
+      background-color: var(--bg-400);
 
-			display: flex;
-			align-items: center;
-			gap: 0.5em;
-		}
-	}
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+  }
 }
 
 .modal {
-	--_w: 45em;
+  --_w: 45em;
 
-	.modal_content {
-		display: grid;
-		gap: 2.5em;
+  .modal_content {
+    display: grid;
+    gap: 2.5em;
 
-		> * {
-			display: grid;
-			gap: 1.5em;
+    >* {
+      display: grid;
+      gap: 1.5em;
 
-			.empty {
-				text-align: center;
-			}
+      .empty {
+        text-align: center;
+      }
 
-			.load {
-				margin-block: 1em;
-			}
-		}
+      .load {
+        margin-block: 1em;
+      }
+    }
 
-		.title {
-			display: flex;
-			gap: 1em;
-			align-items: center;
-			justify-content: space-between;
+    .title {
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      justify-content: space-between;
 
-			input {
-				width: min(100%, 22rem);
-			}
-		}
+      input {
+        width: min(100%, 22rem);
+      }
+    }
 
-		.items {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 1em;
+    .items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
 
-			.item {
-				--_bg: var(--bg-400);
-				--_c: var(--accent-secondary);
-				--_g: 0.5rem;
+      .item {
+        --_bg: var(--bg-400);
+        --_c: var(--accent-secondary);
+        --_g: 0.5rem;
 
-				border-radius: 50vi;
+        border-radius: 50vi;
 
-				background-color: var(--_bg);
-				transition: background-color 300ms;
+        background-color: var(--_bg);
+        transition: background-color 300ms;
 
-				display: flex;
-				align-items: center;
-				gap: var(--_g);
+        display: flex;
+        align-items: center;
+        gap: var(--_g);
 
-				&:has(input:checked) {
-					--_bg: var(--accent-secondary);
-					--_c: black;
+        &:has(input:checked) {
+          --_bg: var(--accent-secondary);
+          --_c: black;
 
-					img {
-						mix-blend-mode: difference;
-					}
-				}
+          img {
+            mix-blend-mode: difference;
+          }
+        }
 
-				label {
-					display: flex;
-					align-items: center;
-					gap: var(--_g);
+        label {
+          display: flex;
+          align-items: center;
+          gap: var(--_g);
 
-					padding-inline: 1em;
-					padding-block: 0.25em;
-					color: var(--_c);
+          padding-inline: 1em;
+          padding-block: 0.25em;
+          color: var(--_c);
 
-					transition: color 300ms;
-				}
+          transition: color 300ms;
+        }
 
-				input {
-					display: none;
-				}
-			}
-		}
+        input {
+          display: none;
+        }
+      }
+    }
 
-		.added {
-			.item {
-				padding-block: 0.5em;
-				padding-inline: 1.5em;
+    .added {
+      .item {
+        padding-block: 0.5em;
+        padding-inline: 1.5em;
 
-				button {
-					margin-inline-start: 0.5em;
-					display: flex;
-					align-items: center;
-					svg {
-						font-size: 1.25rem;
-					}
-				}
-			}
-		}
-	}
+        button {
+          margin-inline-start: 0.5em;
+          display: flex;
+          align-items: center;
+
+          svg {
+            font-size: 1.25rem;
+          }
+        }
+      }
+    }
+  }
 }

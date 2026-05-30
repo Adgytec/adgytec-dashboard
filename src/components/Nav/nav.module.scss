@@ -1,44 +1,44 @@
-@use "/src/styles/abstract" as ab;
+@use "../../styles/abstract" as ab;
 
 .nav {
-	background-color: var(--bg-600);
-	height: 100%;
+  background-color: var(--bg-600);
+  height: 100%;
 
-	padding-block: 1em;
+  padding-block: 1em;
 
-	display: grid;
-	gap: clamp(3em, 6vi, 5.5em);
+  display: grid;
+  gap: clamp(3em, 6vi, 5.5em);
 
-	align-content: start;
+  align-content: start;
 
-	border-inline-end: 1px solid var(--white);
+  border-inline-end: 1px solid var(--white);
 
-	.logo {
-		width: clamp(10rem, 20vi, 20rem);
-		padding-inline: clamp(1em, 2vi, 2em);
-	}
+  .logo {
+    width: clamp(10rem, 20vi, 20rem);
+    padding-inline: clamp(1em, 2vi, 2em);
+  }
 
-	.links {
-		display: grid;
-		gap: 1em;
+  .links {
+    display: grid;
+    gap: 1em;
 
-		> div {
-			padding-inline: clamp(1em, 2vi, 2em);
-			padding-block: 1em;
-			transition: background-color 300ms;
+    >div {
+      padding-inline: clamp(1em, 2vi, 2em);
+      padding-block: 1em;
+      transition: background-color 300ms;
 
-			&[data-active="true"] {
-				background-color: var(--active);
+      &[data-active="true"] {
+        background-color: var(--active);
 
-				@include ab.nav {
-					border-inline-end: 1px solid var(--white);
-				}
-			}
-		}
+        @include ab.nav {
+          border-inline-end: 1px solid var(--white);
+        }
+      }
+    }
 
-		a {
-			font-size: clamp(1.25rem, 1.75vi, 1.25rem);
-			font-weight: 600;
-		}
-	}
+    a {
+      font-size: clamp(1.25rem, 1.75vi, 1.25rem);
+      font-weight: 600;
+    }
+  }
 }

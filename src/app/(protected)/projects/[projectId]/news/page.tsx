@@ -1,107 +1,107 @@
 "use client";
 
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
 } from "react";
-import styles from "./news.module.scss";
-import Link from "next/link";
-import Loader from "@/components/Loader/Loader";
-import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
+import { UserContext } from "@/components/AuthContext/authContext";
+import Loader from "@/components/Loader/Loader";
 import NewsItem from "./components/NewsItem";
+import styles from "./news.module.scss";
 
 export interface NewsObj {
-	title: string;
-	text: string;
-	link: string;
-	image: string;
-	id: string;
-	created_at: string;
+    title: string;
+    text: string;
+    link: string;
+    image: string;
+    id: string;
+    created_at: string;
 }
 
 const News = () => {
-	const userWithRole = useContext(UserContext);
-	const user = useMemo(
-		() => (userWithRole ? userWithRole.user : null),
-		[userWithRole]
-	);
+    const userWithRole = useContext(UserContext);
+    const user = useMemo(
+        () => (userWithRole ? userWithRole.user : null),
+        [userWithRole]
+    );
 
-	const params = useParams<{ projectId: string }>();
-	const [loading, setLoading] = useState(true);
-	const [news, setNews] = useState<NewsObj[]>([]);
+    const params = useParams<{ projectId: string }>();
+    const [loading, setLoading] = useState(true);
+    const [news, setNews] = useState<NewsObj[]>([]);
 
-	const getAllNews = useCallback(async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/services/news/${params.projectId}`;
-		const token = await user?.getIdToken();
-		const headers = {
-			Authorization: `Bearer ${token}`,
-		};
+    const getAllNews = useCallback(async () => {
+        const url = `${process.env.NEXT_PUBLIC_API}/services/news/${params.projectId}`;
+        const token = await user?.getIdToken();
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
 
-		fetch(url, {
-			method: "GET",
-			headers,
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				if (res.error) throw new Error(res.message);
+        fetch(url, {
+            method: "GET",
+            headers,
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res.error) throw new Error(res.message);
 
-				setNews(res.data);
-			})
-			.catch((err) => {
-				toast.error(err.message);
-			})
-			.finally(() => setLoading(false));
-	}, [user, params.projectId]);
+                setNews(res.data);
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            })
+            .finally(() => setLoading(false));
+    }, [user, params.projectId]);
 
-	useEffect(() => {
-		getAllNews();
-	}, [getAllNews]);
+    useEffect(() => {
+        getAllNews();
+    }, [getAllNews]);
 
-	if (loading) {
-		return (
-			<div
-				style={{
-					display: "grid",
-					placeItems: "center",
-					position: "absolute",
-					inset: "0",
-				}}
-			>
-				<Loader />
-			</div>
-		);
-	}
+    if (loading) {
+        return (
+            <div
+                style={{
+                    display: "grid",
+                    placeItems: "center",
+                    position: "absolute",
+                    inset: "0",
+                }}
+            >
+                <Loader />
+            </div>
+        );
+    }
 
-	return (
-		<div className={styles.news}>
-			<div className={styles.link}>
-				<Link
-					href="news/create"
-					data-type="link"
-					data-variant="primary"
-				>
-					Create
-				</Link>
-			</div>
+    return (
+        <div className={styles.news}>
+            <div className={styles.link}>
+                <Link
+                    href="news/create"
+                    data-type="link"
+                    data-variant="primary"
+                >
+                    Create
+                </Link>
+            </div>
 
-			<div className={styles.list}>
-				{news.length === 0 ? (
-					<h3>No news in this project</h3>
-				) : (
-					news.map((n) => {
-						return (
-							<NewsItem key={n.id} news={n} setNews={setNews} />
-						);
-					})
-				)}
-			</div>
-		</div>
-	);
+            <div className={styles.list}>
+                {news.length === 0 ? (
+                    <h3>No news in this project</h3>
+                ) : (
+                    news.map((n) => {
+                        return (
+                            <NewsItem key={n.id} news={n} setNews={setNews} />
+                        );
+                    })
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default News;

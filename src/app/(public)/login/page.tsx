@@ -1,17 +1,22 @@
 "use client";
 
-import React, {useEffect, useRef, useState} from "react";
-
-import styles from "./login.module.scss";
+import { onAuthStateChanged } from "firebase/auth";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Loader from "@/components/Loader/Loader";
-import {validateEmail} from "@/helpers/validation";
-import {auth, resendEmailVerification, signin, signoutUser,} from "@/firebase/auth/auth";
-import {onAuthStateChanged} from "firebase/auth";
-import {useRouter, useSearchParams} from "next/navigation";
+import {
+    auth,
+    resendEmailVerification,
+    signin,
+    signoutUser,
+} from "@/firebase/auth/auth";
+import { handleModalClose, lightDismiss } from "@/helpers/modal";
+import { validateEmail } from "@/helpers/validation";
 import EmailConfirmModal from "./components/EmailConfirmModal";
 import ForgotPasswordModal from "./components/ForgotPasswordModal";
-import Image from "next/image";
-import {handleModalClose, lightDismiss} from "@/helpers/modal";
+import styles from "./login.module.scss";
 
 const inputReset = {
     email: "",
@@ -44,7 +49,6 @@ const Login = () => {
 
                 const path = nextPath ?? "/";
                 router.push(path);
-
             } else {
                 setLoading(false);
             }
@@ -71,14 +75,14 @@ const Login = () => {
         e.preventDefault();
         setSigningIn(true);
 
-        const {email, password, remember} = userInput;
+        const { email, password, remember } = userInput;
         if (!handleInputValidation(email, password)) {
             setSigningIn(false);
             return;
         }
 
         setErrMessage(null);
-        let {error} = await signin(email, password, remember);
+        const { error } = await signin(email, password, remember);
 
         if (error) {
             setSigningIn(false);
@@ -96,11 +100,11 @@ const Login = () => {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let key = e.target.name;
+        const key = e.target.name;
         let value: string | boolean = e.target.value;
         if (key === "remember") value = e.target.checked;
 
-        setUserInput((prev) => ({...prev, [key]: value}));
+        setUserInput((prev) => ({ ...prev, [key]: value }));
     };
 
     if (loading) {
@@ -113,7 +117,7 @@ const Login = () => {
                     placeItems: "center",
                 }}
             >
-                <Loader/>
+                <Loader />
             </div>
         );
     }
@@ -143,7 +147,11 @@ const Login = () => {
             <div className={styles.login}>
                 <div className={styles.login_modal}>
                     <div className={styles.logo}>
-                        <a href="https://adgytec.in" target="_blank">
+                        <a
+                            href="https://adgytec.in"
+                            target="_blank"
+                            rel="noopener"
+                        >
                             <Image
                                 src="/logo.svg"
                                 alt="adgytec"
@@ -204,7 +212,7 @@ const Login = () => {
                                     data-load={signingIn ? "true" : "false"}
                                 >
                                     {signingIn ? (
-                                        <Loader variant="small"/>
+                                        <Loader variant="small" />
                                     ) : (
                                         "Login"
                                     )}
@@ -233,4 +241,12 @@ const Login = () => {
     );
 };
 
-export default Login;
+const LoginSuspense = () => {
+    return (
+        <Suspense fallback={<Loader />}>
+            <Login />
+        </Suspense>
+    );
+};
+
+export default LoginSuspense;

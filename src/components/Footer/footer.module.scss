@@ -1,10 +1,10 @@
-@use "/src/styles/abstract" as ab;
+@use "../../styles/abstract" as ab;
 
 .footer {
-	padding-block: 1em;
-	background-color: var(--bg-600);
+  padding-block: 1em;
+  background-color: var(--bg-600);
 
-	.text {
-		text-align: center;
-	}
+  .text {
+    text-align: center;
+  }
 }

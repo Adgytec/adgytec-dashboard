@@ -1,48 +1,49 @@
 "use client";
 
+import type React from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
-import React, { useContext, useEffect, useState } from "react";
 
 interface AdminLayoutProps {
-	children: React.ReactNode;
+    children: React.ReactNode;
 }
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-	const userWithRole = useContext(UserContext);
-	const role = userWithRole?.role;
+    const userWithRole = useContext(UserContext);
+    const role = userWithRole?.role;
 
-	if (role === "") {
-		return (
-			<div
-				style={{
-					position: "absolute",
-					inset: "0",
-					display: "grid",
-					placeItems: "center",
-				}}
-			>
-				<Loader />
-			</div>
-		);
-	}
+    if (role === "") {
+        return (
+            <div
+                style={{
+                    position: "absolute",
+                    inset: "0",
+                    display: "grid",
+                    placeItems: "center",
+                }}
+            >
+                <Loader />
+            </div>
+        );
+    }
 
-	if (role === "user") {
-		return (
-			<Container
-				style={{
-					position: "absolute",
-					inset: "0",
-					display: "grid",
-					placeItems: "center",
-				}}
-			>
-				<h1>403 Forbidden</h1>
-			</Container>
-		);
-	}
+    if (role === "user") {
+        return (
+            <Container
+                style={{
+                    position: "absolute",
+                    inset: "0",
+                    display: "grid",
+                    placeItems: "center",
+                }}
+            >
+                <h1>403 Forbidden</h1>
+            </Container>
+        );
+    }
 
-	return <>{children}</>;
+    return <>{children}</>;
 };
 
 export default AdminLayout;

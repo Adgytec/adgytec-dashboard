@@ -1,3 +1,5 @@
+import path from "node:path";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
@@ -8,7 +10,10 @@ const nextConfig = {
             },
         ],
     },
-    experimental: {missingSuspenseWithCSRBailout: false,},
+
+    sassOptions: {
+        includePaths: [path.resolve(process.cwd(), "src")],
+    },
 };
 
 export default nextConfig;
