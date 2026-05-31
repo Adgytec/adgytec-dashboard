@@ -50,6 +50,7 @@ const PriseReportItemComp = ({
         const token = await user?.getIdToken();
         const headers = {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         };
 
         fetch(url, {
