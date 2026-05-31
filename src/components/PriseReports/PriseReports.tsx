@@ -69,6 +69,7 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
                         {/* <h4>Secteur</h4> */}
                         <h4>Latitude</h4>
                         <h4>Longitude</h4>
+                        <h4>Edit</h4>
                         <h4>Delete</h4>
                     </div>
 

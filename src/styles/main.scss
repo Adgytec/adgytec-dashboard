@@ -171,23 +171,23 @@ div[data-empty="true"] {
   place-items: center;
 }
 
-input,
-textarea,
-select,
-button[data-variant="select"] {
+input:not(:is([data-new-form] *)),
+textarea:not(:is([data-new-form] *)),
+select:not(:is([data-new-form] *)),
+button[data-variant="select"]:not(:is([data-new-form] *)) {
   width: min(100%, var(--input-width));
 }
 
-label {
+label:not(:is([data-new-form] *)) {
   font-size: clamp(1rem, 1.5vi, 1.25rem);
   font-weight: 500;
   color: var(--accent-secondary);
 }
 
-input,
-select,
-textarea,
-button[data-variant="select"] {
+input:not(:is([data-new-form] *)),
+select:not(:is([data-new-form] *)),
+textarea:not(:is([data-new-form] *)),
+button[data-variant="select"]:not(:is([data-new-form] *)) {
   font-size: 1.25rem;
   border-width: 2px;
 
@@ -196,6 +196,7 @@ button[data-variant="select"] {
   border-radius: 0.25em;
 
   background-color: var(--input-bg);
+
   --_pi: 0.5em;
   --_pb: 0.4em;
 
@@ -203,8 +204,8 @@ button[data-variant="select"] {
   padding-block: var(--_pb);
 }
 
-select,
-button[data-variant="select"] {
+select:not(:is([data-new-form] *)),
+button[data-variant="select"]:not(:is([data-new-form] *)) {
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2ZmZDkwMCIgZD0iTTIwMS40IDM3NC42YzEyLjUgMTIuNSAzMi44IDEyLjUgNDUuMyAwbDE2MC0xNjBjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDBMMjI0IDMwNi43IDg2LjYgMTY5LjRjLTEyLjUtMTIuNS0zMi44LTEyLjUtNDUuMyAwcy0xMi41IDMyLjggMCA0NS4zbDE2MCAxNjB6Ii8+PC9zdmc+);
 
   background-repeat: no-repeat;
@@ -215,11 +216,11 @@ button[data-variant="select"] {
   text-align: left;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"]:not(:is([data-new-form] *)) {
   width: auto;
 }
 
-textarea {
+textarea:not(:is([data-new-form] *)) {
   min-height: 10rem;
   max-height: 20rem;
   resize: vertical;

@@ -1,6 +1,9 @@
+import { clsx } from "clsx";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/main.scss";
+import "@/styles/core/core.css";
+import "@/styles/core/theme/base/base.css";
 
 import { Bounce, ToastContainer } from "react-toastify";
 import ViewPort from "@/components/ViewPort/ViewPort";
@@ -23,7 +26,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={inter.className}>
+            <body className={clsx(inter.className)} data-theme="dark">
                 <ViewPort />
                 <ToastContainer
                     stacked

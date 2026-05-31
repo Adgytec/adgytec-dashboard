@@ -1,13 +1,24 @@
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useMemo, useRef, useState } from "react";
+import { FormEvent, useContext, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { UserContext } from "../AuthContext/authContext";
 import Loader from "../Loader/Loader";
 import { getRegionDisplayValue, type PriseReportItemCompProps } from "./types";
+import {
+    Button,
+    IconButton,
+    Input,
+    ModalOverlay,
+    SideSheet,
+    SideSheetModal,
+} from "@adgytec/adgytec-web-ui-components";
+import { Edit } from "lucide-react";
+import { DialogTrigger, Form, Select } from "react-aria-components";
+import styles from "./prise-reports.module.scss";
 
 const PriseReportItemComp = ({
     item,
@@ -24,7 +35,49 @@ const PriseReportItemComp = ({
     const handleDeleteModalClose = () => handleModalClose(deleteConfirmRef);
 
     const [deleting, sepeleting] = useState(false);
+    const [editing, setEditing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const handleEdit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setEditing(true);
+
+        const form = e.currentTarget;
+        const formdata = new FormData(e.currentTarget);
+        const body = JSON.stringify(Object.fromEntries(formdata.entries()));
+
+        const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${projectId}/${item.id}`;
+        const token = await user?.getIdToken();
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        fetch(url, {
+            method: "PATCH",
+            headers,
+            body,
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res.error) throw new Error(res.message);
+                setReports((prev) =>
+                    prev.map((report) =>
+                        report.id === item.id
+                            ? {
+                                  ...report,
+                                  ...Object.fromEntries(formdata.entries()),
+                              }
+                            : report
+                    )
+                );
+
+                window.location.reload();
+            })
+            .catch((err) => {
+                setError(err.message);
+            })
+            .finally(() => setEditing(false));
+    };
 
     const handleDelete = async () => {
         sepeleting(true);
@@ -135,6 +188,76 @@ const PriseReportItemComp = ({
             {/* <p>{item.Secteur || "-"}</p> */}
             <p>{item["Latitude"] || "-"}</p>
             <p>{item["Longitude"] || "-"}</p>
+            <p>
+                <DialogTrigger>
+                    <IconButton
+                        icon={Edit}
+                        size="extra-small"
+                        color="standard"
+                    />
+                    <ModalOverlay>
+                        <SideSheetModal layout="detached">
+                            <SideSheet headline="Edit Report">
+                                <Form
+                                    onSubmit={handleEdit}
+                                    className={styles["form"]}
+                                    data-new-form
+                                >
+                                    <Input
+                                        label="Region"
+                                        name="region"
+                                        value={item.region}
+                                        isReadOnly
+                                    />
+                                    <Input
+                                        label="Territoire"
+                                        name="Territoire"
+                                        value={item.Territoire}
+                                        isReadOnly
+                                    />
+
+                                    <Input
+                                        label="Site d'intervention"
+                                        name="Site d'intervention"
+                                        value={item["Site d'intervention"]}
+                                        isReadOnly
+                                    />
+
+                                    <Input
+                                        label="Infrastructures"
+                                        name="Infrastructures"
+                                        value={item.Infrastructures}
+                                        isReadOnly
+                                    />
+
+                                    <Input
+                                        label="Latitude"
+                                        name="Latitude"
+                                        defaultValue={item.Latitude}
+                                        isReadOnly={editing}
+                                    />
+
+                                    <Input
+                                        label="Longitude"
+                                        name="Longitude"
+                                        defaultValue={item.Longitude}
+                                        isReadOnly={editing}
+                                    />
+
+                                    <div>
+                                        <Button
+                                            type="submit"
+                                            isPending={editing}
+                                        >
+                                            Update
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </SideSheet>
+                        </SideSheetModal>
+                    </ModalOverlay>
+                </DialogTrigger>
+            </p>
             <p>
                 <button
                     data-type="link"
