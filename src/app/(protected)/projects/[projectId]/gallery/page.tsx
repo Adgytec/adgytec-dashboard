@@ -1,7 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import React, {
+import type React from "react";
+import {
     useCallback,
     useContext,
     useEffect,

@@ -11,7 +11,7 @@ import {
     type LexicalNode,
     type SerializedLexicalNode,
 } from "lexical";
-import React from "react";
+import type React from "react";
 import { Image } from "./Image";
 
 class ImageNode extends DecoratorNode<React.JSX.Element> {

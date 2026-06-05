@@ -2,7 +2,8 @@
 
 import { Contrail_One } from "next/font/google";
 import { useParams } from "next/navigation";
-import React, {
+import type React from "react";
+import {
     useCallback,
     useContext,
     useEffect,

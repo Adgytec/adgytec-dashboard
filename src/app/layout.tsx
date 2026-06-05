@@ -5,11 +5,12 @@ import "@/styles/main.scss";
 import "@/styles/core/core.css";
 import "@/styles/core/theme/base/base.css";
 
+import { config } from "@fortawesome/fontawesome-svg-core";
 import { Bounce, ToastContainer } from "react-toastify";
 import ViewPort from "@/components/ViewPort/ViewPort";
-
-import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { Providers } from "@/components/Providers";
+
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,24 +27,26 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={clsx(inter.className)} data-theme="dark">
-                <ViewPort />
-                <ToastContainer
-                    stacked
-                    position="bottom-right"
-                    autoClose={5000}
-                    limit={10}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="dark"
-                    transition={Bounce}
-                />
-                {children}
+            <body className={clsx(inter.className)}>
+                <Providers>
+                    <ViewPort />
+                    <ToastContainer
+                        stacked
+                        position="bottom-right"
+                        autoClose={5000}
+                        limit={10}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                        transition={Bounce}
+                    />
+                    {children}
+                </Providers>
             </body>
         </html>
     );

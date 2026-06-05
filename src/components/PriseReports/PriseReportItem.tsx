@@ -1,13 +1,3 @@
-import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormEvent, useContext, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
-import { handleEscModal, handleModalClose } from "@/helpers/modal";
-import { UserContext } from "../AuthContext/authContext";
-import Loader from "../Loader/Loader";
-import { getRegionDisplayValue, type PriseReportItemCompProps } from "./types";
 import {
     Button,
     IconButton,
@@ -16,9 +6,19 @@ import {
     SideSheet,
     SideSheetModal,
 } from "@adgytec/adgytec-web-ui-components";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Edit } from "lucide-react";
+import { type FormEvent, useContext, useMemo, useRef, useState } from "react";
 import { DialogTrigger, Form, Select } from "react-aria-components";
+import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
+import { handleEscModal, handleModalClose } from "@/helpers/modal";
+import { UserContext } from "../AuthContext/authContext";
+import Loader from "../Loader/Loader";
 import styles from "./prise-reports.module.scss";
+import { getRegionDisplayValue, type PriseReportItemCompProps } from "./types";
 
 const PriseReportItemComp = ({
     item,
