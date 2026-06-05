@@ -1,3 +1,4 @@
+import z from "zod";
 import {
     userRoles,
     type ValdiateRole,
@@ -7,6 +8,9 @@ import {
     type ValidateString,
     type ValidateURL,
 } from "./type";
+
+export type ValidationError = string | string[];
+export type ValidationErrors = Record<string, ValidationError>;
 
 export const validateEmail: ValidateEmail = (email) => {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;

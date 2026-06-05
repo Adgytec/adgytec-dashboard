@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@/styles/main.scss";
+import "@/styles/main.css";
 import "@/styles/core/core.css";
 import "@/styles/core/theme/base/base.css";
 

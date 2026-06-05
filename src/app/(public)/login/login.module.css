@@ -1,0 +1,122 @@
+.page {
+    inline-size: 100dvi;
+    min-block-size: 100dvb;
+
+    display: grid;
+    place-items: center;
+
+    position: relative;
+    overflow: hidden;
+
+    background-image:
+        linear-gradient(
+            rgb(from var(--md-sys-color-outline-variant) r g b / 0.05) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgb(from var(--md-sys-color-outline-variant) r g b / 0.05) 1px,
+            transparent 1px
+        ),
+        var(--md-sys-color-surface-container-lowest);
+
+    background-size: calc(48 * var(--dp)) calc(48 * var(--dp));
+}
+
+.page::before,
+.page::after {
+    content: "";
+    position: absolute;
+
+    border-radius: var(--md-sys-shape-corner-radius-full);
+    filter: blur(calc(120 * var(--dp)));
+
+    pointer-events: none;
+}
+
+.page::after {
+    inline-size: calc(640 * var(--dp));
+    block-size: calc(640 * var(--dp));
+
+    inset-block-start: calc(-160 * var(--dp));
+    inset-inline-start: calc(-160 * var(--dp));
+
+    background-color: rgb(from var(--md-sys-color-primary) r g b / 0.25);
+}
+
+.page::before {
+    inline-size: calc(560 * var(--dp));
+    block-size: calc(560 * var(--dp));
+
+    inset-inline-end: calc(-160 * var(--dp));
+    inset-block-end: calc(-160 * var(--dp));
+
+    background-color: rgb(
+        from var(--md-extended-color-primary-alt-color) r g b /
+        0.15
+    );
+}
+
+.blob3 {
+    position: absolute;
+    inline-size: calc(480 * var(--dp));
+    block-size: calc(480 * var(--dp));
+
+    inset-inline-start: 40%;
+    inset-block-start: 50%;
+
+    border-radius: var(--md-sys-shape-corner-radius-full);
+
+    background: rgb(from var(--md-sys-color-tertiary) r g b / 0.15);
+
+    filter: blur(calc(120 * var(--dp)));
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.login {
+    inline-size: min(
+        calc(100dvi - var(--md-sys-layout-window-size-compact-margin)),
+        calc(480 * var(--dp, 1px))
+    );
+
+    background-image:
+        radial-gradient(
+            120% 120% at 0% 0%,
+            rgb(from var(--md-sys-color-primary) r g b / 0.12),
+            transparent 45%
+        ),
+        radial-gradient(
+            120% 120% at 100% 100%,
+            rgb(from var(--md-extended-color-primary-alt-color) r g b / 0.12),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            var(--md-sys-color-surface-container-high),
+            var(--md-sys-color-surface-container-highest)
+        );
+
+    border: var(--md-sys-shape-border-width-thin) solid
+        rgb(from var(--md-sys-color-outline-variant) r g b / 0.5);
+
+    padding: var(--md-sys-layout-space-16);
+    border-radius: var(--md-sys-shape-corner-radius-large-increased);
+
+    display: grid;
+    gap: var(--md-sys-layout-space-40);
+
+    box-shadow: var(--md-sys-elevation-shadow-1);
+}
+
+.form {
+    display: grid;
+    gap: var(--md-sys-layout-space-20);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-layout-space-12);
+    justify-content: space-between;
+}

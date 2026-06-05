@@ -1,38 +1,63 @@
 "use client";
 
+import {
+    Button,
+    Checkbox,
+    IconButton,
+    Input,
+    InputButton,
+    Loader,
+    ModalOverlay,
+    SideSheet,
+    SideSheetModal,
+    ThemeSelector,
+    useSnackbarQueue,
+    validateAndGetFormValues,
+} from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import { onAuthStateChanged } from "firebase/auth";
+import { Eye, EyeOff, Palette } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
-import { Suspense, useEffect, useRef, useState } from "react";
-import Loader from "@/components/Loader/Loader";
+import { Suspense, useEffect, useState } from "react";
+import { DialogTrigger, Form } from "react-aria-components";
+import { useBoolean } from "usehooks-ts";
+import z from "zod";
 import {
     auth,
     resendEmailVerification,
     signin,
     signoutUser,
 } from "@/firebase/auth/auth";
-import { handleModalClose, lightDismiss } from "@/helpers/modal";
-import { validateEmail } from "@/helpers/validation";
-import EmailConfirmModal from "./components/EmailConfirmModal";
-import ForgotPasswordModal from "./components/ForgotPasswordModal";
-import styles from "./login.module.scss";
+import type { ValidationErrors } from "@/helpers/validation";
+import { ForgetPasswordModal } from "./components/ForgetPasswordModal";
+import styles from "./login.module.css";
 
-const inputReset = {
-    email: "",
-    password: "",
-    remember: false,
-};
+const LoginSchema = z.object({
+    email: z.email(),
+    password: z.string(),
+    remember: z
+        .literal("on")
+        .transform(() => true)
+        .optional()
+        .transform(Boolean),
+});
 
 const Login = () => {
-    const [errMessage, setErrMessage] = useState<string | null>(null);
-    const [userInput, setUserInput] = useState(inputReset);
+    const { value: showPassword, toggle: togglePasswordVisibility } =
+        useBoolean();
+
     const [signingIn, setSigningIn] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const emailConfirmRef = useRef<HTMLDialogElement | null>(null);
-    const forgotPasswordRef = useRef<HTMLDialogElement | null>(null);
+    const [formFieldErr, setFormFieldErr] = useState<
+        ValidationErrors | undefined
+    >(undefined);
+
     const nextPath = useSearchParams().get("next");
+
+    const snackBarQueue = useSnackbarQueue();
 
     const router = useRouter();
 
@@ -41,7 +66,10 @@ const Login = () => {
             if (user) {
                 if (!user.emailVerified) {
                     await resendEmailVerification();
-                    emailConfirmRef.current?.showModal();
+                    snackBarQueue.add({
+                        supportingText:
+                            "A verification email has been sent to your email address. Verify your email and try again.",
+                    });
                     await signoutUser();
                     setLoading(false);
                     return;
@@ -55,195 +83,147 @@ const Login = () => {
         });
 
         return () => authState();
-    }, [router, nextPath]);
-
-    const handleInputValidation = (email: string, password: string) => {
-        if (!email || !validateEmail(email)) {
-            setErrMessage("Invalid email value.");
-            return false;
-        }
-
-        if (!password) {
-            setErrMessage("Invalid password value.");
-            return false;
-        }
-
-        return true;
-    };
+    }, [router, nextPath, snackBarQueue]);
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setSigningIn(true);
 
-        const { email, password, remember } = userInput;
-        if (!handleInputValidation(email, password)) {
-            setSigningIn(false);
+        setFormFieldErr(undefined);
+        const result = validateAndGetFormValues(e.currentTarget, LoginSchema);
+
+        if (!result.success) {
+            setFormFieldErr(result.errors);
             return;
         }
 
-        setErrMessage(null);
+        setSigningIn(true);
+        const { email, password, remember } = result.data;
+
         const { error } = await signin(email, password, remember);
 
         if (error) {
             setSigningIn(false);
             if (error.code === "auth/invalid-credential") {
-                setErrMessage(
-                    "The email or password you entered is incorrect. Please try again."
-                );
+                snackBarQueue.add({
+                    supportingText:
+                        "The email or password you entered is incorrect. Please try again.",
+                });
             } else {
-                setErrMessage(
-                    "We encountered an unexpected error on our end. Please try refreshing the page or come back later. "
-                );
+                snackBarQueue.add({
+                    supportingText:
+                        "We encountered an unexpected error on our end. Please try refreshing the page or come back later.",
+                });
             }
             return;
         }
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const key = e.target.name;
-        let value: string | boolean = e.target.value;
-        if (key === "remember") value = e.target.checked;
-
-        setUserInput((prev) => ({ ...prev, [key]: value }));
     };
 
     if (loading) {
         return (
             <div
                 style={{
-                    width: "calc(var(--vw) * 100)",
-                    height: "100vb",
+                    width: "100dvi",
+                    height: "100dvb",
                     display: "grid",
                     placeItems: "center",
+                    backgroundColor: "inherit",
+                    color: "inherit",
                 }}
             >
-                <Loader />
+                <Loader size="medium" />
             </div>
         );
     }
 
     return (
-        <>
-            <dialog
-                onClick={lightDismiss}
-                ref={emailConfirmRef}
-                className={styles.modal_emailVerification}
-            >
-                <EmailConfirmModal
-                    handleClose={() => handleModalClose(emailConfirmRef)}
-                />
-            </dialog>
+        <div className={clsx(styles["page"])}>
+            <div className={clsx(styles["blob3"])} />
 
-            <dialog
-                onClick={lightDismiss}
-                ref={forgotPasswordRef}
-                className={styles.modal_forgotPassword}
-            >
-                <ForgotPasswordModal
-                    handleClose={() => handleModalClose(forgotPasswordRef)}
-                />
-            </dialog>
+            <div className={clsx(styles["login"])}>
+                <div className={clsx(styles["header"])}>
+                    <Image
+                        src="/logo.svg"
+                        alt="adgytec"
+                        width="250"
+                        height="50"
+                    />
 
-            <div className={styles.login}>
-                <div className={styles.login_modal}>
-                    <div className={styles.logo}>
-                        <a
-                            href="https://adgytec.in"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            <Image
-                                src="/logo.svg"
-                                alt="adgytec"
-                                width="250"
-                                height="50"
+                    <DialogTrigger>
+                        <IconButton
+                            icon={Palette}
+                            tooltip="Theme options"
+                            color="standard"
+                        />
+
+                        <ModalOverlay>
+                            <SideSheetModal layout="detached">
+                                <SideSheet headline="Select Theme">
+                                    <ThemeSelector />
+                                </SideSheet>
+                            </SideSheetModal>
+                        </ModalOverlay>
+                    </DialogTrigger>
+                </div>
+
+                <Form
+                    onSubmit={handleLogin}
+                    validationErrors={formFieldErr}
+                    className={clsx(styles["form"])}
+                >
+                    <Input
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        isRequired
+                        isReadOnly={signingIn}
+                        label={"Email ID"}
+                    />
+
+                    <Input
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                        isRequired
+                        isReadOnly={signingIn}
+                        label={"Password"}
+                        trailing={
+                            <InputButton
+                                onPress={togglePasswordVisibility}
+                                icon={showPassword ? EyeOff : Eye}
                             />
-                        </a>
-                    </div>
+                        }
+                    />
 
-                    <div className={styles.form}>
-                        <form onSubmit={handleLogin}>
-                            <div className={styles.input}>
-                                <label htmlFor="email">Email ID</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    placeholder="Email..."
-                                    value={userInput.email}
-                                    onChange={handleInputChange}
-                                    required
-                                    disabled={signingIn}
-                                />
-                            </div>
+                    <Checkbox name="remember" isReadOnly={signingIn}>
+                        Remember me
+                    </Checkbox>
 
-                            <div className={styles.input}>
-                                <label htmlFor="password">Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    placeholder="Password..."
-                                    value={userInput.password}
-                                    onChange={handleInputChange}
-                                    required
-                                    disabled={signingIn}
-                                />
-                            </div>
+                    <Button
+                        type="submit"
+                        isPending={signingIn}
+                        data-login-button
+                    >
+                        Login
+                    </Button>
+                </Form>
 
-                            <div className={styles.input_check}>
-                                <input
-                                    type="checkbox"
-                                    name="remember"
-                                    id="remember"
-                                    checked={userInput.remember}
-                                    onChange={handleInputChange}
-                                    disabled={signingIn}
-                                />
-                                <label htmlFor="remember">Remember me</label>
-                            </div>
-
-                            <div className={styles.button}>
-                                <button
-                                    data-type="button"
-                                    data-variant="secondary"
-                                    disabled={signingIn}
-                                    type="submit"
-                                    data-load={signingIn ? "true" : "false"}
-                                >
-                                    {signingIn ? (
-                                        <Loader variant="small" />
-                                    ) : (
-                                        "Login"
-                                    )}
-                                </button>
-                            </div>
-
-                            {errMessage && (
-                                <p className="error">{errMessage}</p>
-                            )}
-                        </form>
-                    </div>
-
-                    <div className={styles.link}>
-                        <button
-                            data-type="link"
-                            onClick={() =>
-                                forgotPasswordRef.current?.showModal()
-                            }
-                        >
+                <div>
+                    <DialogTrigger>
+                        <Button isDisabled={signingIn} color="text">
                             Forgot Password?
-                        </button>
-                    </div>
+                        </Button>
+
+                        <ForgetPasswordModal />
+                    </DialogTrigger>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
 const LoginSuspense = () => {
     return (
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<Loader size="medium" />}>
             <Login />
         </Suspense>
     );
