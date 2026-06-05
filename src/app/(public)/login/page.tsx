@@ -24,6 +24,7 @@ import { Suspense, useEffect, useState } from "react";
 import { DialogTrigger, Form } from "react-aria-components";
 import { useBoolean } from "usehooks-ts";
 import z from "zod";
+import { ThemeSelectorModal } from "@/components/ThemeSelectorModal";
 import {
     auth,
     resendEmailVerification,
@@ -148,21 +149,13 @@ const Login = () => {
                         height="50"
                     />
 
-                    <DialogTrigger>
+                    <ThemeSelectorModal>
                         <IconButton
                             icon={Palette}
                             tooltip="Theme options"
                             color="standard"
                         />
-
-                        <ModalOverlay>
-                            <SideSheetModal layout="detached">
-                                <SideSheet headline="Select Theme">
-                                    <ThemeSelector />
-                                </SideSheet>
-                            </SideSheetModal>
-                        </ModalOverlay>
-                    </DialogTrigger>
+                    </ThemeSelectorModal>
                 </div>
 
                 <Form

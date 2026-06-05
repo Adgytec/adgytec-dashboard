@@ -1,51 +1,40 @@
 "use client";
 
+import {
+    AppBarState,
+    NavigationState,
+} from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
 import AuthProvider from "@/components/AuthContext/AuthProvider";
-import Header from "@/components/header/Header";
-import Nav from "@/components/Nav/Nav";
-import styles from "./home.module.scss";
+import { Header } from "@/components/Header/Header";
+import { ScaffoldContent } from "@/components/ScaffoldContent";
+import { useNavigationDocked } from "@/hooks/useNavigationDocked";
+import styles from "./home.module.css";
 
 export default function ProtectedLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const [expand, setExpand] = useState(false);
+    const isNavigationDocked = useNavigationDocked();
     const pathname = usePathname();
-
-    const handleExpandClick = useCallback(() => {
-        setExpand((prev) => (prev ? false : prev));
-    }, []);
-
-    useEffect(() => {
-        handleExpandClick();
-    }, [pathname, handleExpandClick]);
 
     return (
         <AuthProvider>
-            <div className={styles.layout}>
-                <input
-                    className={styles.navCheckbox}
-                    type="checkbox"
-                    id="nav"
-                    checked={expand}
-                    onChange={(e) => setExpand(e.target.checked)}
-                />
+            <NavigationState>
+                <div className={clsx(styles["scaffold"])}>
+                    {isNavigationDocked && <aside>docked nav render</aside>}
 
-                <div className={styles.nav}>
-                    <Nav />
+                    <div className={clsx(styles["main"])}>
+                        <AppBarState initialScrolling>
+                            <Header isNavigationDocked={isNavigationDocked} />
+
+                            <ScaffoldContent>{children}</ScaffoldContent>
+                        </AppBarState>
+                    </div>
                 </div>
-
-                <div className={styles.main} onClick={handleExpandClick}>
-                    <Header />
-
-                    <main id="content-root" className={styles.content}>
-                        {children}
-                    </main>
-                </div>
-            </div>
+            </NavigationState>
         </AuthProvider>
     );
 }
