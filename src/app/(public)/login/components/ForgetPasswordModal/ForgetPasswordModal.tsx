@@ -41,18 +41,17 @@ export const ForgetPasswordModal = () => {
     ) => {
         e.preventDefault();
 
-        setFormErr(null);
-        setFieldErr(undefined);
-
         const result = validateAndGetFormValues(
             e.currentTarget,
             ForgetPasswordSchema
         );
-
         if (!result.success) {
             setFieldErr(result.errors);
             return;
         }
+
+        setFormErr(null);
+        setFieldErr(undefined);
 
         startSending();
         const err = await forgotPassword(result.data.email);

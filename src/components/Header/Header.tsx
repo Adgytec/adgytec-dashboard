@@ -3,6 +3,7 @@ import {
     AppBarAction,
     AppBarAvatar,
     AppBarHeadline,
+    Divider,
     Menu,
     MenuItem,
     MenuPopover,
@@ -64,7 +65,7 @@ export const Header = () => {
                     </AppBarAvatar>
 
                     <MenuPopover offset={-4}>
-                        <Menu layout="grouped" color="vibrant">
+                        <Menu layout="standard" color="vibrant">
                             <MenuSection>
                                 {user.user.displayName && (
                                     <MenuSectionHeader>
@@ -73,7 +74,7 @@ export const Header = () => {
                                 )}
 
                                 <MenuItem
-                                    href="/profile"
+                                    href="/edit-profile"
                                     label="Edit Profile"
                                     render={({ className, ...props }) => {
                                         if ("href" in props) {
@@ -97,7 +98,7 @@ export const Header = () => {
                                     }}
                                 />
                             </MenuSection>
-
+                            <Divider />
                             <MenuSection>
                                 <MenuItem
                                     onPress={handleSignout}

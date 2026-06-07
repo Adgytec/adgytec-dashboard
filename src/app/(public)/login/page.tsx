@@ -85,13 +85,13 @@ const Login = () => {
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        setFormFieldErr(undefined);
         const result = validateAndGetFormValues(e.currentTarget, LoginSchema);
-
         if (!result.success) {
             setFormFieldErr(result.errors);
             return;
         }
+
+        setFormFieldErr(undefined);
 
         setSigningIn(true);
         const { email, password, remember } = result.data;

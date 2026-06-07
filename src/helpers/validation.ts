@@ -12,6 +12,8 @@ import {
 export type ValidationError = string | string[];
 export type ValidationErrors = Record<string, ValidationError>;
 
+export const PasswordLength = 8;
+
 export const validateEmail: ValidateEmail = (email) => {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     return emailRegex.test(email);

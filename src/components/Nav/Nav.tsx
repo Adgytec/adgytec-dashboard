@@ -15,8 +15,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
 import { userRoles } from "@/helpers/type";
-import { UserContext } from "../AuthContext/authContext";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
+import { UserContext } from "../AuthContext/authContext";
 
 const NavigationLink: React.FC<
     Omit<React.ComponentPropsWithRef<typeof AriaNavigationLink>, "render">
@@ -65,7 +65,7 @@ export const Nav = () => {
                 />
 
                 <NavigationLink
-                    href="/profile"
+                    href="/edit-profile"
                     label="Edit Profile"
                     icon={UserRoundPen}
                 />
