@@ -1,86 +1,105 @@
-import Image from "next/image";
+import {
+    NavigationLink as AriaNavigationLink,
+    Navigation,
+    NavigationSection,
+    NavigationSectionLabel,
+} from "@adgytec/adgytec-web-ui-components";
+import {
+    Folder,
+    FolderPen,
+    House,
+    UserRoundPen,
+    UsersRound,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { userRoles } from "@/helpers/type";
 import { UserContext } from "../AuthContext/authContext";
-import styles from "./nav.module.scss";
+import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 
-const AdminLinks = () => {
-    const pathname = usePathname();
+const NavigationLink: React.FC<
+    Omit<React.ComponentPropsWithRef<typeof AriaNavigationLink>, "render">
+> = (props) => {
     return (
-        <>
-            <div data-active={pathname.includes("/admin/user")}>
-                <Link
-                    data-type="link"
-                    href="/admin/user"
-                    data-active={pathname.includes("/admin/user")}
-                >
-                    Manage user
-                </Link>
-            </div>
+        <AriaNavigationLink
+            {...props}
+            render={(props) => {
+                if ("href" in props) {
+                    return <Link {...props} />;
+                }
 
-            <div data-active={pathname.includes("/admin/project")}>
-                <Link
-                    data-type="link"
-                    href="/admin/project"
-                    data-active={pathname.includes("/admin/project")}
-                >
-                    Manage Project
-                </Link>
-            </div>
-        </>
+                return <span {...props} />;
+            }}
+        />
     );
 };
 
-const Nav = () => {
+export const Nav = () => {
+    const isNavigationDocked = useNavigationDocked();
+
     const userWithRole = useContext(UserContext);
     const role = userWithRole?.role;
 
-    const pathname = usePathname();
+    const isAdmin = role === userRoles.admin || userRoles.superAdmin;
 
-    // 0->super_admin, 1->admin, 2->user, 3->pending
-    const roleEnum = () => {
-        switch (role) {
-            case userRoles.superAdmin:
-                return 0;
-            case userRoles.admin:
-                return 1;
-            case userRoles.user:
-                return 2;
-            default:
-                return 2;
-        }
-    };
+    const pathName = usePathname();
 
     return (
-        <div className={styles.nav}>
-            <div className={styles.logo}>
-                <Link href="/">
-                    <Image
-                        src="/logo.svg"
-                        alt="adgytec"
-                        width={200}
-                        height={50}
+        <Navigation
+            label={isNavigationDocked ? undefined : "Adgytec"}
+            stateID="dashboard"
+            isLinkActive={(href) => {
+                if (!href) return false;
+                return pathName.includes(href);
+            }}
+        >
+            <NavigationSection>
+                <NavigationSectionLabel>General</NavigationSectionLabel>
+
+                <NavigationLink
+                    href="/"
+                    label="Home"
+                    icon={House}
+                    isActive={pathName === "/"}
+                />
+
+                <NavigationLink
+                    href="/profile"
+                    label="Edit Profile"
+                    icon={UserRoundPen}
+                />
+            </NavigationSection>
+
+            {isAdmin && (
+                <NavigationSection>
+                    <NavigationSectionLabel>
+                        Administration
+                    </NavigationSectionLabel>
+
+                    <NavigationLink
+                        href="/admin/user"
+                        label="Users"
+                        icon={UsersRound}
                     />
-                </Link>
-            </div>
 
-            <div className={styles.links}>
-                {roleEnum() !== 2 && <AdminLinks />}
+                    <NavigationLink
+                        href="/admin/project"
+                        label="Projects"
+                        icon={FolderPen}
+                    />
+                </NavigationSection>
+            )}
 
-                <div data-active={pathname.includes("/projects")}>
-                    <Link
-                        data-type="link"
-                        href="/projects"
-                        data-active={pathname.includes("/projects")}
-                    >
-                        Projects
-                    </Link>
-                </div>
-            </div>
-        </div>
+            <NavigationSection>
+                <NavigationSectionLabel>Workspace</NavigationSectionLabel>
+
+                <NavigationLink
+                    href="/projects"
+                    label="My Projects"
+                    icon={Folder}
+                />
+            </NavigationSection>
+        </Navigation>
     );
 };
-
-export default Nav;

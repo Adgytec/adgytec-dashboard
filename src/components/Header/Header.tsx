@@ -18,12 +18,14 @@ import {
 import clsx from "clsx";
 import { Menu as MenuIcon, Palette } from "lucide-react";
 import Link from "next/link";
-import { type ReactElement, useContext } from "react";
+import { usePathname } from "next/navigation";
+import { type ReactElement, useContext, useEffect, useState } from "react";
 import { DialogTrigger } from "react-aria-components";
 import { useMediaQuery } from "usehooks-ts";
 import { signoutUser } from "@/firebase/auth/auth";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 import { UserContext } from "../AuthContext/authContext";
+import { Nav } from "../Nav";
 import { ThemeSelectorModal } from "../ThemeSelectorModal";
 import styles from "./header.module.css";
 
@@ -35,6 +37,14 @@ export const Header = () => {
     const isNavigationDocked = useNavigationDocked();
     const smallViewport = useMediaQuery("(max-width: 22rem)");
     const user = useContext(UserContext);
+
+    const pathName = usePathname();
+    const [navModalOpen, setNavModalOpen] = useState(false);
+
+    // biome-ignore lint: close navigation when pathname changes
+    useEffect(() => {
+        setNavModalOpen(false);
+    }, [pathName]);
 
     const trailingActions: ReactElement[] = [
         <ThemeSelectorModal key="theme">
@@ -110,12 +120,17 @@ export const Header = () => {
             className={clsx(styles["header"])}
             leadingAction={
                 isNavigationDocked ? undefined : (
-                    <DialogTrigger>
+                    <DialogTrigger
+                        isOpen={navModalOpen}
+                        onOpenChange={setNavModalOpen}
+                    >
                         <AppBarAction icon={MenuIcon} />
 
                         <ModalOverlay isDismissable>
                             <SideSheetModal alignment="start">
-                                <SideSheetDialog>nav render</SideSheetDialog>
+                                <SideSheetDialog>
+                                    <Nav />
+                                </SideSheetDialog>
                             </SideSheetModal>
                         </ModalOverlay>
                     </DialogTrigger>

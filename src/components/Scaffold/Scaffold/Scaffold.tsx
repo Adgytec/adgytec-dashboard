@@ -2,6 +2,7 @@ import { AppBarStateContext } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
 import { type ReactNode, useContext } from "react";
 import { Header } from "@/components/Header";
+import { Nav } from "@/components/Nav";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 import { ScaffoldContent } from "../ScaffoldContent";
 import styles from "./scaffold.module.css";
@@ -18,10 +19,9 @@ export const Scaffold: React.FC<{ children?: ReactNode }> = ({ children }) => {
             }}
             data-docked-navigation={isNavigationDocked || undefined}
         >
-            <div className={clsx(styles["blob3"])} />
             {isNavigationDocked && (
                 <aside className={clsx(styles["docked-navigation"])}>
-                    docked navigation render
+                    <Nav />
                 </aside>
             )}
 
