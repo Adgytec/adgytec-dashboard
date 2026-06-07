@@ -183,7 +183,11 @@ const Login = () => {
                         }
                     />
 
-                    <Checkbox name="remember" isReadOnly={signingIn}>
+                    <Checkbox
+                        name="remember"
+                        isReadOnly={signingIn}
+                        containerStateLayer
+                    >
                         Remember me
                     </Checkbox>
 

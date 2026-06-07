@@ -14,7 +14,7 @@ export const ThemeSelectorModal: React.FC<{ children: ReactNode }> = ({
         <DialogTrigger>
             {children}
 
-            <ModalOverlay>
+            <ModalOverlay isDismissable>
                 <SideSheetModal layout="detached">
                     <SideSheet headline="Select Theme">
                         <ThemeSelector />

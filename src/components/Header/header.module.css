@@ -7,3 +7,8 @@
         top: calc(-1 * var(--md-sys-layout-window-size-medium-margin));
     }
 }
+
+.link {
+    text-decoration: none;
+    color: inherit;
+}
