@@ -4,16 +4,51 @@ import {
     AppBarAvatar,
     AppBarHeadline,
     ModalOverlay,
+    Popover,
     SideSheetDialog,
     SideSheetModal,
+    Tooltip,
+    TooltipTrigger,
 } from "@adgytec/adgytec-web-ui-components";
 import { Menu, Palette } from "lucide-react";
+import { type ReactElement, useContext } from "react";
 import { DialogTrigger } from "react-aria-components";
+import { useMediaQuery } from "usehooks-ts";
+import { useNavigationDocked } from "@/hooks/useNavigationDocked";
+import { UserContext } from "../AuthContext/authContext";
 import { ThemeSelectorModal } from "../ThemeSelectorModal";
 
-export const Header: React.FC<{ isNavigationDocked: boolean }> = ({
-    isNavigationDocked,
-}) => {
+export const Header = () => {
+    const isNavigationDocked = useNavigationDocked();
+    const smallViewport = useMediaQuery("(max-width: 22rem)");
+    const user = useContext(UserContext);
+
+    const trailingActions: ReactElement[] = [
+        <ThemeSelectorModal key="theme">
+            <TooltipTrigger>
+                <AppBarAction icon={Palette} />
+
+                <Tooltip placement="bottom">Theme Options</Tooltip>
+            </TooltipTrigger>
+        </ThemeSelectorModal>,
+    ];
+    if (user) {
+        trailingActions.push(
+            <TooltipTrigger key="avatar">
+                <DialogTrigger>
+                    <AppBarAvatar>
+                        {user?.user.displayName?.[0]?.toUpperCase()}
+                    </AppBarAvatar>
+
+                    <Popover>{user.user.uid}</Popover>
+                </DialogTrigger>
+
+                <Tooltip placement="bottom">{user.user.displayName}</Tooltip>
+            </TooltipTrigger>
+        );
+    }
+
+    const isAppBarMedium = smallViewport;
     return (
         <AppBar
             leadingAction={
@@ -29,14 +64,8 @@ export const Header: React.FC<{ isNavigationDocked: boolean }> = ({
                     </DialogTrigger>
                 )
             }
-            trailingActions={[
-                <ThemeSelectorModal key="theme">
-                    <AppBarAction icon={Palette} />
-                </ThemeSelectorModal>,
-
-                <AppBarAvatar key="avatar">R</AppBarAvatar>,
-            ]}
-            size={isNavigationDocked ? "small" : "medium"}
+            trailingActions={trailingActions}
+            size={isAppBarMedium ? "medium" : "small"}
             alignment={isNavigationDocked ? "default" : "centered"}
             headline={<AppBarHeadline>Adgytec</AppBarHeadline>}
         />
