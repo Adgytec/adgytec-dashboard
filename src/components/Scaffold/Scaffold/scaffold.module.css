@@ -10,8 +10,73 @@
         gap: var(--md-sys-layout-spacer);
 
         margin-block-start: var(--md-sys-layout-window-size-medium-margin);
-        padding-inline-start: var(--md-sys-layout-window-size-medium-margin);
+        padding-inline: var(--md-sys-layout-window-size-medium-margin);
     }
+
+    background-image:
+        linear-gradient(
+            rgb(from var(--md-sys-color-outline-variant) r g b / 0.05) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgb(from var(--md-sys-color-outline-variant) r g b / 0.05) 1px,
+            transparent 1px
+        ),
+        var(--md-sys-color-surface-container-lowest);
+
+    background-size: calc(48 * var(--dp)) calc(48 * var(--dp));
+}
+
+.scaffold::before,
+.scaffold::after {
+    content: "";
+    position: fixed;
+
+    border-radius: var(--md-sys-shape-corner-radius-full);
+    filter: blur(calc(120 * var(--dp)));
+
+    pointer-events: none;
+}
+
+.scaffold::after {
+    inline-size: calc(640 * var(--dp));
+    block-size: calc(640 * var(--dp));
+
+    inset-block-start: calc(-160 * var(--dp));
+    inset-inline-start: calc(-160 * var(--dp));
+
+    background-color: rgb(from var(--md-sys-color-primary) r g b / 0.25);
+}
+
+.scaffold::before {
+    inline-size: calc(560 * var(--dp));
+    block-size: calc(560 * var(--dp));
+
+    inset-inline-end: calc(-160 * var(--dp));
+    inset-block-end: calc(-160 * var(--dp));
+
+    background-color: rgb(
+        from var(--md-extended-color-primary-alt-color) r g b /
+        0.15
+    );
+}
+
+.blob3 {
+    position: fixed;
+    inline-size: calc(480 * var(--dp));
+    block-size: calc(480 * var(--dp));
+
+    inset-inline-start: 40%;
+    inset-block-start: 50%;
+
+    border-radius: var(--md-sys-shape-corner-radius-full);
+
+    background: rgb(from var(--md-sys-color-tertiary) r g b / 0.15);
+
+    filter: blur(calc(120 * var(--dp)));
+    transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
 .main {

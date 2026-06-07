@@ -19,6 +19,7 @@ export const Scaffold: React.FC<{ children?: ReactNode }> = ({ children }) => {
             }}
             data-docked-navigation={isNavigationDocked || undefined}
         >
+            <div aria-hidden className={styles["blob3"]} />
             {isNavigationDocked && (
                 <aside className={clsx(styles["docked-navigation"])}>
                     <Nav />
