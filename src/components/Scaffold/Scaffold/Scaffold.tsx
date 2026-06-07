@@ -14,8 +14,9 @@ export const Scaffold: React.FC<{ children?: ReactNode }> = ({ children }) => {
         <div
             className={clsx(styles["scaffold"])}
             onScroll={(e) => {
-                appBarState?.updateScrolling(e.currentTarget.scrollTop > 25);
+                appBarState?.updateScrolling(e.currentTarget.scrollTop > 24);
             }}
+            data-docked-navigation={isNavigationDocked || undefined}
         >
             <div className={clsx(styles["blob3"])} />
             {isNavigationDocked && (

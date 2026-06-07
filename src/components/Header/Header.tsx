@@ -10,6 +10,7 @@ import {
     Tooltip,
     TooltipTrigger,
 } from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import { Menu, Palette } from "lucide-react";
 import { type ReactElement, useContext } from "react";
 import { DialogTrigger } from "react-aria-components";
@@ -17,6 +18,7 @@ import { useMediaQuery } from "usehooks-ts";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 import { UserContext } from "../AuthContext/authContext";
 import { ThemeSelectorModal } from "../ThemeSelectorModal";
+import styles from "./header.module.css";
 
 export const Header = () => {
     const isNavigationDocked = useNavigationDocked();
@@ -51,6 +53,8 @@ export const Header = () => {
     const isAppBarMedium = smallViewport;
     return (
         <AppBar
+            data-docked-navigation={isNavigationDocked || undefined}
+            className={clsx(styles["header"])}
             leadingAction={
                 isNavigationDocked ? undefined : (
                     <DialogTrigger>

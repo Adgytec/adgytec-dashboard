@@ -1,11 +1,7 @@
 .scaffold {
-    inline-size: 100dvi;
-    max-inline-size: 100dvi;
+    position: fixed;
+    inset: 0;
 
-    block-size: 100dvb;
-    max-block-size: 100dvb;
-
-    position: relative;
     overflow: auto;
 
     background-image:
@@ -21,12 +17,21 @@
         var(--md-sys-color-surface-container-lowest);
 
     background-size: calc(48 * var(--dp)) calc(48 * var(--dp));
+
+    &[data-docked-navigation] {
+        display: flex;
+        justify-content: center;
+        gap: var(--md-sys-layout-spacer);
+
+        padding-block-start: var(--md-sys-layout-window-size-medium-margin);
+        padding-inline-start: var(--md-sys-layout-window-size-medium-margin);
+    }
 }
 
 .scaffold::before,
 .scaffold::after {
     content: "";
-    position: absolute;
+    position: fixed;
 
     border-radius: var(--md-sys-shape-corner-radius-full);
     filter: blur(calc(120 * var(--dp)));
@@ -58,7 +63,7 @@
 }
 
 .blob3 {
-    position: absolute;
+    position: fixed;
     inline-size: calc(480 * var(--dp));
     block-size: calc(480 * var(--dp));
 
@@ -72,4 +77,22 @@
     filter: blur(calc(120 * var(--dp)));
     transform: translate(-50%, -50%);
     pointer-events: none;
+}
+
+.main {
+    flex: 1;
+    max-inline-size: var(--md-sys-layout-window-size-extra-large);
+}
+
+.docked-navigation {
+    position: sticky;
+    top: 0;
+
+    inline-size: 30%;
+    max-inline-size: calc(360 * var(--dp, 1px));
+    min-inline-size: calc(220 * var(--dp, 1px));
+
+    block-size: calc(100% - var(--md-sys-layout-window-size-medium-margin));
+
+    outline: 2px solid red;
 }

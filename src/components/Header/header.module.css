@@ -1,0 +1,9 @@
+.header {
+    position: sticky;
+    top: 0;
+
+    &[data-docked-navigation] {
+        border-radius: var(--md-sys-shape-corner-radius-extra-small);
+        top: calc(-1 * var(--md-sys-layout-window-size-medium-margin));
+    }
+}
