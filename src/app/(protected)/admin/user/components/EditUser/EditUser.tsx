@@ -14,8 +14,8 @@ import {
     validateAndGetFormValues,
 } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
-import { type ReactNode, useContext, useId, useState } from "react";
-import { DialogTrigger, Form } from "react-aria-components";
+import { useContext, useId, useState } from "react";
+import { Form } from "react-aria-components";
 import { useBoolean } from "usehooks-ts";
 import z from "zod";
 import { UserContext } from "@/components/AuthContext/authContext";
@@ -50,9 +50,10 @@ const EditUserSchema = z.object({
 });
 
 export const EditUser: React.FC<{
-    children: ReactNode;
     user: UserType;
-}> = ({ children, user }) => {
+    isOpen: boolean;
+    onOpenChange: (val: boolean) => void;
+}> = ({ user, isOpen, onOpenChange }) => {
     const { onEditSuccess } = useUserAction();
 
     const {
@@ -125,103 +126,97 @@ export const EditUser: React.FC<{
     };
 
     return (
-        <DialogTrigger>
-            {children}
+        <ModalOverlay
+            isKeyboardDismissDisabled={isUpdating}
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+        >
+            <SideSheetModal layout="detached">
+                <SideSheet
+                    headline={`Edit User Profile`}
+                    actions={[
+                        <Button
+                            type="submit"
+                            key="Save"
+                            form={formID}
+                            isPending={isUpdating}
+                        >
+                            Save
+                        </Button>,
+                        <Button
+                            key="cancel"
+                            color="outlined"
+                            slot="close"
+                            isDisabled={isUpdating}
+                        >
+                            Cancel
+                        </Button>,
+                    ]}
+                >
+                    {({ close }) => (
+                        <Form
+                            onSubmit={(e) => updateUser(e, close)}
+                            className={clsx(styles["form"])}
+                            validationErrors={fieldErr}
+                            id={formID}
+                        >
+                            <Input
+                                name="name"
+                                type="text"
+                                defaultValue={user.name}
+                                placeholder="Name"
+                                label="Name"
+                                isRequired
+                                isReadOnly={isUpdating}
+                            />
 
-            <ModalOverlay>
-                <SideSheetModal layout="detached">
-                    <SideSheet
-                        headline={`Edit User Profile`}
-                        actions={[
-                            <Button
-                                type="submit"
-                                key="Save"
-                                form={formID}
-                                isPending={isUpdating}
-                            >
-                                Save
-                            </Button>,
-                            <Button
-                                key="cancel"
-                                color="outlined"
-                                slot="close"
+                            <Select
+                                label="Role"
+                                placeholder="Role"
+                                name="role"
+                                defaultValue={user.role}
+                                isRequired
                                 isDisabled={isUpdating}
                             >
-                                Cancel
-                            </Button>,
-                        ]}
-                    >
-                        {({ close }) => (
-                            <Form
-                                onSubmit={(e) => updateUser(e, close)}
-                                className={clsx(styles["form"])}
-                                validationErrors={fieldErr}
-                                id={formID}
-                            >
-                                <Input
-                                    name="name"
-                                    type="text"
-                                    defaultValue={user.name}
-                                    placeholder="Name"
-                                    label="Name"
-                                    isRequired
-                                    isReadOnly={isUpdating}
-                                />
+                                <SelectTrigger />
 
-                                <Select
-                                    label="Role"
-                                    placeholder="Role"
-                                    name="role"
-                                    defaultValue={user.role}
-                                    isRequired
-                                    isDisabled={isUpdating}
+                                <SelectPopover>
+                                    <SelectList items={roles} color="vibrant">
+                                        {(role) => {
+                                            const disabled =
+                                                myRole === userRoles.superAdmin
+                                                    ? false
+                                                    : myRole === role.key
+                                                      ? true
+                                                      : role.key ===
+                                                        userRoles.superAdmin;
+
+                                            return (
+                                                <SelectItem
+                                                    isDisabled={disabled}
+                                                    id={role.key}
+                                                    label={role.displayValue}
+                                                />
+                                            );
+                                        }}
+                                    </SelectList>
+                                </SelectPopover>
+                            </Select>
+
+                            {formErr && (
+                                <p
+                                    className={clsx(
+                                        styles["error-message"],
+                                        typography.bodySmall
+                                    )}
                                 >
-                                    <SelectTrigger />
-
-                                    <SelectPopover>
-                                        <SelectList
-                                            items={roles}
-                                            color="vibrant"
-                                        >
-                                            {(role) => {
-                                                const disabled =
-                                                    myRole ===
-                                                    userRoles.superAdmin
-                                                        ? false
-                                                        : myRole === role.key
-                                                          ? true
-                                                          : role.key ===
-                                                            userRoles.superAdmin;
-
-                                                return (
-                                                    <SelectItem
-                                                        isDisabled={disabled}
-                                                        id={role.key}
-                                                        label={
-                                                            role.displayValue
-                                                        }
-                                                    />
-                                                );
-                                            }}
-                                        </SelectList>
-                                    </SelectPopover>
-                                </Select>
-
-                                {formErr && (
-                                    <p
-                                        className={clsx(
-                                            styles["error-message"],
-                                            typography.bodySmall
-                                        )}
-                                    >
-                                        {formErr}
-                                    </p>
-                                )}
-                            </Form>
-                        )}
-                    </SideSheet>
-                </SideSheetModal>
-            </ModalOverlay>
-        </DialogTrigger>
+                                    {formErr}
+                                </p>
+                            )}
+                        </Form>
+                    )}
+                </SideSheet>
+            </SideSheetModal>
+        </ModalOverlay>
     );
 };
