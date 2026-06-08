@@ -71,9 +71,14 @@ export const ChangePassword = () => {
         }
 
         reset();
-        snackBarQueue.add({
-            supportingText: "Password changed successfully",
-        });
+        snackBarQueue.add(
+            {
+                supportingText: "Password changed successfully",
+            },
+            {
+                timeout: 5000,
+            }
+        );
     };
 
     return (
@@ -117,7 +122,7 @@ export const ChangePassword = () => {
                 />
 
                 <div>
-                    <Button color="tonal" type="submit" isPending={isChanging}>
+                    <Button type="submit" isPending={isChanging}>
                         Update
                     </Button>
                 </div>

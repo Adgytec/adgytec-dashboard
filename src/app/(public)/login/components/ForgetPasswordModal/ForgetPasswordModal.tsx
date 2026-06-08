@@ -62,10 +62,15 @@ export const ForgetPasswordModal = () => {
             return;
         }
 
-        snackbarQueue.add({
-            supportingText:
-                "Password reset email sent. Please check your inbox and follow the instructions to reset your password.",
-        });
+        snackbarQueue.add(
+            {
+                supportingText:
+                    "Password reset email sent. Please check your inbox and follow the instructions to reset your password.",
+            },
+            {
+                timeout: 5000,
+            }
+        );
         close();
     };
 
