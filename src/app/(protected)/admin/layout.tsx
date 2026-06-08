@@ -1,10 +1,13 @@
 "use client";
 
+import { typography } from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import type React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import { Text } from "react-aria-components";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
+import { userRoles } from "@/helpers/type";
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -17,10 +20,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         return (
             <div
                 style={{
-                    position: "absolute",
-                    inset: "0",
                     display: "grid",
                     placeItems: "center",
+                    blockSize: "50svb",
                 }}
             >
                 <Loader />
@@ -28,18 +30,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         );
     }
 
-    if (role === "user") {
+    if (role === userRoles.user) {
         return (
-            <Container
-                style={{
-                    position: "absolute",
-                    inset: "0",
-                    display: "grid",
-                    placeItems: "center",
-                }}
-            >
-                <h1>403 Forbidden</h1>
-            </Container>
+            <div>
+                <Text className={clsx(typography.bodyLarge)}>
+                    This Page Isn't Available to Your Account
+                </Text>
+            </div>
         );
     }
 

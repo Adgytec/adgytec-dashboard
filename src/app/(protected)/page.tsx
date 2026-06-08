@@ -1,15 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
 import { Changelog } from "@/components/Changelog/Changelog";
 import Container from "@/components/Container/Container";
-import styles from "./home.module.scss";
 
 const Home = () => {
     return (
-        <div className={styles.home}>
-            <Container className={styles.container}>
+        <div>
+            <Container>
                 {/* <h1> Welcome to the Adgytec Dashboard!👋</h1> */}
 
                 {/* <p> */}
@@ -19,7 +17,7 @@ const Home = () => {
 
                 <Changelog />
 
-                <div className={styles.image}>
+                <div>
                     <Image
                         src="/home.png"
                         alt=""

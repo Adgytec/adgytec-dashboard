@@ -6,7 +6,6 @@ import {
     IconButton,
     Input,
     InputButton,
-    Loader,
     useSnackbarQueue,
     validateAndGetFormValues,
 } from "@adgytec/adgytec-web-ui-components";
@@ -20,6 +19,7 @@ import { Suspense, useEffect, useState } from "react";
 import { DialogTrigger, Form } from "react-aria-components";
 import { useBoolean } from "usehooks-ts";
 import z from "zod";
+import Loader from "@/components/Loader/Loader";
 import { ThemeSelectorModal } from "@/components/ThemeSelectorModal";
 import {
     auth,
@@ -127,7 +127,7 @@ const Login = () => {
                     color: "inherit",
                 }}
             >
-                <Loader size="medium" />
+                <Loader />
             </div>
         );
     }
@@ -216,7 +216,7 @@ const Login = () => {
 
 const LoginSuspense = () => {
     return (
-        <Suspense fallback={<Loader size="medium" />}>
+        <Suspense fallback={<Loader />}>
             <Login />
         </Suspense>
     );

@@ -1,0 +1,55 @@
+.loader {
+    --_loader-size: calc(var(--loader-size, 24) * var(--dp, 1px));
+
+    width: var(--_loader-size);
+    height: var(--_loader-size);
+    display: block;
+    position: relative;
+    color: var(--md-sys-color-primary);
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    margin: auto;
+}
+
+.loader::after,
+.loader::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    width: calc(var(--_loader-size) / 2);
+    height: calc(var(--_loader-size) / 2);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    animation: animloader 1s infinite ease-in-out;
+}
+
+.loader::before {
+    background-color: var(--md-sys-color-primary);
+    transform: scale(0.5)
+        translate(
+            calc(var(--_loader-size) * -1),
+            calc(var(--_loader-size) * -1)
+        );
+}
+
+.loader::after {
+    transform: scale(0.5) translate(0, 0);
+    background-color: var(--md-extended-color-primary-alt-color);
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes animloader {
+    50% {
+        transform: scale(1) translate(-50%, -50%);
+    }
+}

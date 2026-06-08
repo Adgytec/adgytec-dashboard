@@ -41,7 +41,7 @@ export const Nav = () => {
     const userWithRole = useContext(UserContext);
     const role = userWithRole?.role;
 
-    const isAdmin = role === userRoles.admin || userRoles.superAdmin;
+    const isAdmin = role === userRoles.admin || role === userRoles.superAdmin;
 
     const pathName = usePathname();
 

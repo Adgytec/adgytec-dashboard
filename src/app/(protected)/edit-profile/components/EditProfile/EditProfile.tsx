@@ -6,15 +6,23 @@ import {
     Tabs,
 } from "@adgytec/adgytec-web-ui-components";
 import { LockKeyhole, UserRoundPen } from "lucide-react";
-import { useMediaQuery } from "usehooks-ts";
+import { useRef } from "react";
+import { useResizeObserver } from "usehooks-ts";
 import { ChangePassword } from "../ChangePassword";
 import { EditUserProfile } from "../EditUserProfile";
 
 export const EditProfile = () => {
-    const isLargeScreen = useMediaQuery("(min-width: 40rem)");
+    const tabsRef = useRef<HTMLDivElement>(null);
+    const { width } = useResizeObserver({
+        ref: tabsRef as React.RefObject<HTMLDivElement>,
+    });
 
+    const isLargeContainer = (width ?? 0) > 600;
     return (
-        <Tabs orientation={isLargeScreen ? "vertical" : "horizontal"}>
+        <Tabs
+            ref={tabsRef}
+            orientation={isLargeContainer ? "vertical" : "horizontal"}
+        >
             <TabList style={{ scrollbarWidth: "none" }}>
                 <Tab id="edit" label="Edit Profile" icon={UserRoundPen} />
 
