@@ -1,0 +1,18 @@
+.users {
+    display: grid;
+    gap: var(--md-sys-layout-spacer);
+}
+
+.search {
+    max-inline-size: calc(600 * var(--dp, 1px));
+}
+
+.users-list {
+    display: grid;
+    gap: calc(2 * var(--dp, 1px));
+
+    grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(100%, calc(440 * var(--dp, 1px))), 1fr)
+        );
+}

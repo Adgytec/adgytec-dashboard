@@ -1,15 +1,7 @@
-"use client";
-
-import React from "react";
-import UserList from "./components/userList/UserList";
-import styles from "./user.module.scss";
+import { Users } from "./components/Users/Users";
 
 const UserAdmin = () => {
-    return (
-        <div className={styles.container}>
-            <UserList />
-        </div>
-    );
+    return <Users />;
 };
 
 export default UserAdmin;
