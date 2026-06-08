@@ -1,4 +1,4 @@
-import { Users } from "./components/Users/Users";
+import { Users } from "./components/Users";
 
 const UserAdmin = () => {
     return <Users />;

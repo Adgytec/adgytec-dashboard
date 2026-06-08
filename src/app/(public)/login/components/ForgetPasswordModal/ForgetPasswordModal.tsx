@@ -10,7 +10,7 @@ import {
 } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
 import { LockKeyhole } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Form } from "react-aria-components";
 import { useBoolean } from "usehooks-ts";
 import z from "zod";
@@ -23,6 +23,7 @@ const ForgetPasswordSchema = z.object({
 });
 
 export const ForgetPasswordModal = () => {
+    const formID = useId();
     const {
         value: sending,
         setFalse: cancelSending,
@@ -95,7 +96,7 @@ export const ForgetPasswordModal = () => {
                             color="text"
                             isPending={sending}
                             type="submit"
-                            form="forget-password-form"
+                            form={formID}
                         >
                             Reset
                         </Button>,
@@ -104,7 +105,7 @@ export const ForgetPasswordModal = () => {
                     {({ close }) => {
                         return (
                             <Form
-                                id="forget-password-form"
+                                id={formID}
                                 validationErrors={fieldErr}
                                 onSubmit={(e) => handleReset(e, close)}
                                 className={clsx(styles["form"])}

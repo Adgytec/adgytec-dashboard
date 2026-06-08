@@ -15,6 +15,12 @@ export type ValidationErrors = Record<string, ValidationError>;
 export const PasswordLength = 8;
 export const NameMinLength = 3;
 
+export const RoleSchema = z.enum([
+    userRoles.superAdmin,
+    userRoles.admin,
+    userRoles.user,
+]);
+
 export const validateEmail: ValidateEmail = (email) => {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     return emailRegex.test(email);

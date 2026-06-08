@@ -1,15 +1,8 @@
-import {
-    Button,
-    Icon,
-    IconButton,
-    ModalOverlay,
-    SideSheet,
-    SideSheetModal,
-    typography,
-} from "@adgytec/adgytec-web-ui-components";
+import { IconButton, typography } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
-import { Dot, EllipsisVertical } from "lucide-react";
-import { DialogTrigger, GridListItem, Text } from "react-aria-components";
+import { EllipsisVertical } from "lucide-react";
+import { GridListItem, Text } from "react-aria-components";
+import { EditUser } from "../EditUser";
 import type { UserType } from "./types";
 import styles from "./user.module.css";
 
@@ -30,31 +23,13 @@ export const User: React.FC<{ user: UserType }> = ({ user }) => {
             </div>
 
             <div className={clsx(styles["trailing"])}>
-                <DialogTrigger>
+                <EditUser user={user}>
                     <IconButton
                         color="standard"
                         icon={EllipsisVertical}
                         tooltip="Manage user"
                     />
-
-                    <ModalOverlay>
-                        <SideSheetModal layout="detached">
-                            <SideSheet
-                                headline={user.name}
-                                actions={[
-                                    <Button key="Save">Save</Button>,
-                                    <Button
-                                        key="cancel"
-                                        color="outlined"
-                                        slot="close"
-                                    >
-                                        Cancel
-                                    </Button>,
-                                ]}
-                            ></SideSheet>
-                        </SideSheetModal>
-                    </ModalOverlay>
-                </DialogTrigger>
+                </EditUser>
             </div>
         </GridListItem>
     );

@@ -11,6 +11,7 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { userRoles } from "@/helpers/type";
 import { User, type UserType } from "../User";
+import { type OnEditSuccessInput, UserActionProvider } from "./context";
 import styles from "./users.module.css";
 
 export const Users = () => {
@@ -48,7 +49,7 @@ export const Users = () => {
                     setLoading(false);
                 });
         })();
-    }, [userWithRole]);
+    }, [user, snackbarQueue]);
 
     const usersToRender: UserType[] = [];
     users.forEach((user) => {
@@ -74,6 +75,24 @@ export const Users = () => {
         )
             usersToRender.push(user);
     });
+
+    const onUserDeleteSuccess = (id: string) => {
+        setUsers((prev) => {
+            const temp = prev;
+            return temp.toSpliced(
+                temp.findIndex((u) => u.userId === id),
+                1
+            );
+        });
+    };
+
+    const onUserUpdateSuccess = ({ id, name, role }: OnEditSuccessInput) => {
+        setUsers((prev) => {
+            return prev.map((u) =>
+                u.userId === id ? { ...u, name, role } : u
+            );
+        });
+    };
 
     return (
         <div className={clsx(styles["users"])}>
@@ -105,13 +124,20 @@ export const Users = () => {
                     </span>
                 </Text>
             ) : (
-                <GridList
-                    className={clsx(styles["users-list"])}
-                    items={usersToRender}
-                    layout="grid"
+                <UserActionProvider
+                    value={{
+                        onDeleteSuccess: onUserDeleteSuccess,
+                        onEditSuccess: onUserUpdateSuccess,
+                    }}
                 >
-                    {(user) => <User user={user} />}
-                </GridList>
+                    <GridList
+                        className={clsx(styles["users-list"])}
+                        layout="grid"
+                        items={usersToRender}
+                    >
+                        {(user) => <User user={user} />}
+                    </GridList>
+                </UserActionProvider>
             )}
         </div>
     );
