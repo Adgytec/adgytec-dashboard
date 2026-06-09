@@ -1,0 +1,43 @@
+.container {
+    display: grid;
+    gap: var(--md-sys-layout-space-24);
+}
+
+.form {
+    container-type: inline-size;
+    container-name: create-user-form;
+
+    display: grid;
+    gap: var(--md-sys-layout-space-16);
+
+    max-inline-size: var(--md-sys-layout-window-size-medium);
+}
+
+.logo-preview {
+    position: relative;
+
+    min-block-size: calc(120 * var(--dp, 1px));
+    padding: var(--md-sys-layout-space-8);
+    border-radius: var(--md-sys-shape-corner-radius-extra-small);
+
+    background-color: var(--md-sys-color-surface-container-high);
+}
+
+.logo {
+    object-fit: cover;
+    inline-size: 100%;
+}
+
+.logo-selection {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
+
+    translate: -50% -50%;
+}
+
+.logo-remove {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+}

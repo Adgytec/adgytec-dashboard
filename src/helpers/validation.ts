@@ -14,6 +14,7 @@ export type ValidationErrors = Record<string, ValidationError>;
 
 export const PasswordLength = 8;
 export const NameMinLength = 3;
+export const ProjectNameMinLength = 3;
 
 export const RoleSchema = z.enum([
     userRoles.superAdmin,

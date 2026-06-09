@@ -1,5 +1,11 @@
 "use client";
 
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation";
 import React, {
     useCallback,
     useContext,
@@ -8,16 +14,10 @@ import React, {
     useRef,
     useState,
 } from "react";
-import Editor from "../components/editor/Editor";
-import { UserContext } from "@/components/AuthContext/authContext";
 import { toast } from "react-toastify";
+import { UserContext } from "@/components/AuthContext/authContext";
 import Details from "../components/details/Details";
-import {
-    useParams,
-    usePathname,
-    useRouter,
-    useSearchParams,
-} from "next/navigation";
+import Editor from "../components/editor/Editor";
 
 export type BlogDetails = {
     title: string;
