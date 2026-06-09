@@ -30,6 +30,7 @@
 
 .scaffold::before,
 .scaffold::after {
+    z-index: 99999;
     content: "";
     position: fixed;
 
@@ -63,6 +64,8 @@
 }
 
 .blob3 {
+    z-index: 99999;
+
     position: fixed;
     inline-size: calc(480 * var(--dp));
     block-size: calc(480 * var(--dp));
@@ -87,6 +90,8 @@
 .docked-navigation {
     position: sticky;
     top: 0;
+
+    z-index: 1000;
 
     inline-size: 30%;
     max-inline-size: calc(360 * var(--dp, 1px));

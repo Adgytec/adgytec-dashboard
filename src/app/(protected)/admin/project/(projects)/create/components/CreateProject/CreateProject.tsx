@@ -151,7 +151,7 @@ export const CreateProject = () => {
                                 icon={ImagePlus}
                                 className={clsx(styles["logo-selection"])}
                             >
-                                Add project logo
+                                Add
                             </Button>
                         </FileTrigger>
                     )}
@@ -166,6 +166,7 @@ export const CreateProject = () => {
                     )}
 
                     {logo && (
+                        // biome-ignore lint: using native html image
                         <img
                             src={logo.url}
                             alt="Project logo"

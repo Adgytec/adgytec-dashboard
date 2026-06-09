@@ -9,10 +9,10 @@
 
 .project-list {
     display: grid;
-    gap: calc(2 * var(--dp, 1px));
+    gap: var(--md-sys-layout-space-16);
 
     grid-template-columns: repeat(
-            auto-fit,
-            minmax(min(100%, calc(220 * var(--dp, 1px))), 1fr)
+            auto-fill,
+            minmax(min(100%, calc(250 * var(--dp, 1px))), 1fr)
         );
 }

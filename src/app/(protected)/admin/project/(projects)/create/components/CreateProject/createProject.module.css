@@ -10,13 +10,13 @@
     display: grid;
     gap: var(--md-sys-layout-space-16);
 
-    max-inline-size: var(--md-sys-layout-window-size-medium);
+    max-inline-size: var(--md-sys-layout-window-size-expanded);
 }
 
 .logo-preview {
     position: relative;
 
-    min-block-size: calc(120 * var(--dp, 1px));
+    min-block-size: calc(150 * var(--dp, 1px));
     padding: var(--md-sys-layout-space-8);
     border-radius: var(--md-sys-shape-corner-radius-extra-small);
 
@@ -26,6 +26,7 @@
 .logo {
     object-fit: cover;
     inline-size: 100%;
+    block-size: auto;
 }
 
 .logo-selection {
