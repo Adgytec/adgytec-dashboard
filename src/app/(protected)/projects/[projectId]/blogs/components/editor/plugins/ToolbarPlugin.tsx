@@ -1,48 +1,7 @@
-import {
-    $createCodeNode,
-    $isCodeNode,
-    getDefaultCodeLanguage,
-} from "@lexical/code";
-import { getCodeLanguages } from "@lexical/code-prism";
-import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
-import {
-    $isListNode,
-    INSERT_ORDERED_LIST_COMMAND,
-    INSERT_UNORDERED_LIST_COMMAND,
-    ListNode,
-    REMOVE_LIST_COMMAND,
-} from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-    $createHeadingNode,
-    $createQuoteNode,
-    $isHeadingNode,
-} from "@lexical/rich-text";
-import {
-    $isAtNodeEnd,
-    $isParentElementRTL,
-    $setBlocksType as $wrapNodes,
-} from "@lexical/selection";
-import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import {
-    $createParagraphNode,
-    $getNodeByKey,
-    $getSelection,
-    $isRangeSelection,
-    type BaseSelection,
-    CAN_REDO_COMMAND,
-    CAN_UNDO_COMMAND,
-    FORMAT_ELEMENT_COMMAND,
-    FORMAT_TEXT_COMMAND,
-    type LexicalEditor,
-    REDO_COMMAND,
-    SELECTION_CHANGE_COMMAND,
-    UNDO_COMMAND,
-} from "lexical";
-import { useParams } from "next/navigation";
-import {
     Dispatch,
-    type MutableRefObject,
+    MutableRefObject,
     SetStateAction,
     useCallback,
     useContext,
@@ -51,12 +10,53 @@ import {
     useRef,
     useState,
 } from "react";
+import {
+    CAN_REDO_COMMAND,
+    CAN_UNDO_COMMAND,
+    REDO_COMMAND,
+    UNDO_COMMAND,
+    SELECTION_CHANGE_COMMAND,
+    FORMAT_TEXT_COMMAND,
+    FORMAT_ELEMENT_COMMAND,
+    $getSelection,
+    $isRangeSelection,
+    $createParagraphNode,
+    $getNodeByKey,
+    LexicalEditor,
+    BaseSelection,
+} from "lexical";
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import {
+    $isParentElementRTL,
+    $wrapNodes,
+    $isAtNodeEnd,
+} from "@lexical/selection";
+import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
+import {
+    INSERT_ORDERED_LIST_COMMAND,
+    INSERT_UNORDERED_LIST_COMMAND,
+    REMOVE_LIST_COMMAND,
+    $isListNode,
+    ListNode,
+} from "@lexical/list";
 import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
-import { UserContext } from "@/components/AuthContext/authContext";
-import { generateRandomString } from "@/helpers/helpers";
-import type { NewImages } from "../../../create/page";
+import {
+    $createHeadingNode,
+    $createQuoteNode,
+    $isHeadingNode,
+} from "@lexical/rich-text";
+import {
+    $createCodeNode,
+    $isCodeNode,
+    getDefaultCodeLanguage,
+    getCodeLanguages,
+} from "@lexical/code";
 import { INSERT_IMAGE_COMMAND } from "../nodes/ImageNode";
+import { UserContext } from "@/components/AuthContext/authContext";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
+import { NewImages } from "../../../create/page";
+import { generateRandomString } from "@/helpers/helpers";
 
 const LowPriority = 1;
 
