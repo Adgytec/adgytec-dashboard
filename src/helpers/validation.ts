@@ -21,6 +21,21 @@ export const RoleSchema = z.enum([
     userRoles.user,
 ]);
 
+export const roles = [
+    {
+        key: userRoles.user,
+        displayValue: "User",
+    },
+    {
+        key: userRoles.admin,
+        displayValue: "Admin",
+    },
+    {
+        key: userRoles.superAdmin,
+        displayValue: "Super Admin",
+    },
+];
+
 export const validateEmail: ValidateEmail = (email) => {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     return emailRegex.test(email);

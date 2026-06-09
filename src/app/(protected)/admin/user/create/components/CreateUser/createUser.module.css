@@ -1,0 +1,32 @@
+.container {
+    display: grid;
+    gap: var(--md-sys-layout-space-24);
+}
+
+.form {
+    container-type: inline-size;
+    container-name: create-user-form;
+
+    display: grid;
+    gap: var(--md-sys-layout-space-16);
+
+    max-inline-size: var(--md-sys-layout-window-size-expanded);
+}
+
+.action {
+    margin-block-start: var(--md-sys-layout-space-8);
+
+    display: flex;
+    gap: var(--md-sys-layout-space-12);
+}
+
+.info {
+    display: grid;
+    gap: var(--md-sys-layout-space-16);
+}
+
+@container create-user-form (min-width: 37.5rem) {
+    .info {
+        grid-template-columns: 2fr 1fr;
+    }
+}

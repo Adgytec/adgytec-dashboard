@@ -23,26 +23,12 @@ import { userRoles } from "@/helpers/type";
 import {
     NameMinLength,
     RoleSchema,
+    roles,
     type ValidationErrors,
 } from "@/helpers/validation";
 import type { UserType } from "../User";
 import { useUserAction } from "../Users";
 import styles from "./editUser.module.css";
-
-const roles = [
-    {
-        key: userRoles.user,
-        displayValue: "User",
-    },
-    {
-        key: userRoles.admin,
-        displayValue: "Admin",
-    },
-    {
-        key: userRoles.superAdmin,
-        displayValue: "Super Admin",
-    },
-];
 
 const EditUserSchema = z.object({
     name: z.string().min(NameMinLength),
@@ -181,7 +167,10 @@ export const EditUser: React.FC<{
                                 <SelectTrigger />
 
                                 <SelectPopover>
-                                    <SelectList items={roles} color="vibrant">
+                                    <SelectList
+                                        items={roles}
+                                        className={clsx(styles["roles-list"])}
+                                    >
                                         {(role) => {
                                             const disabled =
                                                 myRole === userRoles.superAdmin
