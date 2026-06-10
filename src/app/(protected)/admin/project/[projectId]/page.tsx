@@ -1,14 +1,23 @@
 "use client";
 
+import {
+    Input,
+    InputButton,
+    typography,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
+import { Copy } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+    use,
     useCallback,
     useContext,
     useEffect,
     useMemo,
     useState,
-    use,
 } from "react";
+import { Heading } from "react-aria-components";
 import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import LinkHeader, { type LinkItem } from "@/components/LinkHeader/LinkHeader";
@@ -19,15 +28,6 @@ import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
 import ServicesComp from "./components/Services/Services";
 import UsersComp from "./components/Users/Users";
 import styles from "./project.module.css";
-import { Heading } from "react-aria-components";
-import {
-    Input,
-    InputButton,
-    typography,
-    useSnackbarQueue,
-} from "@adgytec/adgytec-web-ui-components";
-import { Copy } from "lucide-react";
-import clsx from "clsx";
 
 interface ProjectDetailsProps {
     params: Promise<{ projectId: string }>;

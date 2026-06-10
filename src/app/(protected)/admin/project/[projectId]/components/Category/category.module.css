@@ -1,6 +1,4 @@
 .category {
-    --scrollbar-thumb: hsl(from var(--md-sys-color-secondary) h s l / 0.5);
-
     > div[data-load="true"],
     > div[data-empty="true"] {
         min-height: 10rem;
@@ -12,8 +10,9 @@
         max-height: 30rem;
         overflow: auto;
 
-        box-shadow: 0px 2px hsl(from var(--md-sys-color-primary) h s l / 0.25);
-        padding-block-end: 0.75em;
+        padding: var(--md-sys-layout-space-8);
+        background-color: var(--md-sys-color-surface-container);
+        border-radius: var(--md-sys-shape-corner-radius-extra-small);
 
         .action {
             display: flex;
@@ -22,15 +21,17 @@
         }
 
         ul {
+            margin: 0;
+
+            padding-inline-start: var(--md-sys-layout-space-32);
+
             list-style-type: none;
             display: grid;
-            gap: 1em;
+            gap: var(--md-sys-layout-space-8);
 
             li {
                 display: grid;
-                gap: 1em;
-
-                padding-inline-end: 0.125em;
+                gap: var(--md-sys-layout-space-8);
             }
         }
 
@@ -40,12 +41,12 @@
 
         .details {
             display: flex;
-            gap: 1em;
+            gap: var(--md-sys-layout-space-4);
+            align-items: center;
 
-            p {
-                font-size: clamp(1rem, 1.5vi, 1.25rem);
-                font-weight: 600;
-            }
+            background-color: var(--md-sys-color-surface-container-high);
+            padding-inline: var(--md-sys-layout-space-8);
+            border-radius: var(--md-sys-shape-corner-radius-extra-small);
         }
     }
 }

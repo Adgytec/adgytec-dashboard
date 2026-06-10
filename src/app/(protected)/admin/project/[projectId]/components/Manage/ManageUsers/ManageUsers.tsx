@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
-import { type ProjectDetails, Users } from "../../../page";
+import { type ProjectDetails, UsersComp } from "../../../page";
 import styles from "./manageUsers.module.scss";
 
 export interface UserObj {

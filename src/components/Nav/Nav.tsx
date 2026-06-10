@@ -117,7 +117,10 @@ export const Nav = () => {
 
                         <SubNavigation>
                             <NavigationLink
-                                isActive={pathName.startsWith("/admin/project")}
+                                isActive={
+                                    pathName.startsWith("/admin/project") &&
+                                    pathName !== "/admin/project/create"
+                                }
                                 href="/admin/project"
                                 label="Projects"
                                 icon={FolderPen}
