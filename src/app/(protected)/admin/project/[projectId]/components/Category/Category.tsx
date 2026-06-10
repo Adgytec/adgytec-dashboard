@@ -23,7 +23,17 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { copyToClipboard } from "@/helpers/helpers";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
-import styles from "./category.module.scss";
+import styles from "./category.module.css";
+import {
+    Button,
+    IconButton,
+    Input,
+    ModalOverlay,
+    SideSheet,
+    SideSheetModal,
+} from "@adgytec/adgytec-web-ui-components";
+import { DialogTrigger, Form } from "react-aria-components";
+import { BadgePlus, Plus } from "lucide-react";
 
 interface Category {
     categoryId: string;
@@ -51,15 +61,15 @@ const Category = () => {
 
     const params = useParams<{ projectId: string }>();
 
-    const categoryIdRef = useRef<string | null>(null);
-    const currentCategoryName = useRef<string>("");
-    const addCategoryModal = useRef<HTMLDialogElement | null>(null);
-    const updateCategoryModal = useRef<HTMLDialogElement | null>(null);
-    const confirmDeleteModal = useRef<HTMLDialogElement | null>(null);
+    // const categoryIdRef = useRef<string | null>(null);
+    // const currentCategoryName = useRef<string>("");
+    // const addCategoryModal = useRef<HTMLDialogElement | null>(null);
+    // const updateCategoryModal = useRef<HTMLDialogElement | null>(null);
+    // const confirmDeleteModal = useRef<HTMLDialogElement | null>(null);
 
-    const handleAddModalClose = () => handleModalClose(addCategoryModal);
-    const handleUpdateModalClose = () => handleModalClose(updateCategoryModal);
-    const handleConfirmDeleteClose = () => handleModalClose(confirmDeleteModal);
+    // const handleAddModalClose = () => handleModalClose(addCategoryModal);
+    // const handleUpdateModalClose = () => handleModalClose(updateCategoryModal);
+    // const handleConfirmDeleteClose = () => handleModalClose(confirmDeleteModal);
 
     const getCategory = useCallback(async () => {
         const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}/category`;
@@ -123,9 +133,7 @@ const Category = () => {
         });
     };
 
-    const handleAdd = async () => {
-        const parentId = categoryIdRef.current;
-
+    const handleAdd = async (parentId: string) => {
         if (!parentId) {
             toast.error("Something went wrong. Please refresh this page.");
             return;
@@ -419,199 +427,191 @@ const Category = () => {
 
     return (
         <>
-            <dialog
-                onKeyDown={handleEscModal}
-                ref={confirmDeleteModal}
-                className="delete-confirm"
-            >
-                <div className="delete-modal">
-                    <div className="modal-menu">
-                        <h2>Confirm Deletion</h2>
-
-                        <button
-                            data-type="link"
-                            onClick={handleConfirmDeleteClose}
-                            title="close"
-                            disabled={manage}
-                        >
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    </div>
-
-                    <div className="delete-content">
-                        <p>Are you sure you want to delete?</p>
-
-                        <p>
-                            Deleting this will permanently remove this item.
-                            This action cannot be undone.
-                        </p>
-                    </div>
-
-                    {error && <p className="error">{error}</p>}
-
-                    <div className="delete-action">
-                        <button
-                            data-type="link"
-                            disabled={manage}
-                            onClick={handleConfirmDeleteClose}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            data-type="button"
-                            className={styles.delete}
-                            disabled={manage}
-                            data-load={manage}
-                            onClick={handleDelete}
-                            data-variant="error"
-                        >
-                            {manage ? <Loader variant="small" /> : "Delete"}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
-
-            <dialog onKeyDown={handleEscModal} ref={addCategoryModal}>
-                <div className="modal">
-                    <div className="modal-menu">
-                        <h2>Add Category</h2>
-
-                        <button
-                            data-type="link"
-                            onClick={handleAddModalClose}
-                            title="close"
-                            disabled={manage}
-                        >
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    </div>
-
-                    <div className={styles.modalContent}>
-                        <div className="input">
-                            <label htmlFor="category-name-add">
-                                Category Name
-                            </label>
-                            <input
-                                id="category-name-add"
-                                type="text"
-                                value={categoryName}
-                                onChange={(e) =>
-                                    setCategoryName(e.target.value)
-                                }
-                                placeholder="Category Name..."
-                                disabled={manage}
-                                onKeyDown={(e) => {
-                                    if (e.code === "Enter") {
-                                        handleAdd();
-                                    }
-                                }}
-                            />
-                        </div>
-
-                        {error && <p className="error">{error}</p>}
-                    </div>
-
-                    <div className="action">
-                        <button
-                            data-type="link"
-                            disabled={manage}
-                            onClick={handleAddModalClose}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            data-type="button"
-                            data-variant="secondary"
-                            disabled={manage || categoryName.length === 0}
-                            data-load={manage}
-                            onClick={handleAdd}
-                        >
-                            {manage ? (
-                                <Loader variant="small" />
-                            ) : (
-                                "Add Category"
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
-
-            <dialog onKeyDown={handleEscModal} ref={updateCategoryModal}>
-                <div className="modal">
-                    <div className="modal-menu">
-                        <h2>Update Category</h2>
-
-                        <button
-                            data-type="link"
-                            onClick={handleUpdateModalClose}
-                            title="close"
-                            disabled={manage}
-                        >
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    </div>
-
-                    <div className={styles.modalContent}>
-                        <div className="input">
-                            <label htmlFor="category-name-add">
-                                Category Name
-                            </label>
-                            <input
-                                id="category-name-add"
-                                type="text"
-                                value={categoryName}
-                                onChange={(e) =>
-                                    setCategoryName(e.target.value)
-                                }
-                                placeholder="Category Name..."
-                                disabled={manage}
-                                onKeyDown={(e) => {
-                                    if (e.code === "Enter") {
-                                        handleUpdate();
-                                    }
-                                }}
-                            />
-                        </div>
-
-                        {error && <p className="error">{error}</p>}
-                    </div>
-
-                    <div className="action">
-                        <button
-                            data-type="link"
-                            disabled={manage}
-                            onClick={handleUpdateModalClose}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            data-type="button"
-                            data-variant="secondary"
-                            disabled={
-                                manage ||
-                                categoryName.length === 0 ||
-                                categoryName === currentCategoryName.current
-                            }
-                            data-load={manage}
-                            onClick={handleUpdate}
-                        >
-                            {manage ? (
-                                <Loader variant="small" />
-                            ) : (
-                                "Update Category"
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
-
+            {/* <dialog */}
+            {/*     onKeyDown={handleEscModal} */}
+            {/*     ref={confirmDeleteModal} */}
+            {/*     className="delete-confirm" */}
+            {/* > */}
+            {/*     <div className="delete-modal"> */}
+            {/*         <div className="modal-menu"> */}
+            {/*             <h2>Confirm Deletion</h2> */}
+            {/**/}
+            {/*             <button */}
+            {/*                 data-type="link" */}
+            {/*                 onClick={handleConfirmDeleteClose} */}
+            {/*                 title="close" */}
+            {/*                 disabled={manage} */}
+            {/*             > */}
+            {/*                 <FontAwesomeIcon icon={faXmark} /> */}
+            {/*             </button> */}
+            {/*         </div> */}
+            {/**/}
+            {/*         <div className="delete-content"> */}
+            {/*             <p>Are you sure you want to delete?</p> */}
+            {/**/}
+            {/*             <p> */}
+            {/*                 Deleting this will permanently remove this item. */}
+            {/*                 This action cannot be undone. */}
+            {/*             </p> */}
+            {/*         </div> */}
+            {/**/}
+            {/*         {error && <p className="error">{error}</p>} */}
+            {/**/}
+            {/*         <div className="delete-action"> */}
+            {/*             <Button */}
+            {/*                 isDisabled={manage} */}
+            {/*                 onPress={handleConfirmDeleteClose} */}
+            {/*             > */}
+            {/*                 Cancel */}
+            {/*             </Button> */}
+            {/**/}
+            {/*             <Button isPending={manage} onPress={handleDelete}> */}
+            {/*                 Delete */}
+            {/*             </Button> */}
+            {/*         </div> */}
+            {/*     </div> */}
+            {/* </dialog> */}
+            {/**/}
+            {/* <dialog onKeyDown={handleEscModal} ref={addCategoryModal}> */}
+            {/*     <div className="modal"> */}
+            {/*         <div className="modal-menu"> */}
+            {/*             <h2>Add Category</h2> */}
+            {/**/}
+            {/*             <button */}
+            {/*                 data-type="link" */}
+            {/*                 onClick={handleAddModalClose} */}
+            {/*                 title="close" */}
+            {/*                 disabled={manage} */}
+            {/*             > */}
+            {/*                 <FontAwesomeIcon icon={faXmark} /> */}
+            {/*             </button> */}
+            {/*         </div> */}
+            {/**/}
+            {/*         <div className={styles.modalContent}> */}
+            {/*             <div className="input"> */}
+            {/*                 <label htmlFor="category-name-add"> */}
+            {/*                     Category Name */}
+            {/*                 </label> */}
+            {/*                 <input */}
+            {/*                     id="category-name-add" */}
+            {/*                     type="text" */}
+            {/*                     value={categoryName} */}
+            {/*                     onChange={(e) => */}
+            {/*                         setCategoryName(e.target.value) */}
+            {/*                     } */}
+            {/*                     placeholder="Category Name..." */}
+            {/*                     disabled={manage} */}
+            {/*                     onKeyDown={(e) => { */}
+            {/*                         if (e.code === "Enter") { */}
+            {/*                             handleAdd(); */}
+            {/*                         } */}
+            {/*                     }} */}
+            {/*                 /> */}
+            {/*             </div> */}
+            {/**/}
+            {/*             {error && <p className="error">{error}</p>} */}
+            {/*         </div> */}
+            {/**/}
+            {/*         <div className="action"> */}
+            {/*             <button */}
+            {/*                 data-type="link" */}
+            {/*                 disabled={manage} */}
+            {/*                 onClick={handleAddModalClose} */}
+            {/*             > */}
+            {/*                 Cancel */}
+            {/*             </button> */}
+            {/**/}
+            {/*             <button */}
+            {/*                 data-type="button" */}
+            {/*                 data-variant="secondary" */}
+            {/*                 disabled={manage || categoryName.length === 0} */}
+            {/*                 data-load={manage} */}
+            {/*                 onClick={handleAdd} */}
+            {/*             > */}
+            {/*                 {manage ? ( */}
+            {/*                     <Loader variant="small" /> */}
+            {/*                 ) : ( */}
+            {/*                     "Add Category" */}
+            {/*                 )} */}
+            {/*             </button> */}
+            {/*         </div> */}
+            {/*     </div> */}
+            {/* </dialog> */}
+            {/**/}
+            {/* <dialog onKeyDown={handleEscModal} ref={updateCategoryModal}> */}
+            {/*     <div className="modal"> */}
+            {/*         <div className="modal-menu"> */}
+            {/*             <h2>Update Category</h2> */}
+            {/**/}
+            {/*             <button */}
+            {/*                 data-type="link" */}
+            {/*                 onClick={handleUpdateModalClose} */}
+            {/*                 title="close" */}
+            {/*                 disabled={manage} */}
+            {/*             > */}
+            {/*                 <FontAwesomeIcon icon={faXmark} /> */}
+            {/*             </button> */}
+            {/*         </div> */}
+            {/**/}
+            {/*         <div className={styles.modalContent}> */}
+            {/*             <div className="input"> */}
+            {/*                 <label htmlFor="category-name-add"> */}
+            {/*                     Category Name */}
+            {/*                 </label> */}
+            {/*                 <input */}
+            {/*                     id="category-name-add" */}
+            {/*                     type="text" */}
+            {/*                     value={categoryName} */}
+            {/*                     onChange={(e) => */}
+            {/*                         setCategoryName(e.target.value) */}
+            {/*                     } */}
+            {/*                     placeholder="Category Name..." */}
+            {/*                     disabled={manage} */}
+            {/*                     onKeyDown={(e) => { */}
+            {/*                         if (e.code === "Enter") { */}
+            {/*                             handleUpdate(); */}
+            {/*                         } */}
+            {/*                     }} */}
+            {/*                 /> */}
+            {/*             </div> */}
+            {/**/}
+            {/*             {error && <p className="error">{error}</p>} */}
+            {/*         </div> */}
+            {/**/}
+            {/*         <div className="action"> */}
+            {/*             <button */}
+            {/*                 data-type="link" */}
+            {/*                 disabled={manage} */}
+            {/*                 onClick={handleUpdateModalClose} */}
+            {/*             > */}
+            {/*                 Cancel */}
+            {/*             </button> */}
+            {/**/}
+            {/*             <button */}
+            {/*                 data-type="button" */}
+            {/*                 data-variant="secondary" */}
+            {/*                 disabled={ */}
+            {/*                     manage || */}
+            {/*                     categoryName.length === 0 || */}
+            {/*                     categoryName === currentCategoryName.current */}
+            {/*                 } */}
+            {/*                 data-load={manage} */}
+            {/*                 onClick={handleUpdate} */}
+            {/*             > */}
+            {/*                 {manage ? ( */}
+            {/*                     <Loader variant="small" /> */}
+            {/*                 ) : ( */}
+            {/*                     "Update Category" */}
+            {/*                 )} */}
+            {/*             </button> */}
+            {/*         </div> */}
+            {/*     </div> */}
+            {/* </dialog> */}
+            {/**/}
             <div className={styles.category}>
                 {loading ? (
                     <div data-load="true">
-                        <Loader variant="small" />
+                        <Loader />
                     </div>
                 ) : (
                     <div

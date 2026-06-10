@@ -117,6 +117,7 @@ export const Nav = () => {
 
                         <SubNavigation>
                             <NavigationLink
+                                isActive={pathName.startsWith("/admin/project")}
                                 href="/admin/project"
                                 label="Projects"
                                 icon={FolderPen}

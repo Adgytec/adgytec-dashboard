@@ -1,30 +1,36 @@
 "use client";
 
-import { faCopy } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, {
+import {
     useCallback,
     useContext,
     useEffect,
     useMemo,
     useState,
+    use,
 } from "react";
 import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import LinkHeader, { type LinkItem } from "@/components/LinkHeader/LinkHeader";
 import Loader from "@/components/Loader/Loader";
 import { copyToClipboard } from "@/helpers/helpers";
 import Category from "./components/Category/Category";
 import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
-import Services from "./components/Services/Services";
-import Users from "./components/Users/Users";
-import styles from "./project.module.scss";
+import ServicesComp from "./components/Services/Services";
+import UsersComp from "./components/Users/Users";
+import styles from "./project.module.css";
+import { Heading } from "react-aria-components";
+import {
+    Input,
+    InputButton,
+    typography,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
+import { Copy } from "lucide-react";
+import clsx from "clsx";
 
 interface ProjectDetailsProps {
-    params: { projectId: string };
+    params: Promise<{ projectId: string }>;
 }
 
 export interface Users {
@@ -48,18 +54,19 @@ export interface ProjectDetails {
     cover: string;
 }
 
-const ProjectDetails = ({ params }: ProjectDetailsProps) => {
+const ProjectDetails = (props: ProjectDetailsProps) => {
+    const params = use(props.params);
     const userWithRole = useContext(UserContext);
     const user = useMemo(
         () => (userWithRole ? userWithRole.user : null),
         [userWithRole]
     );
 
+    const snackbarQueue = useSnackbarQueue();
     const router = useRouter();
 
     const [details, setDetails] = useState<ProjectDetails | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isText, setIsText] = useState(false);
 
     const searchParams = useSearchParams();
     const view = searchParams.get("view");
@@ -116,17 +123,17 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
     if (loading) {
         return (
-            <Container className={styles.empty}>
+            <div className={clsx(styles["empty"])}>
                 <Loader />
-            </Container>
+            </div>
         );
     }
 
     if (!details) {
         return (
-            <Container className={styles.empty}>
+            <div className={clsx(styles["empty"])}>
                 <h3>Project doesn&apos;t exist</h3>
-            </Container>
+            </div>
         );
     }
 
@@ -142,125 +149,78 @@ const ProjectDetails = ({ params }: ProjectDetailsProps) => {
 
     const createdAt = new Date(details.createdAt);
 
-    const handleMouseOver = () => {
-        setIsText(true);
-    };
-
-    const handleMouseOut = () => {
-        setIsText(false);
-    };
-
-    const handleClick = () => {
-        if (!isText) return;
-
-        copyToClipboard(details.publicToken);
-        toast.success("Client token copied to clipboard");
-    };
-
     const handleInfo = () => {
         switch (view) {
             case "users":
-                return <Users users={details.users} />;
+                return <UsersComp users={details.users} />;
             case "services":
-                return <Services details={details} setDetails={setDetails} />;
+                return (
+                    <ServicesComp details={details} setDetails={setDetails} />
+                );
             default:
                 return <h3>Please select an option to view the details.</h3>;
         }
     };
 
     return (
-        <div className={styles.container}>
-            <Container className={styles.project}>
-                <div className={styles.back}>
-                    <Link data-type="link" href="/admin/project">
-                        Back
-                    </Link>
+        <div className={clsx(styles["container"])}>
+            <div className={clsx(styles["details"])}>
+                <Heading className={typography.headlineSmall}>Details</Heading>
+
+                <div className={clsx(styles["image"])}>
+                    <img
+                        src={details.cover}
+                        alt={details.projectName}
+                        width={200}
+                        height={100}
+                    />
                 </div>
 
-                <div className={styles.details}>
-                    <h2>Details</h2>
+                <Input
+                    type="text"
+                    defaultValue={details.projectName}
+                    isReadOnly
+                    label="Project Name"
+                />
 
-                    <div className={styles.image}>
-                        <label>Project Logo</label>
+                <div className={styles.item_group}>
+                    <Input
+                        label="Created At"
+                        type="text"
+                        defaultValue={createdAt.toDateString()}
+                        isReadOnly
+                    />
 
-                        <img
-                            src={details.cover}
-                            alt={details.projectName}
-                            width={200}
-                            height={100}
-                        />
-                    </div>
-
-                    <div className={styles.item}>
-                        <label>Project Name</label>
-
-                        <input
-                            type="text"
-                            value={details.projectName}
-                            disabled
-                        />
-                    </div>
-
-                    <div className={styles.item_group}>
-                        <div className={styles.item}>
-                            <label>Created At</label>
-
-                            <input
-                                type="text"
-                                value={createdAt.toDateString()}
-                                disabled
+                    <Input
+                        label="Public Secret Token"
+                        defaultValue={details.publicToken}
+                        isReadOnly
+                        trailing={
+                            <InputButton
+                                icon={Copy}
+                                onPress={() => {
+                                    copyToClipboard(details.publicToken);
+                                    snackbarQueue.add(
+                                        { supportingText: "Token copied." },
+                                        { timeout: 5000 }
+                                    );
+                                }}
                             />
-                        </div>
-
-                        <div className={styles.item}>
-                            <label>Public Secret Token</label>
-
-                            <input
-                                title="Click to copy"
-                                type={isText ? "text" : "password"}
-                                value={details.publicToken}
-                                disabled
-                                onMouseOver={handleMouseOver}
-                                onMouseOut={handleMouseOut}
-                            />
-
-                            {/* <input
-								title="Click to copy"
-								type="text"
-								value={details.publicToken}
-								disabled
-								onMouseOver={handleMouseOver}
-								onMouseOut={handleMouseOut}
-								data-hidden={!isText}
-							/> */}
-
-                            {isText && (
-                                <button
-                                    data-type="link"
-                                    data-variant="primary"
-                                    onClick={handleClick}
-                                    className={styles.copy}
-                                >
-                                    <FontAwesomeIcon icon={faCopy} />
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                        }
+                    />
                 </div>
+            </div>
 
-                <div className={styles.category}>
-                    <h2>Category</h2>
+            <div className={styles.category}>
+                <Heading className={typography.headlineSmall}>Category</Heading>
 
-                    <Category />
-                </div>
-            </Container>
+                <Category />
+            </div>
 
             <div className={styles.metadata}>
                 <LinkHeader links={linkProps} />
 
-                <Container>
-                    <div className={styles.info}>{handleInfo()}</div>
-                </Container>
+                <div className={styles.info}>{handleInfo()}</div>
             </div>
         </div>
     );
