@@ -17,7 +17,7 @@ export const Project: React.FC<{ project: ProjectType }> = ({ project }) => {
         <GridListItem
             className={clsx(styles["project"])}
             onAction={() => {
-                router.push(`project/${project.projectId}`);
+                router.push(`projects/${project.projectId}`);
             }}
             onPress={handlePress}
         >

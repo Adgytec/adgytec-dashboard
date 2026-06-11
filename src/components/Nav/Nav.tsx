@@ -111,17 +111,17 @@ export const Nav = () => {
                         label="Projects"
                     >
                         <NavigationButton
-                            prefix="/admin/project"
+                            prefix="/admin/projects"
                             icon={FolderPen}
                         />
 
                         <SubNavigation>
                             <NavigationLink
                                 isActive={
-                                    pathName.startsWith("/admin/project") &&
-                                    pathName !== "/admin/project/create"
+                                    pathName.startsWith("/admin/projects") &&
+                                    pathName !== "/admin/projects/create"
                                 }
-                                href="/admin/project"
+                                href="/admin/projects"
                                 label="Projects"
                                 icon={FolderPen}
                             />
