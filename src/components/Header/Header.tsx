@@ -35,6 +35,7 @@ export const Header = () => {
         await signoutUser();
     };
 
+    const [isUserProject, setIsUserProject] = useState(false);
     const isNavigationDocked = useNavigationDocked();
     const smallViewport = useMediaQuery("(max-width: 22rem)");
     const user = useContext(UserContext);
@@ -42,9 +43,12 @@ export const Header = () => {
     const pathName = usePathname();
     const [navModalOpen, setNavModalOpen] = useState(false);
 
-    // biome-ignore lint: close navigation when pathname changes
     useEffect(() => {
         setNavModalOpen(false);
+
+        if (pathName.startsWith("/projects/")) {
+            setIsUserProject(true);
+        } else setIsUserProject(false);
     }, [pathName]);
 
     const trailingActions: ReactElement[] = [
@@ -118,6 +122,7 @@ export const Header = () => {
     return (
         <AppBar
             data-docked-navigation={isNavigationDocked || undefined}
+            data-user-project={isUserProject || undefined}
             className={clsx(styles["header"])}
             leadingAction={
                 isNavigationDocked ? undefined : (

@@ -1,0 +1,21 @@
+.project {
+    display: grid;
+    gap: var(--md-sys-layout-spacer);
+}
+
+.services {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: var(--md-sys-layout-space-8);
+    flex-wrap: wrap;
+}
+
+.services-group {
+    position: sticky;
+    top: 0;
+
+    padding-block: var(--md-sys-layout-space-4);
+    background-color: var(--md-sys-color-surface);
+}

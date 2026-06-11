@@ -1,18 +1,19 @@
 "use client";
 
-import Link from "next/link";
+import { Tag, typography } from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import type React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { TagGroup, TagList, Text } from "react-aria-components";
 import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
 import {
     type Category,
     ProjectMetadataContext,
 } from "./context/projectMetadataContext";
-import styles from "./projectId.module.scss";
+import styles from "./projectId.module.css";
 
 interface ProjectObj {
     projectName: string;
@@ -83,8 +84,7 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
                 style={{
                     display: "grid",
                     placeItems: "center",
-                    position: "absolute",
-                    inset: "0",
+                    minBlockSize: "50svb",
                 }}
             >
                 <Loader />
@@ -92,57 +92,38 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
         );
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const service = e.target.value;
+    const serviceRedirect = (service: string) => {
         setActivePath(service);
         router.push(`/projects/${params.projectId}/${service}`);
     };
 
     return (
-        <div className={styles.project}>
-            <Container className={styles.nav}>
-                <div className={styles.bread_crumb}>
-                    <Link
-                        href="/projects"
-                        className={styles.item}
-                        data-type="link"
+        <div className={clsx(styles["project"])}>
+            {project && project.services.length > 0 && (
+                <TagGroup
+                    selectedKeys={[activePath]}
+                    selectionMode="single"
+                    selectionBehavior="replace"
+                    onSelectionChange={(keys) => {
+                        if (keys === "all") return;
+
+                        const service = keys.values().next().value;
+                        if (typeof service === "string") {
+                            serviceRedirect(service);
+                        }
+                    }}
+                    className={clsx(styles["services-group"])}
+                >
+                    <TagList
+                        items={project.services}
+                        className={clsx(styles["services"])}
                     >
-                        projects
-                    </Link>
-                    /
-                    {project ? (
-                        <Link
-                            href={`/projects/${params.projectId}`}
-                            className={styles.item}
-                            data-type="link"
-                            data-variant="primary"
-                        >
-                            {project?.projectName.toLowerCase()}
-                        </Link>
-                    ) : (
-                        <p data-variant="primary" data-type="link">
-                            Project not found
-                        </p>
-                    )}
-                </div>
-                {project && project.services.length > 0 && (
-                    <div className={styles.select}>
-                        <select onChange={handleChange} value={activePath}>
-                            <option value="">Select a service</option>
-                            {project.services.map((service) => {
-                                return (
-                                    <option
-                                        key={service.id}
-                                        value={service.name}
-                                    >
-                                        {service.name}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                )}
-            </Container>
+                        {(service) => (
+                            <Tag id={service.name} label={service.name} />
+                        )}
+                    </TagList>
+                </TagGroup>
+            )}
 
             {project ? (
                 <ProjectMetadataContext.Provider
@@ -150,19 +131,13 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
                         categories: project.categories,
                     }}
                 >
-                    {/* 
-                    check parent styles
-                    need this div otherwise adding grid on children 
-                    will result in height being 100% and on less items 
-                    elements will be seperated
-                     */}
-                    <div>{children}</div>
+                    {children}
                 </ProjectMetadataContext.Provider>
             ) : (
-                <Container data-empty={true}>
-                    <h3>
-                        Oops, something went wrong! Give the page a refresh. If
-                        that doesn&apos;t work, let us know at{" "}
+                <div>
+                    <Text className={clsx(typography.bodyLargeEmphasized)}>
+                        Something went wrong. Please refresh the page and try
+                        again. If the problem persists, contact us at{" "}
                         <a
                             href="mailto:info@adgytec.in"
                             data-type="link"
@@ -170,8 +145,9 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
                         >
                             info@adgytec.in
                         </a>
-                    </h3>
-                </Container>
+                        .
+                    </Text>
+                </div>
             )}
         </div>
     );
