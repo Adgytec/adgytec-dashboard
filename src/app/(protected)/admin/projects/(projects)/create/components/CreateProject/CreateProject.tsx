@@ -166,7 +166,6 @@ export const CreateProject = () => {
                     )}
 
                     {logo && (
-                        // biome-ignore lint: using native html image
                         <img
                             src={logo.url}
                             alt="Project logo"

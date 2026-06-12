@@ -4,6 +4,7 @@ import {
     ModalOverlay,
     SideSheet,
     SideSheetModal,
+    TextArea,
     typography,
     useSnackbarQueue,
     validateAndGetFormValues,
@@ -129,14 +130,14 @@ export const EditAlbum: React.FC<{
                             validationErrors={fieldErr}
                             id={formID}
                         >
-                            <Input
+                            <TextArea
                                 name="name"
-                                type="text"
                                 defaultValue={currentName}
                                 placeholder="Name"
                                 label="Name"
                                 isRequired
                                 isReadOnly={isUpdating}
+                                rows={5}
                             />
 
                             {formErr && (

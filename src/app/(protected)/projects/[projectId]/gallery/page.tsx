@@ -19,7 +19,6 @@ import {
     useAsyncList,
     Virtualizer,
 } from "react-aria-components";
-import { size } from "zod";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { getNow } from "@/helpers/helpers";

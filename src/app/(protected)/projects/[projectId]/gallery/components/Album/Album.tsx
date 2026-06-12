@@ -80,8 +80,8 @@ export const Album: React.FC<{
             <UpdateAlbumCover
                 id={album.id}
                 currentCover={album.cover}
-                isOpen={editOpen}
-                onOpenChange={setEditOpen}
+                isOpen={updateCoverOpen}
+                onOpenChange={setUpdateCoverOpen}
             />
 
             <EditAlbum
