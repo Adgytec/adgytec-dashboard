@@ -1,0 +1,17 @@
+.delete-confirm {
+    --md-button-background: var(--md-sys-color-error);
+    --md-button-color: var(--md-sys-color-on-error);
+}
+
+.dialog {
+    display: grid;
+    gap: var(--md-sys-layout-space-16);
+
+    max-inline-size: calc(400 * var(--dp, 1px));
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--md-sys-layout-space-8);
+}

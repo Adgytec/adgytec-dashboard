@@ -1,26 +1,33 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import type React from "react";
 import {
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import { toast } from "react-toastify";
+    LinkIconButton,
+    SearchField,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
+import { BadgePlus } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useContext, useEffect, useMemo, useState } from "react";
+import {
+    Collection,
+    GridLayout,
+    GridList,
+    GridListLoadMoreItem,
+    Size,
+    useAsyncList,
+    Virtualizer,
+} from "react-aria-components";
+import { size } from "zod";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
 import { getNow } from "@/helpers/helpers";
-import type { PageInfo } from "@/helpers/type";
-import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
-import AlbumItem from "./components/AlbumItem/AlbumItem";
-import styles from "./gallery.module.scss";
+import { Album } from "./components/Album";
+import { AlbumContext } from "./context";
+import styles from "./gallery.module.css";
 
-export interface Album {
+export interface AlbumType {
     id: string;
     name: string;
     cover: string;
@@ -34,145 +41,188 @@ const GalleryPage = () => {
     }, [userWithRole]);
 
     const params = useParams<{ projectId: string }>();
-    const pageInfoRef = useRef<PageInfo>({
-        nextPage: false,
-        cursor: "",
+    const [search, setSearch] = useState<string>("");
+
+    const snackbarQueue = useSnackbarQueue();
+
+    const albums = useAsyncList<AlbumType, string | null>({
+        async load({ cursor, signal, items }) {
+            if (!user) {
+                return {
+                    items: [],
+                    cursor: null,
+                };
+            }
+
+            const token = await user?.getIdToken();
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${
+                    cursor ?? getNow()
+                }`,
+                {
+                    signal,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const json = await res.json();
+
+            if (json.error) {
+                throw new Error(json.message);
+            }
+
+            const existingIds = new Set(items.map((a) => a.id));
+
+            const nextItems = json.data.albums.filter(
+                (album: AlbumType) => !existingIds.has(album.id)
+            );
+
+            return {
+                items: nextItems,
+                cursor: json.data.pageInfo.nextPage
+                    ? json.data.pageInfo.cursor
+                    : null,
+            };
+        },
     });
 
-    const [search, setSearch] = useState<string>("");
-    const [allAlbums, setAllAlbums] = useState<Album[]>([]);
-    const [loading, setLoading] = useState(true);
+    const filteredAlbums = useMemo(() => {
+        if (!search) return albums.items;
 
-    const getAllAlbums = useCallback(
-        async (cursor: string) => {
-            setLoading(true);
+        const value = search.toLowerCase();
 
-            const url = `${process.env.NEXT_PUBLIC_API}/services/gallery/${params.projectId}/albums?cursor=${cursor}`;
-            const token = await user?.getIdToken();
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-
-            fetch(url, {
-                method: "GET",
-                headers,
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (res.error) throw new Error(res.message);
-                    pageInfoRef.current = res.data.pageInfo;
-
-                    setAllAlbums((prev) => {
-                        const newAlbums = res.data.albums.filter(
-                            (album: Album) =>
-                                !prev.some(
-                                    (existingAlbum) =>
-                                        existingAlbum.id === album.id
-                                )
-                        );
-                        return [...prev, ...newAlbums];
-                    });
-                })
-                .catch((err) => {
-                    toast.error(err.message);
-                })
-                .finally(() => setLoading(false));
-        },
-        [user, params.projectId]
-    );
-
-    const callback: IntersectionObserverCallback = useCallback(
-        (entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting && search.length == 0) {
-                    if (pageInfoRef.current.nextPage)
-                        getAllAlbums(pageInfoRef.current.cursor);
-                }
-            });
-        },
-        [search, allAlbums, getAllAlbums, pageInfoRef.current]
-    );
-
-    const elementRef = useIntersection(
-        callback,
-        document.getElementById("content-root")
-    );
+        return albums.items.filter(
+            (album) =>
+                album.id.toLowerCase().includes(value) ||
+                album.name.toLowerCase().includes(value)
+        );
+    }, [albums.items, search]);
 
     useEffect(() => {
-        getAllAlbums(getNow());
-    }, [getAllAlbums]);
+        if (!albums.error) return;
 
-    const elements: React.JSX.Element[] = [];
-    allAlbums.forEach((album) => {
-        const { id, name } = album;
-        const element = (
-            <AlbumItem key={id} album={album} setAllAlbums={setAllAlbums} />
-        );
+        snackbarQueue.add({
+            supportingText: albums.error.message,
+        });
+    }, [albums.error, snackbarQueue]);
 
-        if (search.length === 0) {
-            elements.push(element);
-            return;
-        }
+    /* biome-ignore lint: reload album on project change */
+    useEffect(() => {
+        albums.reload();
+    }, [params.projectId]);
 
-        if (
-            id.toLowerCase().includes(search.toLowerCase()) ||
-            name.toLowerCase().includes(search.toLowerCase())
-        )
-            elements.push(element);
-    });
+    const removeAlbum = (id: string) => {
+        albums.remove(id);
+    };
+
+    const updateAlbumName = (id: string, name: string) => {
+        albums.update(id, (prev) => {
+            return { ...prev, name };
+        });
+    };
+
+    const updateAlbumCover = (id: string, cover: string) => {
+        albums.update(id, (prev) => {
+            return { ...prev, cover };
+        });
+    };
 
     return (
         <div className={styles.gallery}>
-            <div className={styles.search} title="search albums by id or name">
-                <h2>Album Overview</h2>
-
-                <input
-                    type="text"
+            <div className={styles["header"]}>
+                <SearchField
+                    className={clsx(styles["search"])}
+                    aria-label="Album Search"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Type to search..."
+                    onChange={setSearch}
+                    placeholder="Search album"
+                    isReadOnly={albums.loadingState === "loading"}
+                />
+
+                <LinkIconButton
+                    href={`/projects/${params.projectId}/gallery/create`}
+                    size="medium"
+                    icon={BadgePlus}
+                    color="tonal"
+                    width="wide"
+                    tooltip="Create Album"
+                    render={(props) => {
+                        if ("href" in props) {
+                            return <Link {...props} />;
+                        }
+                        return <span {...props} />;
+                    }}
                 />
             </div>
 
-            <div
-                className={styles.container}
-                data-empty={allAlbums.length === 0 || elements.length === 0}
-                data-load={loading && allAlbums.length === 0}
+            <AlbumContext
+                value={{
+                    removeAlbum,
+                    updateAlbumCover,
+                    updateAlbumName,
+                    projectID: params.projectId,
+                }}
             >
-                {loading && allAlbums.length === 0 ? (
-                    <Loader />
-                ) : allAlbums.length === 0 ? (
-                    <h3>No albums exist for this project</h3>
-                ) : elements.length === 0 ? (
-                    <p>
-                        There is no album with name{" "}
-                        <span className="italic">
-                            <q>{search}</q>
-                        </span>
-                    </p>
-                ) : (
-                    <Container type="full" className={styles.table}>
-                        <div className={styles.heading}>
-                            <h4>Details</h4>
+                <Virtualizer
+                    layout={GridLayout}
+                    layoutOptions={{
+                        minItemSize: new Size(250, 260),
+                        maxItemSize: new Size(Infinity, 260),
+                        preserveAspectRatio: true,
+                        maxColumns: 4,
+                    }}
+                >
+                    <GridList
+                        layout="grid"
+                        aria-label="Albums"
+                        renderEmptyState={() => {
+                            if (albums.loadingState === "loading") {
+                                return (
+                                    <div
+                                        style={{
+                                            display: "grid",
+                                            placeItems: "center",
+                                            blockSize: "50svb",
+                                        }}
+                                    >
+                                        <Loader />
+                                    </div>
+                                );
+                            }
 
-                            <h4>Edit</h4>
+                            if (search) {
+                                return (
+                                    <p>
+                                        No album found matching{" "}
+                                        <span className="italic">
+                                            <q>{search}</q>
+                                        </span>
+                                    </p>
+                                );
+                            }
 
-                            <h4>Delete</h4>
-                        </div>
+                            return <h3>No albums exist for this project</h3>;
+                        }}
+                    >
+                        <Collection items={filteredAlbums}>
+                            {(album) => <Album album={album} />}
+                        </Collection>
 
-                        {elements}
-
-                        <div
-                            style={{
-                                visibility: "hidden",
-                            }}
-                            ref={elementRef}
-                        ></div>
-                    </Container>
-                )}
-            </div>
-
-            {loading && allAlbums.length > 0 && <Loader variant="small" />}
+                        {!search && (
+                            <GridListLoadMoreItem
+                                onLoadMore={albums.loadMore}
+                                isLoading={
+                                    albums.loadingState === "loadingMore"
+                                }
+                            >
+                                <Loader size={16} />
+                            </GridListLoadMoreItem>
+                        )}
+                    </GridList>
+                </Virtualizer>
+            </AlbumContext>
         </div>
     );
 };

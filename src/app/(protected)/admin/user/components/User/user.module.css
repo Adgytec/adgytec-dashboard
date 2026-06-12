@@ -18,6 +18,8 @@
         outline-style: solid;
         outline-offset: var(--focus-indicator-offset);
         outline-color: var(--focus-indicator-color);
+
+        z-index: 1;
     }
 }
 

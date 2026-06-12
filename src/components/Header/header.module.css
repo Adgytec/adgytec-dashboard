@@ -7,10 +7,6 @@
     &[data-docked-navigation] {
         border-radius: var(--md-sys-shape-corner-radius-medium);
     }
-
-    &[data-user-project] {
-        position: static;
-    }
 }
 
 .link {

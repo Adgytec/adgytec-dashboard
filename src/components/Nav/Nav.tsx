@@ -127,7 +127,7 @@ export const Nav = () => {
                             />
 
                             <NavigationLink
-                                href="/admin/project/create"
+                                href="/admin/projects/create"
                                 label="Create Project"
                                 icon={FolderPlus}
                             />

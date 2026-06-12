@@ -112,6 +112,9 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
                             serviceRedirect(service);
                         }
                     }}
+                    onAction={(key) => {
+                        if (typeof key === "string") serviceRedirect(key);
+                    }}
                     className={clsx(styles["services-group"])}
                 >
                     <TagList

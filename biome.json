@@ -21,6 +21,9 @@
             "recommended": true,
             "complexity": {
                 "useLiteralKeys": "off"
+            },
+            "performance": {
+                "noImgElement": "off"
             }
         },
         "includes": ["**", "!dist"]

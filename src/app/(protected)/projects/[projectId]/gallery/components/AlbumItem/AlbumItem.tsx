@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import type React from "react";
 import { useContext, useMemo, useRef, useState } from "react";
+import type { Key } from "react-aria-components";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
@@ -15,15 +16,19 @@ import Loader from "@/components/Loader/Loader";
 import { trimStringWithEllipsis } from "@/helpers/helpers";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { validateString } from "@/helpers/validation";
-import type { Album } from "../../page";
+import type { AlbumType } from "../../page";
 import styles from "./albumItem.module.scss";
 
 interface AlbumItemProps {
-    album: Album;
-    setAllAlbums: React.Dispatch<React.SetStateAction<Album[]>>;
+    album: AlbumType;
+    removeItem: (id: string) => void;
+    updateAlbum: (
+        key: Key,
+        newValue: AlbumType | ((prev: AlbumType) => AlbumType)
+    ) => void;
 }
 
-const AlbumItem = ({ album, setAllAlbums }: AlbumItemProps) => {
+const AlbumItem = ({ album, removeItem, updateAlbum }: AlbumItemProps) => {
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
@@ -82,7 +87,10 @@ const AlbumItem = ({ album, setAllAlbums }: AlbumItemProps) => {
             .then((res) => {
                 if (res.error) throw new Error(res.message);
                 toast.success(res.message);
-                album.name = albumName;
+                updateAlbum(album.id, (prev) => ({
+                    ...prev,
+                    cover: albumName,
+                }));
                 setIsEdit(false);
             })
             .catch((err) => {
@@ -111,14 +119,7 @@ const AlbumItem = ({ album, setAllAlbums }: AlbumItemProps) => {
             .then((res) => {
                 if (res.error) throw new Error(res.message);
 
-                setAllAlbums((prev) => {
-                    const temp = prev;
-
-                    return temp.toSpliced(
-                        temp.findIndex((b) => b.id === album.id),
-                        1
-                    );
-                });
+                removeItem(album.id);
                 toast.success("successfully deleted blog item");
             })
             .catch((err) => {
@@ -154,8 +155,12 @@ const AlbumItem = ({ album, setAllAlbums }: AlbumItemProps) => {
 
                 updateCoverRef.current?.close();
                 toast.success("successfully updated album cover");
-                if (cover[0].url) album.cover = cover[0].url;
-
+                if (cover[0].url) {
+                    updateAlbum(album.id, (prev) => ({
+                        ...prev,
+                        cover: cover[0].url,
+                    }));
+                }
                 setCover([]);
             })
             .catch((err) => {
