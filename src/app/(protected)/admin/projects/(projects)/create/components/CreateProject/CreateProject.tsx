@@ -162,6 +162,7 @@ export const CreateProject = () => {
                             color="tonal"
                             className={clsx(styles["logo-remove"])}
                             onPress={() => setLogo(null)}
+                            isDisabled={isCreating}
                         />
                     )}
 

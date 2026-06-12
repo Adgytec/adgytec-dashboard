@@ -1,6 +1,5 @@
 import {
     Button,
-    Input,
     ModalOverlay,
     SideSheet,
     SideSheetModal,

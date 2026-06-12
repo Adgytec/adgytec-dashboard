@@ -4,10 +4,13 @@ import {
     MenuItem,
     MenuPopover,
     MenuTrigger,
+    Splash,
     typography,
+    useSplash,
 } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
 import { EllipsisVertical, FilePenLine, Image, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GridListItem, Text } from "react-aria-components";
 import type { AlbumType } from "../../page";
@@ -23,8 +26,19 @@ export const Album: React.FC<{
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [updateCoverOpen, setUpdateCoverOpen] = useState(false);
 
+    const { splashInfo, handlePress } = useSplash();
+    const router = useRouter();
+
     return (
-        <GridListItem className={clsx(styles["album"])}>
+        <GridListItem
+            className={clsx(styles["album"])}
+            onPress={handlePress}
+            onAction={() => {
+                router.push(`gallery/album/${album.id}?name=${album.name}`);
+            }}
+        >
+            {splashInfo && <Splash {...splashInfo} />}
+
             <div className={clsx(styles["cover"])}>
                 <img
                     src={album.cover}

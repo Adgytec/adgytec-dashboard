@@ -10,6 +10,9 @@
     gap: calc(2 * var(--dp, 1px));
     block-size: 100%;
 
+    position: relative;
+    overflow: clip;
+
     &[data-focus-visible-within] {
         --focus-indicator-thickness: calc(3 * var(--dp, 1px));
         --focus-indicator-offset: calc(2 * var(--dp, 1px));
