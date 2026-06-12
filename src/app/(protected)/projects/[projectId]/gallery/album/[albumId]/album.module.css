@@ -1,0 +1,88 @@
+.container {
+    display: grid;
+    gap: var(--md-sys-layout-spacer);
+
+    > * {
+        min-inline-size: 0;
+    }
+}
+
+.selection-count {
+    position: absolute;
+    background-color: var(--md-sys-color-surface-container-high);
+
+    inset-block-start: calc(-1 * var(--md-sys-layout-space-40));
+    inset-inline-start: 50%;
+    translate: -50%;
+
+    padding: var(--md-sys-layout-space-8);
+    padding-inline: var(--md-sys-layout-space-16);
+
+    border-radius: var(--md-sys-shape-corner-radius-full);
+    box-shadow: var(--md-sys-elevation-shadow-2);
+}
+
+.toolbar {
+    position: fixed;
+    z-index: 100;
+    inset-block-end: var(--md-sys-layout-window-size-medium-margin);
+    inset-inline-start: 50%;
+
+    translate: -50%;
+
+    opacity: 0;
+
+    transition: opacity var(--md-sys-motion-expressive-fast-effects)
+        var(--md-sys-motion-expressive-fast-effects-duration);
+
+    &[data-status="entered"] {
+        opacity: 1;
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+
+    justify-content: space-between;
+    gap: var(--md-sys-layou-space-12);
+}
+
+.image {
+    position: relative;
+    border-radius: var(--md-sys-shape-corner-radius-small);
+
+    img {
+        border-radius: var(--md-sys-shape-corner-radius-small);
+
+        inline-size: 100%;
+        block-size: auto;
+
+        object-fit: cover;
+    }
+
+    &[data-focus-visible-within] {
+        --focus-indicator-thickness: calc(3 * var(--dp, 1px));
+        --focus-indicator-offset: calc(2 * var(--dp, 1px));
+        --focus-indicator-color: var(--md-sys-color-secondary);
+
+        outline-width: var(--focus-indicator-thickness);
+        outline-style: solid;
+        outline-offset: var(--focus-indicator-offset);
+        outline-color: var(--focus-indicator-color);
+
+        z-index: 1;
+    }
+
+    &[data-selected] {
+        img {
+            outline: var(--md-sys-shape-border-width-extra-thick) solid
+                var(--md-sys-color-primary);
+        }
+    }
+}
+
+.selection {
+    position: absolute;
+    margin: var(--md-sys-layout-space-8);
+}

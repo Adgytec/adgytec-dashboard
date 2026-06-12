@@ -1,4 +1,12 @@
 .album {
+    --_state-color: var(--md-sys-color-tertiary-fixed-dim);
+    --_state-layer-opacity: 0;
+
+    --_state-layer-color: rgb(
+        from var(--_state-color) r g b /
+        var(--_state-layer-opacity)
+    );
+
     --_radius: var(--md-sys-shape-corner-radius-medium);
 
     border-radius: var(--_radius);
@@ -13,7 +21,7 @@
     position: relative;
     overflow: clip;
 
-    &[data-focus-visible-within] {
+    &[data-focus-visible] {
         --focus-indicator-thickness: calc(3 * var(--dp, 1px));
         --focus-indicator-offset: calc(2 * var(--dp, 1px));
         --focus-indicator-color: var(--md-sys-color-secondary);
@@ -24,6 +32,35 @@
         outline-color: var(--focus-indicator-color);
 
         z-index: 1;
+    }
+
+    &[data-focused] {
+        --_state-layer-opacity: var(--md-sys-state-focus);
+    }
+
+    &[data-hovered] {
+        --_state-layer-opacity: var(--md-sys-state-hover);
+    }
+
+    &[data-pressed] {
+        --_state-layer-opacity: var(--md-sys-state-pressed);
+    }
+}
+
+.album::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+    background-color: var(--_state-layer-color);
+
+    transition: background-color var(--md-sys-motion-expressive-fast-effects)
+        var(--md-sys-motion-expressive-fast-effects-duration);
+
+    @media (prefers-reduced-motion) {
+        transition: none;
     }
 }
 

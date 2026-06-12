@@ -3,6 +3,7 @@
 import {
     LinkIconButton,
     SearchField,
+    typography,
     useSnackbarQueue,
 } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
@@ -15,6 +16,7 @@ import {
     GridLayout,
     GridList,
     GridListLoadMoreItem,
+    Heading,
     Size,
     useAsyncList,
     Virtualizer,
@@ -193,7 +195,7 @@ const GalleryPage = () => {
 
                             if (search) {
                                 return (
-                                    <p>
+                                    <p className={clsx(typography.titleMedium)}>
                                         No album found matching{" "}
                                         <span className="italic">
                                             <q>{search}</q>
@@ -202,7 +204,13 @@ const GalleryPage = () => {
                                 );
                             }
 
-                            return <h3>No albums exist for this project</h3>;
+                            return (
+                                <Heading
+                                    className={clsx(typography.titleMedium)}
+                                >
+                                    No albums exist for this project.
+                                </Heading>
+                            );
                         }}
                     >
                         <Collection items={filteredAlbums}>
