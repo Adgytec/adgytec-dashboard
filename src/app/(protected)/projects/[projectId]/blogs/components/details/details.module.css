@@ -1,0 +1,55 @@
+.details {
+    display: grid;
+    gap: 1rem;
+}
+
+.form {
+    --input-width: 50rem;
+
+    display: grid;
+    gap: 1.5rem;
+}
+
+.input {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.logo-preview {
+    position: relative;
+
+    min-block-size: calc(150 * var(--dp, 1px));
+    padding: var(--md-sys-layout-space-8);
+    border-radius: var(--md-sys-shape-corner-radius-extra-small);
+
+    background-color: var(--md-sys-color-surface-container-high);
+}
+
+.logo {
+    object-fit: cover;
+    inline-size: 100%;
+    block-size: auto;
+    /* max-block-size: calc(320 * var(--dp, 1px)); */
+    aspect-ratio: 16 / 9;
+}
+
+.logo-selection {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
+
+    translate: -50% -50%;
+}
+
+.logo-remove {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+
+    justify-content: space-between;
+}

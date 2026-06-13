@@ -1,16 +1,15 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { useSnackbarQueue } from "@adgytec/adgytec-web-ui-components";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Column, Table, TableBody, TableHeader } from "react-aria-components";
 import { UserContext } from "../AuthContext/authContext";
 import Loader from "../Loader/Loader";
 import PriseReportItemComp from "./PriseReportItem";
-import styles from "./prise-reports.module.scss";
-import {
-    getRegionDisplayValue,
-    type PriseReportItem,
-    type PriseReportsProps,
-} from "./types";
+import styles from "./prise-reports.module.css";
+import type { PriseReportItem, PriseReportsProps } from "./types";
 
 const PriseReports = ({ region, projectId }: PriseReportsProps) => {
+    const snackbarQueue = useSnackbarQueue();
+
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
@@ -20,7 +19,7 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
 
     const [reportItems, setReportItems] = useState<PriseReportItem[]>([]);
 
-    const getPriseReportByRegion = async () => {
+    const getPriseReportByRegion = useCallback(async () => {
         const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${projectId}/${region}`;
         const token = await user?.getIdToken();
         const headers = {
@@ -42,48 +41,60 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
                 setReportItems(flattendResponse);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setLoading(false));
-    };
+    }, [projectId, region, user, snackbarQueue.add]);
 
     useEffect(() => {
         getPriseReportByRegion();
-    }, []);
+    }, [getPriseReportByRegion]);
 
     return (
         <div className={styles["container"]} data-load={loading}>
             {loading ? (
                 <Loader />
             ) : (
-                <div className={styles.table}>
-                    <div className={styles.table_heading}>
-                        <h4>N°</h4>
-                        {/* <h4>Region</h4> */}
-                        {/* <h4>Ouvrage</h4> */}
-                        <h4>Territoire</h4>
-                        <h4>{"Site d'intervention"}</h4>
-                        {/* <h4>Coordonnées</h4> */}
-                        <h4>Infrastructures</h4>
-                        {/* <h4>{"Lieu d'implantation"}</h4> */}
-                        {/* <h4>Secteur</h4> */}
-                        <h4>Latitude</h4>
-                        <h4>Longitude</h4>
-                        <h4>Edit</h4>
-                        <h4>Delete</h4>
-                    </div>
-
-                    {reportItems.map((reportItem, index) => {
-                        return (
-                            <PriseReportItemComp
-                                key={reportItem.id}
-                                projectId={projectId}
-                                ind={index + 1}
-                                setReports={setReportItems}
-                                item={reportItem}
+                <div className={styles["table-container"]}>
+                    <Table aria-label="Prise Reports" className={styles.table}>
+                        <TableHeader className={styles.thead}>
+                            <Column className={styles.th} isRowHeader>
+                                N°
+                            </Column>
+                            {/* <Column className={styles.th}>Region</Column> */}
+                            {/* <Column className={styles.th}>Ouvrage</Column> */}
+                            <Column className={styles.th}>Territoire</Column>
+                            <Column className={styles.th}>
+                                {"Site d'intervention"}
+                            </Column>
+                            {/* <Column className={styles.th}>Coordonnées</Column> */}
+                            <Column className={styles.th}>
+                                Infrastructures
+                            </Column>
+                            {/* <Column className={styles.th}>Lieu d'implantation</Column> */}
+                            {/* <Column className={styles.th}>Secteur</Column> */}
+                            <Column className={styles.th}>Latitude</Column>
+                            <Column className={styles.th}>Longitude</Column>
+                            <Column
+                                className={styles.th}
+                                aria-label="Actions"
                             />
-                        );
-                    })}
+                        </TableHeader>
+
+                        <TableBody className={styles.tbody}>
+                            {reportItems.map((reportItem, index) => {
+                                return (
+                                    <PriseReportItemComp
+                                        key={reportItem.id}
+                                        projectId={projectId}
+                                        ind={index + 1}
+                                        setReports={setReportItems}
+                                        item={reportItem}
+                                    />
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
                 </div>
             )}
         </div>

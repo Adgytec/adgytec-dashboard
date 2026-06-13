@@ -1,10 +1,10 @@
 "use client";
 
-import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@adgytec/adgytec-web-ui-components";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, {
+import {
     useCallback,
     useContext,
     useEffect,
@@ -16,7 +16,6 @@ import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 // import { toast } from "react-toastify";
-import BlogItem from "../components/blogItem/BlogItem";
 import EditEditor from "../components/editor/EditEditor";
 import styles from "./blog.module.scss";
 
@@ -97,9 +96,9 @@ const Blog = () => {
         createdAt = new Date(blogItem.createdAt);
     }
 
-    let updatedAt = new Date();
+    let _updatedAt = new Date();
     if (blogItem?.updatedAt) {
-        updatedAt = new Date(blogItem.updatedAt);
+        _updatedAt = new Date(blogItem.updatedAt);
     }
 
     return (
@@ -124,10 +123,9 @@ const Blog = () => {
             </div>
 
             <div className={styles.action}>
-                <button
-                    onClick={() => setIsEdit((prev) => !prev)}
-                    data-type="link"
-                    data-variant={isEdit ? "error" : "secondary"}
+                <Button
+                    onPress={() => setIsEdit((prev) => !prev)}
+                    color={isEdit ? "outlined" : "tonal"}
                 >
                     {isEdit ? (
                         "Cancel"
@@ -136,7 +134,7 @@ const Blog = () => {
                             Edit <FontAwesomeIcon icon={faPenToSquare} />
                         </>
                     )}
-                </button>
+                </Button>
             </div>
 
             {!isEdit ? (

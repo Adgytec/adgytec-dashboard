@@ -1,188 +1,159 @@
 "use client";
 
+import { useSnackbarQueue } from "@adgytec/adgytec-web-ui-components";
 import { useParams } from "next/navigation";
-import React, {
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import { toast } from "react-toastify";
+import { useContext, useEffect, useMemo } from "react";
+import {
+    Column,
+    Table,
+    TableBody,
+    TableHeader,
+    TableLoadMoreItem,
+    useAsyncList,
+} from "react-aria-components";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
-import { getNow, KEYLIMIT, trimStringWithEllipsis } from "@/helpers/helpers";
-import type { PageInfo } from "@/helpers/type";
-import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
+import { getNow } from "@/helpers/helpers";
 import ContactUsItem from "./components/contactUsItem/contactUsItem";
-import styles from "./contact-us.module.scss";
+import styles from "./contact-us.module.css";
 
 export interface IContactUsItem {
     id: string;
     createdAt: string;
-    data: string;
+    data: Record<string, unknown>;
 }
 
-const LIMIT = 20;
-
 const ContactUsPage = () => {
+    const snackbarQueue = useSnackbarQueue();
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
     }, [userWithRole]);
 
     const params = useParams<{ projectId: string }>();
-    const pageInfoRef = useRef<PageInfo>({
-        nextPage: false,
-        cursor: "",
+
+    const list = useAsyncList<IContactUsItem, string | null>({
+        async load({ cursor, signal, items }) {
+            if (!user) {
+                return {
+                    items: [],
+                    cursor: null,
+                };
+            }
+
+            const token = await user?.getIdToken();
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API}/services/contact-us/${
+                    params.projectId
+                }?cursor=${cursor ?? getNow()}`,
+                {
+                    signal,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const json = await res.json();
+
+            if (json.error) {
+                throw new Error(json.message);
+            }
+
+            const existingIds = new Set(items.map((i) => i.id));
+
+            const nextItems = json.data.responses.filter(
+                (item: IContactUsItem) => !existingIds.has(item.id)
+            );
+
+            return {
+                items: nextItems,
+                cursor: json.data.pageInfo.nextPage
+                    ? json.data.pageInfo.cursor
+                    : null,
+            };
+        },
+        getKey(item) {
+            return item.id;
+        },
     });
 
-    const [allItems, setAllItems] = useState<IContactUsItem[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const getAllItems = useCallback(
-        async (cursor: string) => {
-            setLoading(true);
-
-            const url = `${process.env.NEXT_PUBLIC_API}/services/contact-us/${params.projectId}?cursor=${cursor}`;
-            const token = await user?.getIdToken();
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-
-            fetch(url, {
-                method: "GET",
-                headers,
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (res.error) throw new Error(res.message);
-                    pageInfoRef.current = res.data.pageInfo;
-                    const len = res.data.responses.length;
-
-                    setAllItems((prev) => {
-                        const newItems = res.data.responses.filter(
-                            (item: IContactUsItem) =>
-                                !prev.some(
-                                    (existingItem) =>
-                                        existingItem.id === item.id
-                                )
-                        );
-                        return [...prev, ...newItems];
-                    });
-                    if (len > 0) {
-                        const keyCount =
-                            2 + Object.keys(res.data.responses[0].data).length;
-                        const tableParent =
-                            document.getElementById("form-table");
-                        if (tableParent) {
-                            tableParent.style.setProperty(
-                                "--table-items",
-                                keyCount.toString()
-                            );
-                        }
-                    }
-                })
-                .catch((err) => {
-                    toast.error(err.message);
-                })
-                .finally(() => setLoading(false));
-        },
-        [user, params.projectId]
-    );
-
-    const callback: IntersectionObserverCallback = useCallback(
-        (entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    if (pageInfoRef.current.nextPage)
-                        getAllItems(pageInfoRef.current.cursor);
-                }
-            });
-        },
-        [allItems, getAllItems, pageInfoRef.current]
-    );
-
-    const elementRef = useIntersection(
-        callback,
-        document.getElementById("content-root")
-    );
-
     useEffect(() => {
-        getAllItems(getNow());
-    }, [getAllItems]);
+        if (!list.error) return;
 
-    let keyLength = 2;
-    if (allItems.length > 0) {
-        keyLength += Object.keys(allItems[0].data).length;
-    }
+        snackbarQueue.add({
+            supportingText: list.error.message,
+        });
+    }, [list.error, snackbarQueue]);
+
+    /* biome-ignore lint: reload list on project change */
+    useEffect(() => {
+        list.reload();
+    }, [params.projectId]);
+
+    const items = list.items;
+    const loading = list.loadingState === "loading";
 
     return (
-        <Container className={styles.contactUs}>
+        <div className={styles.contactUs}>
             <h2>Contact Us Overview</h2>
 
-            <div
-                data-empty={allItems.length === 0}
-                data-load={loading && allItems.length === 0}
-                id="form-table"
-            >
-                {loading && allItems.length === 0 ? (
+            <div data-empty={items.length === 0} data-load={loading}>
+                {loading ? (
                     <Loader />
-                ) : allItems.length === 0 ? (
+                ) : items.length === 0 ? (
                     <h3>No form submitted</h3>
                 ) : (
-                    <Container
-                        type="full"
-                        className={styles.table}
-                        data-responsive={keyLength <= KEYLIMIT}
-                    >
-                        {keyLength <= KEYLIMIT && (
-                            <div className={styles.heading}>
-                                {Object.keys(allItems[0].data).map(
-                                    (heading) => {
-                                        return (
-                                            <h4
-                                                key={heading + "table"}
-                                                title={heading}
-                                            >
-                                                {trimStringWithEllipsis(
-                                                    heading,
-                                                    10
-                                                )}
-                                            </h4>
-                                        );
-                                    }
-                                )}
-                                <h4>Submitted On</h4>
-
-                                <h4>Delete</h4>
-                            </div>
-                        )}
-
-                        {allItems.map((item) => {
-                            return (
-                                <ContactUsItem
-                                    key={item.id}
-                                    data={item}
-                                    setAllItems={setAllItems}
+                    <div className={styles["table-container"]}>
+                        <Table
+                            aria-label="Contact Us Submissions"
+                            className={styles.table}
+                        >
+                            <TableHeader className={styles.thead}>
+                                {Object.keys(items[0].data).map((heading) => (
+                                    <Column
+                                        key={heading}
+                                        className={styles.th}
+                                        isRowHeader={
+                                            heading === "Name" ||
+                                            heading === "name" ||
+                                            heading === "Email" ||
+                                            heading === "email"
+                                        }
+                                    >
+                                        {heading}
+                                    </Column>
+                                ))}
+                                <Column className={styles.th}>
+                                    Submitted On
+                                </Column>
+                                <Column
+                                    className={styles.th}
+                                    aria-label="Actions"
                                 />
-                            );
-                        })}
+                            </TableHeader>
 
-                        <div
-                            style={{
-                                visibility: "hidden",
-                            }}
-                            ref={elementRef}
-                        ></div>
-                    </Container>
+                            <TableBody className={styles.tbody} items={items}>
+                                {(item) => (
+                                    <ContactUsItem
+                                        key={item.id}
+                                        data={item}
+                                        onDelete={list.remove}
+                                    />
+                                )}
+                            </TableBody>
+
+                            <TableLoadMoreItem
+                                isLoading={list.loadingState === "loadingMore"}
+                                onLoadMore={list.loadMore}
+                            >
+                                <Loader variant="small" />
+                            </TableLoadMoreItem>
+                        </Table>
+                    </div>
                 )}
             </div>
-
-            {loading && allItems.length > 0 && <Loader variant="small" />}
-        </Container>
+        </div>
     );
 };
 

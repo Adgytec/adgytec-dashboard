@@ -1,24 +1,39 @@
 import {
+    BottomSheet,
+    BottomSheetModal,
     Button,
     IconButton,
     Input,
+    Menu,
+    MenuItem,
+    MenuPopover,
+    MenuTrigger,
     ModalOverlay,
     SideSheet,
     SideSheetModal,
+    typography,
+    useSnackbarQueue,
+    validateAndGetFormValues,
 } from "@adgytec/adgytec-web-ui-components";
-import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Edit } from "lucide-react";
-import { type FormEvent, useContext, useMemo, useRef, useState } from "react";
-import { DialogTrigger, Form, Select } from "react-aria-components";
-import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
-import { handleEscModal, handleModalClose } from "@/helpers/modal";
+import { Edit, EllipsisVertical, Trash2 } from "lucide-react";
+import { type FormEvent, useContext, useId, useMemo, useState } from "react";
+import { Cell, Form, Heading, Row, Text } from "react-aria-components";
+import { useBoolean } from "usehooks-ts";
+import clsx from "clsx";
+import z from "zod";
+import type { ValidationErrors } from "@/helpers/validation";
 import { UserContext } from "../AuthContext/authContext";
-import Loader from "../Loader/Loader";
-import styles from "./prise-reports.module.scss";
-import { getRegionDisplayValue, type PriseReportItemCompProps } from "./types";
+import styles from "./prise-reports.module.css";
+import type { PriseReportItemCompProps } from "./types";
+
+const EditReportSchema = z.object({
+    region: z.string().optional(),
+    Territoire: z.string().optional(),
+    "Site d'intervention": z.string().optional(),
+    Infrastructures: z.string().optional(),
+    Latitude: z.string().min(1, "Latitude is required"),
+    Longitude: z.string().min(1, "Longitude is required"),
+});
 
 const PriseReportItemComp = ({
     item,
@@ -26,25 +41,53 @@ const PriseReportItemComp = ({
     ind,
     setReports,
 }: PriseReportItemCompProps) => {
+    const snackbarQueue = useSnackbarQueue();
+    const editFormId = useId();
+
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
     }, [userWithRole]);
 
-    const deleteConfirmRef = useRef<HTMLDialogElement | null>(null);
-    const handleDeleteModalClose = () => handleModalClose(deleteConfirmRef);
+    const {
+        value: isDeleting,
+        setTrue: startDeleting,
+        setFalse: stopDeleting,
+    } = useBoolean();
 
-    const [deleting, sepeleting] = useState(false);
-    const [editing, setEditing] = useState(false);
+    const {
+        value: isUpdating,
+        setTrue: startUpdating,
+        setFalse: stopUpdating,
+    } = useBoolean();
+
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [fieldErr, setFieldErr] = useState<ValidationErrors | undefined>(
+        undefined
+    );
 
-    const handleEdit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleEdit = async (
+        e: FormEvent<HTMLFormElement>,
+        close: () => void
+    ) => {
         e.preventDefault();
-        setEditing(true);
 
-        const form = e.currentTarget;
-        const formdata = new FormData(e.currentTarget);
-        const body = JSON.stringify(Object.fromEntries(formdata.entries()));
+        const result = validateAndGetFormValues(
+            e.currentTarget,
+            EditReportSchema
+        );
+        if (!result.success) {
+            setFieldErr(result.errors);
+            return;
+        }
+
+        setError(null);
+        setFieldErr(undefined);
+        startUpdating();
+
+        const body = JSON.stringify(result.data);
 
         const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${projectId}/${item.id}`;
         const token = await user?.getIdToken();
@@ -66,22 +109,26 @@ const PriseReportItemComp = ({
                         report.id === item.id
                             ? {
                                   ...report,
-                                  ...Object.fromEntries(formdata.entries()),
+                                  ...result.data,
                               }
                             : report
                     )
                 );
 
-                window.location.reload();
+                close();
+                snackbarQueue.add({
+                    supportingText: "Successfully updated record.",
+                });
             })
             .catch((err) => {
                 setError(err.message);
             })
-            .finally(() => setEditing(false));
+            .finally(() => stopUpdating());
     };
 
-    const handleDelete = async () => {
-        sepeleting(true);
+    const handleDelete = async (close: () => void) => {
+        setError(null);
+        startDeleting();
 
         const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${projectId}/${item.id}`;
         const token = await user?.getIdToken();
@@ -96,113 +143,133 @@ const PriseReportItemComp = ({
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                setReports((prev) => {
-                    const temp = prev;
+                setReports((prev) => prev.filter((r) => r.id !== item.id));
 
-                    return temp.toSpliced(
-                        temp.findIndex((u) => u.id === item.id),
-                        1
-                    );
+                snackbarQueue.add({
+                    supportingText: "Successfully deleted record.",
                 });
-
-                toast.success("successfully deleted record");
+                close();
             })
             .catch((err) => {
                 setError(err.message);
             })
-            .finally(() => sepeleting(false));
+            .finally(() => {
+                stopDeleting();
+            });
     };
 
     return (
-        <div>
-            {createPortal(
-                <>
-                    <dialog
-                        onKeyDown={handleEscModal}
-                        ref={deleteConfirmRef}
-                        className="delete-confirm"
-                    >
-                        <div className="delete-modal">
-                            <div className="modal-menu">
-                                <h2>Confirm Report Deletion</h2>
+        <Row className={styles.tr}>
+            <Cell className={styles.td}>{ind}</Cell>
+            <Cell className={styles.td}>{item.Territoire || "-"}</Cell>
+            <Cell className={styles.td}>
+                {item["Site d'intervention"] || "-"}
+            </Cell>
+            <Cell className={styles.td}>{item.Infrastructures || "-"}</Cell>
+            <Cell className={styles.td}>{item["Latitude"] || "-"}</Cell>
+            <Cell className={styles.td}>{item["Longitude"] || "-"}</Cell>
+            <Cell className={styles.td}>
+                <MenuTrigger>
+                    <IconButton
+                        color="standard"
+                        icon={EllipsisVertical}
+                        tooltip="Manage report"
+                        onPress={(e) => e.continuePropagation()}
+                    />
+                    <MenuPopover>
+                        <Menu>
+                            <MenuItem
+                                leadingIcon={Edit}
+                                onAction={() => setIsEditOpen(true)}
+                                label="Edit"
+                            />
+                            <MenuItem
+                                leadingIcon={Trash2}
+                                onAction={() => setIsDeleteOpen(true)}
+                                label="Delete"
+                            />
+                        </Menu>
+                    </MenuPopover>
+                </MenuTrigger>
 
-                                <button
-                                    data-type="link"
-                                    onClick={handleDeleteModalClose}
-                                    title="close"
-                                    disabled={deleting}
+                <ModalOverlay
+                    isOpen={isDeleteOpen}
+                    onOpenChange={setIsDeleteOpen}
+                    isKeyboardDismissDisabled={isDeleting}
+                >
+                    <BottomSheetModal layout="detached">
+                        <BottomSheet className={styles.dialog}>
+                            {({ close }) => (
+                                <>
+                                    <Heading
+                                        className={clsx(typography.titleLarge)}
+                                    >
+                                        Confirm Report Deletion
+                                    </Heading>
+
+                                    <Text
+                                        className={clsx(typography.bodyMedium)}
+                                    >
+                                        Are you sure you want to delete this
+                                        record? This action cannot be undone.
+                                    </Text>
+
+                                    {error && (
+                                        <p className={styles.error}>{error}</p>
+                                    )}
+
+                                    <div className={styles.actions}>
+                                        <Button
+                                            slot="close"
+                                            color="text"
+                                            isDisabled={isDeleting}
+                                        >
+                                            Cancel
+                                        </Button>
+
+                                        <Button
+                                            isPending={isDeleting}
+                                            onPress={() => handleDelete(close)}
+                                            className={styles["delete-confirm"]}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                        </BottomSheet>
+                    </BottomSheetModal>
+                </ModalOverlay>
+
+                <ModalOverlay isOpen={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <SideSheetModal layout="detached">
+                        <SideSheet
+                            headline="Edit Report"
+                            actions={[
+                                <Button
+                                    type="submit"
+                                    key="Save"
+                                    form={editFormId}
+                                    isPending={isUpdating}
                                 >
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </button>
-                            </div>
-
-                            <div className="delete-content">
-                                <p>
-                                    Are you sure you want to delete this record?
-                                </p>
-
-                                <p>
-                                    Deleting this record will permanently remove
-                                    this record. This action cannot be undone.
-                                </p>
-                            </div>
-
-                            {error && <p className="error">{error}</p>}
-
-                            <div className="delete-action">
-                                <button
-                                    data-type="link"
-                                    disabled={deleting}
-                                    onClick={handleDeleteModalClose}
+                                    Save
+                                </Button>,
+                                <Button
+                                    key="cancel"
+                                    color="outlined"
+                                    slot="close"
+                                    isDisabled={isUpdating}
                                 >
                                     Cancel
-                                </button>
-
-                                <button
-                                    data-type="button"
-                                    disabled={deleting}
-                                    data-load={deleting}
-                                    onClick={handleDelete}
-                                    data-variant="error"
-                                >
-                                    {deleting ? (
-                                        <Loader variant="small" />
-                                    ) : (
-                                        "Delete"
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </dialog>
-                </>,
-                document.body
-            )}
-
-            <p>{ind}</p>
-            {/* <p>{getRegionDisplayValue(item.region)}</p> */}
-            {/* <p>{item.Ouvrage || "-"}</p> */}
-            <p>{item.Territoire || "-"}</p>
-            <p>{item["Site d'intervention"] || "-"}</p>
-            {/* <p>{item["Coordonnées"] || "-"}</p> */}
-            <p>{item.Infrastructures || "-"}</p>
-            {/* <p>{item["Lieu d'implantation"] || "-"}</p> */}
-            {/* <p>{item.Secteur || "-"}</p> */}
-            <p>{item["Latitude"] || "-"}</p>
-            <p>{item["Longitude"] || "-"}</p>
-            <p>
-                <DialogTrigger>
-                    <IconButton
-                        icon={Edit}
-                        size="extra-small"
-                        color="standard"
-                    />
-                    <ModalOverlay>
-                        <SideSheetModal layout="detached">
-                            <SideSheet headline="Edit Report">
+                                </Button>,
+                            ]}
+                        >
+                            {({ close }) => (
                                 <Form
-                                    onSubmit={handleEdit}
+                                    id={editFormId}
+                                    onSubmit={(e) => handleEdit(e, close)}
                                     className={styles["form"]}
-                                    data-new-form
+                                    validationErrors={fieldErr}
                                 >
                                     <Input
                                         label="Region"
@@ -235,41 +302,33 @@ const PriseReportItemComp = ({
                                         label="Latitude"
                                         name="Latitude"
                                         defaultValue={item.Latitude}
-                                        isReadOnly={editing}
+                                        isReadOnly={isUpdating}
                                     />
 
                                     <Input
                                         label="Longitude"
                                         name="Longitude"
                                         defaultValue={item.Longitude}
-                                        isReadOnly={editing}
+                                        isReadOnly={isUpdating}
                                     />
 
-                                    <div>
-                                        <Button
-                                            type="submit"
-                                            isPending={editing}
+                                    {error && (
+                                        <p
+                                            className={clsx(
+                                                styles.error,
+                                                typography.bodySmall
+                                            )}
                                         >
-                                            Update
-                                        </Button>
-                                    </div>
+                                            {error}
+                                        </p>
+                                    )}
                                 </Form>
-                            </SideSheet>
-                        </SideSheetModal>
-                    </ModalOverlay>
-                </DialogTrigger>
-            </p>
-            <p>
-                <button
-                    data-type="link"
-                    onClick={() => deleteConfirmRef.current?.showModal()}
-                    disabled={deleting}
-                    data-variant="error"
-                >
-                    <FontAwesomeIcon icon={faTrashCan} />
-                </button>
-            </p>
-        </div>
+                            )}
+                        </SideSheet>
+                    </SideSheetModal>
+                </ModalOverlay>
+            </Cell>
+        </Row>
     );
 };
 

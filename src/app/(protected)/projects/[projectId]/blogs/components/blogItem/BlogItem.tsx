@@ -1,612 +1,178 @@
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import {
-    faAngleDown,
-    faTrashCan,
-    faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import type React from "react";
-import { Fragment, useContext, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
-import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
-import FileInput, { FileElement } from "@/components/FileInput/FileInput";
-import { useFile } from "@/components/FileInput/hooks/useFile";
-import Loader from "@/components/Loader/Loader";
-import { trimStringWithEllipsis } from "@/helpers/helpers";
-import { handleEscModal, handleModalClose } from "@/helpers/modal";
-import { validateString } from "@/helpers/validation";
+    IconButton,
+    Menu,
+    MenuItem,
+    MenuPopover,
+    MenuTrigger,
+    Splash,
+    typography,
+    useSplash,
+} from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import {
-    type Category,
-    ProjectMetadataContext,
-} from "../../../context/projectMetadataContext";
+    BookOpen,
+    EllipsisVertical,
+    FilePenLine,
+    Image,
+    Trash2,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { GridListItem, Text } from "react-aria-components";
 import type { Blog } from "../../page";
-import styles from "./blogItem.module.scss";
+import styles from "./blogItem.module.css";
+import { DeleteBlog } from "./DeleteBlog";
+import { EditBlog } from "./EditBlog";
+import { UpdateBlogCover } from "./UpdateBlogCover";
 
-interface BlogItemProps {
+export const BlogItem: React.FC<{
     blog: Blog;
-    setAllBlogs: React.Dispatch<React.SetStateAction<Blog[]>>;
-}
+}> = ({ blog }) => {
+    const [editOpen, setEditOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [updateCoverOpen, setUpdateCoverOpen] = useState(false);
 
-type HandleCategories = (item: Category) => React.JSX.Element;
-
-const BlogItem = ({ blog, setAllBlogs }: BlogItemProps) => {
-    const userWithRole = useContext(UserContext);
-    const user = useMemo(() => {
-        return userWithRole ? userWithRole.user : null;
-    }, [userWithRole]);
-    const projectMetadata = useContext(ProjectMetadataContext);
-
-    const [cover, setCover] = useFile();
-    const [coverError, setCoverError] = useState<null | string>(null);
-
-    const params = useParams<{ projectId: string }>();
-
-    const [isEdit, setIsEdit] = useState(false);
-    const [blogDetails, setBlogDetails] = useState(() => {
-        return {
-            title: blog.title,
-            summary: blog.summary ? blog.summary : "",
-            category: blog.category.id,
-            categoryName: blog.category.name,
-        };
-    });
-    const [updating, setUpdating] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-    const [coverUpdating, setCoverUpdating] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const deleteConfirmRef = useRef<HTMLDialogElement | null>(null);
-    const updateCoverRef = useRef<HTMLDialogElement | null>(null);
+    const { splashInfo, handlePress } = useSplash();
+    const router = useRouter();
 
     const d = new Date(blog.createdAt);
 
-    const handleInputChange = (
-        e:
-            | React.ChangeEvent<HTMLInputElement>
-            | React.ChangeEvent<HTMLTextAreaElement>
-            | React.ChangeEvent<HTMLSelectElement>
-    ) => {
-        const key = e.target.name;
-        const value = e.target.value;
-
-        setBlogDetails((prev) => {
-            return {
-                ...prev,
-                [key]: value,
-            };
-        });
-    };
-
-    const isUpdateDisabled =
-        blogDetails.summary === blog.summary &&
-        blogDetails.title === blog.title &&
-        blogDetails.category === blog.category.id;
-
-    const validateInput = () => {
-        if (!validateString(blogDetails.title, 3)) {
-            toast.error("blog title too short!");
-            return false;
-        }
-
-        if (
-            blogDetails.summary.length > 0 &&
-            !validateString(blogDetails.summary, 10)
-        ) {
-            toast.error("blog summary too short!");
-            return false;
-        }
-
-        return true;
-    };
-
-    const handleUpdate = async () => {
-        if (!validateInput()) return;
-
-        setUpdating(true);
-        const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blog.blogId}`;
-        const token = await user?.getIdToken();
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        };
-        const body = JSON.stringify({
-            title: blogDetails.title,
-            summary: blogDetails.summary,
-            category: blogDetails.category,
-        });
-
-        fetch(url, {
-            method: "PATCH",
-            headers,
-            body,
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.error) throw new Error(res.message);
-                toast.success(res.message);
-                blog.title = blogDetails.title;
-                blog.summary = blogDetails.summary;
-                blog.category.id = blogDetails.category;
-                blog.category.name = blogDetails.categoryName;
-                setIsEdit(false);
-            })
-            .catch((err) => {
-                toast.error(err.message);
-            })
-            .finally(() => {
-                setUpdating(false);
-            });
-    };
-
-    const handleClose = (
-        ref: React.MutableRefObject<HTMLDialogElement | null>
-    ) => handleModalClose(ref);
-
-    const handleDelete = async () => {
-        setDeleting(true);
-        setError(null);
-
-        const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blog.blogId}`;
-        const token = await user?.getIdToken();
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
-        fetch(url, {
-            method: "DELETE",
-            headers,
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.error) throw new Error(res.message);
-
-                setAllBlogs((prev) => {
-                    const temp = prev;
-
-                    return temp.toSpliced(
-                        temp.findIndex((b) => b.blogId === blog.blogId),
-                        1
-                    );
-                });
-                toast.success("successfully deleted blog item");
-            })
-            .catch((err) => {
-                setError(err.message);
-            })
-            .finally(() => setDeleting(false));
-    };
-
-    const handleCoverImage = async () => {
-        if (!cover[0].file) {
-            setCoverError("no file selected");
-            return;
-        }
-        setCoverUpdating(true);
-        setCoverError(null);
-        const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${blog.blogId}/cover`;
-        const token = await user?.getIdToken();
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
-        const formData = new FormData();
-        formData.append("cover", cover[0].file);
-
-        fetch(url, {
-            method: "PATCH",
-            headers,
-            body: formData,
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.error) throw new Error(res.message);
-
-                updateCoverRef.current?.close();
-                toast.success("successfully updated blog cover");
-                if (cover[0].url) blog.cover = cover[0].url;
-
-                setCover([]);
-            })
-            .catch((err) => {
-                setCoverError(err.message);
-            })
-            .finally(() => {
-                setCoverUpdating(false);
-            });
-    };
-
-    const handleCategories: HandleCategories = ({
-        categoryId,
-        categoryName,
-        subCategories,
-    }) => {
-        if (subCategories.length > 0) {
-            return (
-                <DropdownMenu.Sub key={categoryId}>
-                    <DropdownMenu.SubTrigger className="dropdown-menu__item sub-trigger">
-                        {categoryName}
-
-                        <div className="dropdown-icon">
-                            <FontAwesomeIcon icon={faAngleDown} />
-                        </div>
-                    </DropdownMenu.SubTrigger>
-
-                    <DropdownMenu.Portal>
-                        <DropdownMenu.SubContent
-                            className="dropdown-menu"
-                            sideOffset={12.5}
-                        >
-                            <DropdownMenu.Item
-                                className="dropdown-menu__item"
-                                onClick={() => {
-                                    setBlogDetails((prev) => {
-                                        return {
-                                            ...prev,
-                                            category: categoryId,
-                                            categoryName: categoryName,
-                                        };
-                                    });
-                                }}
-                            >
-                                {categoryName}
-                            </DropdownMenu.Item>
-
-                            {subCategories.map((item) =>
-                                handleCategories(item)
-                            )}
-                        </DropdownMenu.SubContent>
-                    </DropdownMenu.Portal>
-                </DropdownMenu.Sub>
-            );
-        }
-
-        return (
-            <DropdownMenu.Item
-                className="dropdown-menu__item"
-                key={categoryId}
-                onClick={() => {
-                    setBlogDetails((prev) => {
-                        return {
-                            ...prev,
-                            category: categoryId,
-                            categoryName: categoryName,
-                        };
-                    });
-                }}
-            >
-                {categoryName}
-            </DropdownMenu.Item>
-        );
-    };
-
     return (
-        <>
-            {createPortal(
-                <>
-                    <dialog
-                        onKeyDown={handleEscModal}
-                        ref={deleteConfirmRef}
-                        className="delete-confirm"
-                    >
-                        <div className="delete-modal">
-                            <div className="modal-menu">
-                                <h2>Confirm Deletion</h2>
+        <GridListItem
+            className={clsx(styles["blogCard"])}
+            data-has-cover={!!blog.cover}
+            onPress={handlePress}
+            onAction={() => {
+                router.push(`blogs/${blog.blogId}`);
+            }}
+        >
+            {splashInfo && <Splash {...splashInfo} />}
 
-                                <button
-                                    data-type="link"
-                                    onClick={() =>
-                                        handleClose(deleteConfirmRef)
-                                    }
-                                    title="close"
-                                    disabled={deleting}
-                                >
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </button>
-                            </div>
-
-                            <div className="delete-content">
-                                <p>Are you sure you want to delete?</p>
-
-                                <p>
-                                    Deleting this will permanently remove this
-                                    blog item. This action cannot be undone.
-                                </p>
-                            </div>
-
-                            {error && <p className="error">{error}</p>}
-
-                            <div className="delete-action">
-                                <button
-                                    data-type="link"
-                                    disabled={deleting}
-                                    onClick={() =>
-                                        handleClose(deleteConfirmRef)
-                                    }
-                                >
-                                    Cancel
-                                </button>
-
-                                <button
-                                    data-type="button"
-                                    className={styles.delete}
-                                    disabled={deleting}
-                                    data-load={deleting}
-                                    onClick={handleDelete}
-                                    data-variant="error"
-                                >
-                                    {deleting ? (
-                                        <Loader variant="small" />
-                                    ) : (
-                                        "Delete"
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </dialog>
-
-                    <dialog ref={updateCoverRef}>
-                        <div className="modal">
-                            <div className="modal-menu">
-                                <h2>Update Blog Cover</h2>
-
-                                <button
-                                    data-type="link"
-                                    onClick={() => handleClose(updateCoverRef)}
-                                    title="close"
-                                    disabled={coverUpdating}
-                                >
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </button>
-                            </div>
-
-                            <div className={styles.updateCover}>
-                                <label>Cover Image</label>
-
-                                <FileInput
-                                    setFiles={setCover}
-                                    multiple={false}
-                                    disabled={coverUpdating}
-                                    files={cover}
-                                    id={blog.blogId}
-                                />
-                            </div>
-
-                            {coverError && (
-                                <p className="error">{coverError}</p>
-                            )}
-
-                            <div className="action">
-                                <button
-                                    data-type="link"
-                                    disabled={coverUpdating}
-                                    onClick={() => handleClose(updateCoverRef)}
-                                >
-                                    Cancel
-                                </button>
-
-                                <button
-                                    data-type="button"
-                                    className={styles.delete}
-                                    disabled={coverUpdating || !cover.length}
-                                    data-load={coverUpdating}
-                                    onClick={handleCoverImage}
-                                    data-variant="primary"
-                                >
-                                    {coverUpdating ? (
-                                        <Loader variant="small" />
-                                    ) : (
-                                        "Update"
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </dialog>
-                </>,
-                document.body
+            {blog.cover && (
+                <div className={clsx(styles["cover"])}>
+                    <img
+                        src={blog.cover}
+                        width={300}
+                        height={160}
+                        alt={blog.title}
+                    />
+                </div>
             )}
 
-            <div className={styles.container}>
-                <Container type="full" className={styles.details}>
-                    <div className={styles.subContainer}>
-                        {blog.cover.length > 0 ? (
-                            <div className={styles.image} data-edit={isEdit}>
-                                <img
-                                    src={blog.cover}
-                                    alt={blog.title}
-                                    width={250}
-                                    height={200}
-                                />
-                                {isEdit && (
-                                    <button
-                                        data-type="link"
-                                        data-variant="primary"
-                                        disabled={updating}
-                                        onClick={() =>
-                                            updateCoverRef.current?.showModal()
-                                        }
-                                    >
-                                        Update Cover
-                                    </button>
-                                )}
-                            </div>
-                        ) : (
-                            <div>
-                                {isEdit ? (
-                                    <button
-                                        data-type="link"
-                                        data-variant="primary"
-                                        disabled={updating}
-                                        onClick={() =>
-                                            updateCoverRef.current?.showModal()
-                                        }
-                                    >
-                                        Add Cover
-                                    </button>
-                                ) : (
-                                    <p>No cover image</p>
-                                )}
-                            </div>
+            <div className={clsx(styles["content"])}>
+                <div className={clsx(styles["meta"])}>
+                    <span
+                        className={clsx(
+                            styles["category"],
+                            typography.labelSmall
                         )}
-                        <div className={styles.data}>
-                            <div className={styles.title}>
-                                {isEdit ? (
-                                    <input
-                                        type="text"
-                                        placeholder="title..."
-                                        name="title"
-                                        value={blogDetails.title}
-                                        onChange={handleInputChange}
-                                        disabled={updating}
-                                    />
-                                ) : (
-                                    <h2 className={styles.title}>
-                                        <Link
-                                            href={`blogs/${blog.blogId}`}
-                                            data-type="link"
-                                        >
-                                            {trimStringWithEllipsis(
-                                                blog.title,
-                                                50
-                                            )}
-                                        </Link>
-                                    </h2>
-                                )}
-                            </div>
-                            <div className={styles.metadata}>
-                                {blog.author.length > 0 && <p>{blog.author}</p>}
-                                {isEdit ? (
-                                    <>
-                                        <DropdownMenu.Root>
-                                            <DropdownMenu.Trigger asChild>
-                                                <button
-                                                    className={
-                                                        styles.menuTrigger
-                                                    }
-                                                    aria-label="Customise options"
-                                                    data-type="button"
-                                                    data-variant="select"
-                                                >
-                                                    {blogDetails.categoryName}
-                                                </button>
-                                            </DropdownMenu.Trigger>
-
-                                            <DropdownMenu.Portal>
-                                                <DropdownMenu.Content
-                                                    className="dropdown-menu"
-                                                    sideOffset={5}
-                                                >
-                                                    <DropdownMenu.Item
-                                                        className="dropdown-menu__item"
-                                                        onClick={() => {
-                                                            setBlogDetails(
-                                                                (prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        category:
-                                                                            params.projectId,
-                                                                        categoryName:
-                                                                            "default",
-                                                                    };
-                                                                }
-                                                            );
-                                                        }}
-                                                    >
-                                                        default
-                                                    </DropdownMenu.Item>
-
-                                                    {projectMetadata &&
-                                                        projectMetadata
-                                                            .categories
-                                                            .subCategories
-                                                            .length > 0 &&
-                                                        projectMetadata.categories.subCategories.map(
-                                                            (item) =>
-                                                                handleCategories(
-                                                                    item
-                                                                )
-                                                        )}
-                                                </DropdownMenu.Content>
-                                            </DropdownMenu.Portal>
-                                        </DropdownMenu.Root>
-                                    </>
-                                ) : (
-                                    <p>{blog.category.name}</p>
-                                )}
-                                <p>{d.toDateString()}</p>
-                            </div>
-                            <div className={styles.summary}>
-                                {isEdit ? (
-                                    <textarea
-                                        name="summary"
-                                        value={blogDetails.summary}
-                                        onChange={handleInputChange}
-                                        placeholder="Summary for the blog..."
-                                        disabled={updating}
-                                    />
-                                ) : (
-                                    blog.summary && (
-                                        <p className={styles.summary}>
-                                            {trimStringWithEllipsis(
-                                                blog.summary,
-                                                200
-                                            )}
-                                        </p>
-                                    )
-                                )}
-                            </div>
-                            {isEdit && (
-                                <div className={styles.update}>
-                                    <button
-                                        data-type="button"
-                                        data-variant="secondary"
-                                        disabled={isUpdateDisabled || updating}
-                                        onClick={handleUpdate}
-                                        data-load={updating}
-                                    >
-                                        {updating ? (
-                                            <Loader variant="small" />
-                                        ) : (
-                                            "Update"
-                                        )}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </Container>
-
-                <div className={styles.action}>
-                    <button
-                        data-type="link"
-                        onClick={() => setIsEdit((prev) => !prev)}
-                        disabled={updating}
                     >
-                        {isEdit ? (
-                            <FontAwesomeIcon icon={faXmark} />
-                        ) : (
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                        )}
-                    </button>
+                        {blog.category.name}
+                    </span>
+                    <span
+                        className={clsx(styles["date"], typography.labelSmall)}
+                    >
+                        {d.toLocaleDateString()}
+                    </span>
                 </div>
 
-                <div className={styles.action} data-delete>
-                    <button
-                        data-type="link"
-                        data-variant="error"
-                        disabled={updating}
-                        onClick={() => deleteConfirmRef.current?.showModal()}
+                <Text
+                    className={clsx(styles["title"], typography.titleMedium)}
+                    title={blog.title}
+                >
+                    {blog.title}
+                </Text>
+
+                {blog.summary && (
+                    <Text
+                        slot="description"
+                        className={clsx(
+                            styles["summary"],
+                            typography.bodySmall
+                        )}
+                        title={blog.summary}
                     >
-                        <FontAwesomeIcon icon={faTrashCan} />
-                    </button>
+                        {blog.summary}
+                    </Text>
+                )}
+
+                <div className={clsx(styles["footer"])}>
+                    {blog.author && (
+                        <span
+                            className={clsx(
+                                styles["author"],
+                                typography.labelSmall
+                            )}
+                        >
+                            By {blog.author}
+                        </span>
+                    )}
+
+                    <MenuTrigger>
+                        <IconButton
+                            color="standard"
+                            icon={EllipsisVertical}
+                            tooltip="Manage blog"
+                            onPress={(e) => e.continuePropagation()}
+                            className={clsx(styles["options"])}
+                        />
+
+                        <MenuPopover>
+                            <Menu>
+                                <MenuItem
+                                    leadingIcon={BookOpen}
+                                    onAction={() =>
+                                        router.push(`blogs/${blog.blogId}`)
+                                    }
+                                    label="Read Blog"
+                                />
+
+                                <MenuItem
+                                    leadingIcon={FilePenLine}
+                                    onAction={() => setEditOpen(true)}
+                                    label="Edit Details"
+                                />
+
+                                <MenuItem
+                                    leadingIcon={Image}
+                                    onAction={() => setUpdateCoverOpen(true)}
+                                    label="Update Cover"
+                                />
+
+                                <MenuItem
+                                    leadingIcon={Trash2}
+                                    onAction={() => setDeleteOpen(true)}
+                                    label="Delete"
+                                />
+                            </Menu>
+                        </MenuPopover>
+                    </MenuTrigger>
                 </div>
             </div>
-        </>
+
+            <UpdateBlogCover
+                id={blog.blogId}
+                currentCover={blog.cover}
+                isOpen={updateCoverOpen}
+                onOpenChange={setUpdateCoverOpen}
+            />
+
+            <EditBlog
+                id={blog.blogId}
+                currentTitle={blog.title}
+                currentSummary={blog.summary || ""}
+                currentCategoryId={blog.category.id}
+                currentCategoryName={blog.category.name}
+                isOpen={editOpen}
+                onOpenChange={setEditOpen}
+            />
+
+            <DeleteBlog
+                id={blog.blogId}
+                isOpen={deleteOpen}
+                onOpenChange={setDeleteOpen}
+            />
+        </GridListItem>
     );
 };
 

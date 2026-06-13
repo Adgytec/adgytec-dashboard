@@ -1,28 +1,34 @@
 "use client";
 
-import { Contrail_One } from "next/font/google";
-import { useParams } from "next/navigation";
-import type React from "react";
 import {
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import { toast } from "react-toastify";
-import { cursorTo } from "readline";
+    LinkIconButton,
+    SearchField,
+    typography,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
+import { BadgePlus } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useContext, useEffect, useMemo, useState } from "react";
+import {
+    Collection,
+    GridLayout,
+    GridList,
+    GridListLoadMoreItem,
+    Heading,
+    Size,
+    useAsyncList,
+    Virtualizer,
+} from "react-aria-components";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
 import { getNow } from "@/helpers/helpers";
-import type { PageInfo } from "@/helpers/type";
-import { useIntersection } from "@/hooks/intersetion-observer/intersection-observer";
-import styles from "./blogs.module.scss";
+import styles from "./blogs.module.css";
 import BlogItem from "./components/blogItem/BlogItem";
+import { BlogContext } from "./context";
 
-interface CategroyDetail {
+interface CategoryDetail {
     id: string;
     name: string;
 }
@@ -34,163 +40,205 @@ export interface Blog {
     blogId: string;
     createdAt: string;
     cover: string;
-    category: CategroyDetail;
+    category: CategoryDetail;
 }
 
-const Blogs = () => {
+const BlogsPage = () => {
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
     }, [userWithRole]);
 
     const params = useParams<{ projectId: string }>();
-    const pageInfoRef = useRef<PageInfo>({
-        nextPage: false,
-        cursor: "",
+    const [search, setSearch] = useState<string>("");
+
+    const snackbarQueue = useSnackbarQueue();
+
+    const blogs = useAsyncList<Blog, string | null>({
+        async load({ cursor, signal, items }) {
+            if (!user) {
+                return {
+                    items: [],
+                    cursor: null,
+                };
+            }
+
+            const token = await user?.getIdToken();
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API}/services/blogs/${
+                    params.projectId
+                }?cursor=${cursor ?? getNow()}`,
+                {
+                    signal,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const json = await res.json();
+
+            if (json.error) {
+                throw new Error(json.message);
+            }
+
+            const existingIds = new Set(items.map((b) => b.blogId));
+
+            const nextItems = json.data.blogs.filter(
+                (blog: Blog) => !existingIds.has(blog.blogId)
+            );
+
+            return {
+                items: nextItems,
+                cursor: json.data.pageInfo.nextPage
+                    ? json.data.pageInfo.cursor
+                    : null,
+            };
+        },
+        getKey(item) {
+            return item.blogId;
+        },
     });
 
-    const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
-    const [search, setSearch] = useState<string>("");
-    const [loading, setLoading] = useState(true);
+    const filteredBlogs = useMemo(() => {
+        if (!search) return blogs.items;
 
-    const getAllBlogs = useCallback(
-        async (cursor: string) => {
-            setLoading(true);
+        const value = search.toLowerCase();
 
-            const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}?cursor=${cursor}`;
-            const token = await user?.getIdToken();
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-
-            fetch(url, {
-                method: "GET",
-                headers,
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (res.error) throw new Error(res.message);
-                    pageInfoRef.current = res.data.pageInfo;
-
-                    setAllBlogs((prev) => {
-                        const newBlogs = res.data.blogs.filter(
-                            (blog: Blog) =>
-                                !prev.some(
-                                    (existingBlog) =>
-                                        existingBlog.blogId === blog.blogId
-                                )
-                        );
-                        return [...prev, ...newBlogs];
-                    });
-                })
-                .catch((err) => {
-                    toast.error(err.message);
-                })
-                .finally(() => setLoading(false));
-        },
-        [user, params.projectId]
-    );
-
-    const callback: IntersectionObserverCallback = useCallback(
-        (entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting && search.length == 0) {
-                    if (pageInfoRef.current.nextPage)
-                        getAllBlogs(pageInfoRef.current.cursor);
-                }
-            });
-        },
-        [search, allBlogs, pageInfoRef.current]
-    );
-
-    const elementRef = useIntersection(
-        callback,
-        document.getElementById("content-root")
-    );
+        return blogs.items.filter(
+            (blog) =>
+                blog.blogId.toLowerCase().includes(value) ||
+                blog.title.toLowerCase().includes(value) ||
+                blog.author.toLowerCase().includes(value) ||
+                blog.category.name.toLowerCase().includes(value)
+        );
+    }, [blogs.items, search]);
 
     useEffect(() => {
-        getAllBlogs(getNow());
-    }, [getAllBlogs]);
+        if (!blogs.error) return;
 
-    const elements: React.JSX.Element[] = [];
-    allBlogs.forEach((blog, ind) => {
-        const { blogId, title, author, category } = blog;
-        const element = (
-            <BlogItem key={blogId} blog={blog} setAllBlogs={setAllBlogs} />
-        );
+        snackbarQueue.add({
+            supportingText: blogs.error.message,
+        });
+    }, [blogs.error, snackbarQueue]);
 
-        if (search.length === 0) {
-            elements.push(element);
-            return;
-        }
+    /* biome-ignore lint: reload blogs on project change */
+    useEffect(() => {
+        blogs.reload();
+    }, [params.projectId]);
 
-        if (
-            blogId.toLowerCase().includes(search.toLowerCase()) ||
-            title.toLowerCase().includes(search.toLowerCase()) ||
-            author.toLowerCase().includes(search.toLowerCase()) ||
-            category.name.toLowerCase().includes(search.toLowerCase())
-        )
-            elements.push(element);
-    });
+    const removeBlog = (id: string) => {
+        blogs.remove(id);
+        console.log(blogs.items);
+    };
+
+    const updateBlog = (id: string, updatedFields: Partial<Blog>) => {
+        blogs.update(id, (prev) => {
+            return { ...prev, ...updatedFields };
+        });
+    };
 
     return (
         <div className={styles.blogs}>
-            <div
-                className={styles.search}
-                title="search blogs by id, title or author"
-            >
-                <h2>Blog Overview</h2>
-
-                <input
-                    type="text"
+            <div className={styles["header"]}>
+                <SearchField
+                    className={clsx(styles["search"])}
+                    aria-label="Blog Search"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Type to search..."
+                    onChange={setSearch}
+                    placeholder="Search blog"
+                    isReadOnly={blogs.loadingState === "loading"}
+                />
+
+                <LinkIconButton
+                    href={`/projects/${params.projectId}/blogs/create`}
+                    size="medium"
+                    icon={BadgePlus}
+                    color="tonal"
+                    width="wide"
+                    tooltip="Create Blog"
+                    render={(props) => {
+                        if ("href" in props) {
+                            return <Link {...props} />;
+                        }
+                        return <span {...props} />;
+                    }}
                 />
             </div>
 
-            {/* list all blogs */}
-            <div
-                className={styles.container}
-                data-empty={allBlogs.length === 0 || elements.length === 0}
-                data-load={loading && allBlogs.length === 0}
+            <BlogContext
+                value={{
+                    removeBlog,
+                    updateBlog,
+                    projectID: params.projectId,
+                }}
             >
-                {loading && allBlogs.length === 0 ? (
-                    <Loader />
-                ) : allBlogs.length === 0 ? (
-                    <h3>No blogs exist for this project</h3>
-                ) : elements.length === 0 ? (
-                    <p>
-                        There is no blog with title{" "}
-                        <span className="italic">
-                            <q>{search}</q>
-                        </span>
-                    </p>
-                ) : (
-                    <Container type="full" className={styles.table}>
-                        <div className={styles.heading}>
-                            <h4>Details</h4>
+                <Virtualizer
+                    layout={GridLayout}
+                    layoutOptions={{
+                        minItemSize: new Size(250, 360),
+                        maxItemSize: new Size(Infinity, 360),
+                        preserveAspectRatio: true,
+                        maxColumns: 4,
+                    }}
+                >
+                    <GridList
+                        layout="grid"
+                        aria-label="Blogs"
+                        renderEmptyState={() => {
+                            if (blogs.loadingState === "loading") {
+                                return (
+                                    <div
+                                        style={{
+                                            display: "grid",
+                                            placeItems: "center",
+                                            blockSize: "50svb",
+                                        }}
+                                    >
+                                        <Loader />
+                                    </div>
+                                );
+                            }
 
-                            <h4>Edit</h4>
+                            if (search) {
+                                return (
+                                    <p className={clsx(typography.titleMedium)}>
+                                        No blog found matching{" "}
+                                        <span className="italic">
+                                            <q>{search}</q>
+                                        </span>
+                                    </p>
+                                );
+                            }
 
-                            <h4>Delete</h4>
-                        </div>
+                            return (
+                                <Heading
+                                    className={clsx(typography.titleMedium)}
+                                >
+                                    No blogs exist for this project.
+                                </Heading>
+                            );
+                        }}
+                    >
+                        <Collection items={filteredBlogs}>
+                            {(blog) => (
+                                <BlogItem key={blog.blogId} blog={blog} />
+                            )}
+                        </Collection>
 
-                        {elements}
-
-                        <div
-                            style={{
-                                visibility: "hidden",
-                            }}
-                            ref={elementRef}
-                        ></div>
-                    </Container>
-                )}
-            </div>
-
-            {loading && allBlogs.length > 0 && <Loader variant="small" />}
+                        {!search && (
+                            <GridListLoadMoreItem
+                                onLoadMore={blogs.loadMore}
+                                isLoading={blogs.loadingState === "loadingMore"}
+                            >
+                                <Loader size={16} />
+                            </GridListLoadMoreItem>
+                        )}
+                    </GridList>
+                </Virtualizer>
+            </BlogContext>
         </div>
     );
 };
 
-export default Blogs;
+export default BlogsPage;

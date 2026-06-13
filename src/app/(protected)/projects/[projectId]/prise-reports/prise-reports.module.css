@@ -1,0 +1,35 @@
+.container {
+    margin-block: 1rem;
+    display: grid;
+    gap: 2rem;
+}
+
+.select-region {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-layout-space-16);
+    justify-content: space-between;
+}
+
+.label {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.label input {
+    width: 100%;
+}
+
+.form {
+    display: grid;
+    gap: var(--md-sys-layout-space-16);
+    max-inline-size: var(--md-sys-layout-window-size-expanded);
+}
+
+.heading {
+    color: var(--md-sys-color-on-surface);
+}
+
+.submit {
+    margin-block-start: var(--md-sys-layout-space-8);
+}

@@ -1,50 +1,79 @@
 "use client";
 
+import {
+    Button,
+    ComboBox,
+    ComboBoxPopover,
+    ComboBoxTrigger,
+    Input,
+    SelectItem,
+    SelectList,
+    typography,
+    useSnackbarQueue,
+    validateAndGetFormValues,
+} from "@adgytec/adgytec-web-ui-components";
 import { useParams } from "next/navigation";
-import { type FormEvent, useContext, useState } from "react";
-import { toast } from "react-toastify";
+import { useContext, useMemo, useState } from "react";
+import { Form, Heading } from "react-aria-components";
+import { useBoolean } from "usehooks-ts";
+import clsx from "clsx";
+import z from "zod";
+import type { ValidationErrors } from "@/helpers/validation";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Loader from "@/components/Loader/Loader";
-import styles from "../prise-reports.module.scss";
-import { type InputProps, priseReportsInputItems } from "../types";
+import styles from "../prise-reports.module.css";
+import { regions, priseReportsInputItems } from "../types";
 
-const Input = ({ label, ...props }: InputProps) => {
-    return (
-        <label className={styles["label"]}>
-            <span className={styles["label-text"]}>{label}</span>
-
-            <input {...props} />
-        </label>
-    );
-};
+const CreateReportSchema = z.object({
+    region: z.string().min(1, "Region is required"),
+    Territoire: z.string().optional(),
+    "Site d'intervention": z.string().optional(),
+    Infrastructures: z.string().optional(),
+    Latitude: z.string().optional(),
+    Longitude: z.string().optional(),
+});
 
 const PriseReportCreate = () => {
+    const snackbarQueue = useSnackbarQueue();
+
     const userWithRole = useContext(UserContext);
-    const user = userWithRole ? userWithRole.user : null;
+    const user = useMemo(() => {
+        return userWithRole ? userWithRole.user : null;
+    }, [userWithRole]);
 
     const params = useParams<{ projectId: string }>();
 
-    const [submitting, setSubmitting] = useState(false);
+    const {
+        value: submitting,
+        setTrue: startSubmitting,
+        setFalse: stopSubmitting,
+    } = useBoolean();
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const [selectedRegion, setSelectedRegion] = useState<string>("");
+    const [fieldErr, setFieldErr] = useState<ValidationErrors | undefined>(
+        undefined
+    );
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (submitting) return;
 
-        const form = e.currentTarget;
-
-        const formdata = new FormData(e.currentTarget);
-        let region = "";
-        if (formdata.has("region")) {
-            region = formdata.get("region")! as string;
-        } else {
-            toast.error("Region value not found.");
+        const result = validateAndGetFormValues(
+            e.currentTarget,
+            CreateReportSchema
+        );
+        if (!result.success) {
+            setFieldErr(result.errors);
             return;
         }
 
-        setSubmitting(true);
+        setFieldErr(undefined);
+        startSubmitting();
+
+        const form = e.currentTarget;
+        const region = result.data.region;
+
         const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${params.projectId}/${region}`;
         const token = await user?.getIdToken();
-        const body = JSON.stringify(Object.fromEntries(formdata.entries()));
+        const body = JSON.stringify(result.data);
         const headers = {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -58,68 +87,84 @@ const PriseReportCreate = () => {
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                toast.success("Successfully created new record");
+                snackbarQueue.add({
+                    supportingText: "Successfully created new record",
+                });
                 form.reset();
+                setSelectedRegion("");
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => {
-                setSubmitting(false);
+                stopSubmitting();
             });
     };
+
     return (
         <div className={styles["container"]}>
-            <form onSubmit={handleSubmit} className={styles["form"]}>
-                {priseReportsInputItems.map((item) => {
-                    if (item.elementType === "input") {
-                        const { elementType, ...inputProps } = item;
+            <Heading
+                className={clsx(styles["heading"], typography.headlineMedium)}
+            >
+                Create New Report
+            </Heading>
 
-                        return <Input {...inputProps} key={inputProps.name} />;
+            <Form
+                onSubmit={handleSubmit}
+                className={styles["form"]}
+                validationErrors={fieldErr}
+            >
+                {priseReportsInputItems.map((item) => {
+                    if (item.name === "region") {
+                        return (
+                            <ComboBox
+                                key={item.name}
+                                label="Region"
+                                name="region"
+                                isDisabled={submitting}
+                                value={selectedRegion}
+                                onChange={(key) =>
+                                    setSelectedRegion(String(key))
+                                }
+                                isRequired
+                            >
+                                <ComboBoxTrigger placeholder="Select Region" />
+                                <ComboBoxPopover>
+                                    <SelectList items={regions}>
+                                        {(reg) => (
+                                            <SelectItem
+                                                key={reg.value}
+                                                id={reg.value}
+                                                label={reg.displayValue}
+                                            />
+                                        )}
+                                    </SelectList>
+                                </ComboBoxPopover>
+                            </ComboBox>
+                        );
                     }
 
-                    const { elementType, label, options, ...selectProps } =
-                        item;
+                    if (item.elementType === "input") {
+                        return (
+                            <Input
+                                key={item.name}
+                                label={item.label}
+                                name={item.name}
+                                placeholder={item.placeholder}
+                                isReadOnly={submitting}
+                            />
+                        );
+                    }
 
-                    return (
-                        <label
-                            className={styles["label"]}
-                            key={selectProps.name}
-                        >
-                            <span className={styles["label-text"]}>
-                                {label}
-                            </span>
-
-                            <select
-                                {...selectProps}
-                                className={styles["input"]}
-                            >
-                                {options.map((option) => {
-                                    return (
-                                        <option
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            {option.displayValue}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
-                    );
+                    return null;
                 })}
 
                 <div className={styles["submit"]}>
-                    <button
-                        data-type="button"
-                        data-variant="secondary"
-                        disabled={submitting}
-                        data-disabled={submitting}
-                    >
-                        {submitting ? <Loader variant="small" /> : "Submit"}
-                    </button>
+                    <Button type="submit" isPending={submitting}>
+                        Submit
+                    </Button>
                 </div>
-            </form>
+            </Form>
         </div>
     );
 };

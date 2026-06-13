@@ -13,3 +13,19 @@ export type ProjectMetadata = {
 export const ProjectMetadataContext = createContext<ProjectMetadata | null>(
     null
 );
+
+export function flattenCategories(category: Category): Category[] {
+    const result: Category[] = [];
+
+    function walk(cat: Category) {
+        result.push(cat);
+
+        for (const sub of cat.subCategories) {
+            walk(sub);
+        }
+    }
+
+    walk(category);
+
+    return result;
+}

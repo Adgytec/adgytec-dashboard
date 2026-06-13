@@ -1,13 +1,20 @@
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import {
+    Button,
+    ComboBox,
+    ComboBoxPopover,
+    ComboBoxTrigger,
+    IconButton,
+    Input,
+    SelectItem,
+    SelectList,
+    TextArea,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
+import { ImagePlus, Trash2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import type React from "react";
 import {
     type Dispatch,
-    Fragment,
     type MutableRefObject,
     type SetStateAction,
     useContext,
@@ -15,18 +22,15 @@ import {
     useMemo,
     useState,
 } from "react";
-import { toast } from "react-toastify";
+import { FileTrigger } from "react-aria-components";
 import { UserContext } from "@/components/AuthContext/authContext";
-import FileInput from "@/components/FileInput/FileInput";
-import { useFile } from "@/components/FileInput/hooks/useFile";
-import Loader from "@/components/Loader/Loader";
 import { validateString } from "@/helpers/validation";
 import {
-    type Category,
+    flattenCategories,
     ProjectMetadataContext,
 } from "../../../context/projectMetadataContext";
 import type { BlogDetails, NewImages } from "../../create/page";
-import styles from "./details.module.scss";
+import styles from "./details.module.css";
 
 interface DetailsProps {
     blogDetails: BlogDetails;
@@ -36,8 +40,6 @@ interface DetailsProps {
     uuidRef: MutableRefObject<string | null>;
 }
 
-type HandleCategories = (item: Category) => React.JSX.Element;
-
 const Details = ({
     blogDetails,
     setBlogDetails,
@@ -45,33 +47,44 @@ const Details = ({
     deletedImages,
     uuidRef,
 }: DetailsProps) => {
+    const snackbarQueue = useSnackbarQueue();
+
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
     }, [userWithRole]);
 
     const projectMetadata = useContext(ProjectMetadataContext);
+    const { categories } = projectMetadata ?? {};
+
+    const flattenedCategories = useMemo(
+        () =>
+            projectMetadata
+                ? flattenCategories(projectMetadata.categories)
+                : [],
+        [projectMetadata]
+    );
 
     const params = useParams<{ projectId: string }>();
-    const pathName = usePathname();
-    const [cover, setCover] = useFile();
-
     const [creating, setCreating] = useState<boolean>(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>("default");
-
     const router = useRouter();
 
+    const [coverUrl, setCoverUrl] = useState<string | null>(null);
+
     useEffect(() => {
-        if (cover.length !== 0) {
-            setBlogDetails((prev) => {
-                return { ...prev, cover: cover[0].file };
-            });
+        if (blogDetails.cover) {
+            const url = URL.createObjectURL(blogDetails.cover);
+            setCoverUrl(url);
+            return () => {
+                URL.revokeObjectURL(url);
+            };
         }
-    }, [cover, setBlogDetails]);
+        setCoverUrl(null);
+    }, [blogDetails.cover]);
 
     const validateBlog = (): boolean => {
         if (!validateString(blogDetails.content, 50)) {
-            toast.error("blog content too short!");
+            snackbarQueue.add({ supportingText: "blog content too short!" });
             return false;
         }
 
@@ -79,12 +92,12 @@ const Details = ({
             blogDetails.author.length > 0 &&
             !validateString(blogDetails.author, 3)
         ) {
-            toast.error("name too short");
+            snackbarQueue.add({ supportingText: "name too short" });
             return false;
         }
 
         if (!validateString(blogDetails.title, 3)) {
-            toast.error("blog title too short!");
+            snackbarQueue.add({ supportingText: "blog title too short!" });
             return false;
         }
 
@@ -92,7 +105,7 @@ const Details = ({
             blogDetails.summary.length > 0 &&
             !validateString(blogDetails.summary, 10)
         ) {
-            toast.error("blog summary too short!");
+            snackbarQueue.add({ supportingText: "blog summary too short!" });
             return false;
         }
 
@@ -100,8 +113,7 @@ const Details = ({
     };
 
     const createBlog = async () => {
-        // if (!blogDetails.cover) return;
-
+        const url = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}`;
         const token = await user?.getIdToken();
         const headers = {
             Authorization: `Bearer ${token}`,
@@ -115,319 +127,252 @@ const Details = ({
         blogData.append("content", blogDetails.content);
         blogData.append("category", blogDetails.category);
 
-        const createBlogURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}`;
-        fetch(createBlogURL, {
+        fetch(url, {
             method: "POST",
             headers,
             body: blogData,
         })
-            .then((res) => res.json())
+            .then((res) => {
+                return res.json();
+            })
             .then((res) => {
                 if (res.error) throw new Error(res.message);
 
-                toast.success("Successfully created blog");
+                snackbarQueue.add({ supportingText: res.message });
                 router.push(`/projects/${params.projectId}/blogs`);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
-            .finally(() => setCreating(false));
+            .finally(() => {
+                setCreating(false);
+            });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const form = e.target;
-
-        if (!(form instanceof HTMLFormElement)) {
-            return toast.error("Something is wrong from our end");
-        }
-
-        // handle form validation
-        if (!validateBlog()) {
-            return;
-        }
-
-        // if (!blogDetails.cover) {
-        // 	toast.error("cover image requried for blog");
-        // 	return;
-        // }
+        if (!validateBlog()) return;
 
         setCreating(true);
-        const validNewFiles = newImagesRef.current.filter(
-            (img) => !img.isRemoved
-        );
 
-        if (validNewFiles.length === 0) {
-            createBlog();
-            return;
-        }
+        const newImages = newImagesRef.current.filter((img) => !img.isRemoved);
 
-        const formData = new FormData();
-        const metaData = validNewFiles.map(({ path }) => {
-            return { path };
+        const uploadPromises = newImages.map((img) => {
+            const addMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;
+
+            const formData = new FormData();
+            formData.append("image", img.file);
+
+            return user?.getIdToken().then((token) => {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+
+                return fetch(addMediaURL, {
+                    method: "POST",
+                    headers,
+                    body: formData,
+                }).then((res) => res.json());
+            });
         });
 
-        formData.append("metadata", JSON.stringify(metaData));
-        validNewFiles.forEach(({ file }, index) => {
-            formData.append(`media_${index}`, file);
-        });
-
-        // adding media to blogs
-        const addMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;
-        const token = await user?.getIdToken();
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
-        fetch(addMediaURL, {
-            method: "POST",
-            headers,
-            body: formData,
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.error) throw new Error(res.message);
+        Promise.all(uploadPromises)
+            .then((results) => {
+                for (const res of results) {
+                    if (res?.error) {
+                        throw new Error(res.message);
+                    }
+                }
 
                 if (deletedImages.length > 0) {
                     const deleteMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;
                     const body = JSON.stringify({
-                        paths: deletedImages,
+                        urls: deletedImages,
                     });
 
-                    fetch(deleteMediaURL, {
-                        method: "DELETE",
-                        headers: {
-                            ...headers,
-                            "Content-Type": "application/json",
-                        },
-                        body,
-                    })
-                        .then((res) => {
-                            return res.json();
-                        })
-                        .then((res) => {
-                            if (res.error) throw new Error(res.message);
+                    return user?.getIdToken().then((token) => {
+                        const headers = {
+                            Authorization: `Bearer ${token}`,
+                        };
 
-                            console.log("successfully deleted unused media");
+                        return fetch(deleteMediaURL, {
+                            method: "DELETE",
+                            headers: {
+                                ...headers,
+                                "Content-Type": "application/json",
+                            },
+                            body,
                         })
-                        .catch((err) => {
-                            console.error(err.message);
-                        });
+                            .then((res) => {
+                                return res.json();
+                            })
+                            .then((res) => {
+                                if (res.error) throw new Error(res.message);
+
+                                console.log(
+                                    "successfully deleted unused media"
+                                );
+                            })
+                            .catch((err) => {
+                                console.error(err.message);
+                            });
+                    });
                 }
 
-                // if (!blogDetails.cover) return;
                 createBlog();
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
                 setCreating(false);
             });
     };
 
-    const handleInputChange = (
-        e:
-            | React.ChangeEvent<HTMLInputElement>
-            | React.ChangeEvent<HTMLTextAreaElement>
-            | React.ChangeEvent<HTMLSelectElement>
-    ) => {
-        const key = e.target.name;
-        const value = e.target.value;
-
-        setBlogDetails((prev) => {
-            return { ...prev, [key]: value };
-        });
+    const handleValueChange = (name: keyof BlogDetails, value: string) => {
+        setBlogDetails((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     const isCreateDisabled = !blogDetails.title || !blogDetails.content;
 
-    const handleCategories: HandleCategories = ({
-        categoryId,
-        categoryName,
-        subCategories,
-    }) => {
-        if (subCategories.length > 0) {
-            return (
-                <DropdownMenu.Sub key={categoryId}>
-                    <DropdownMenu.SubTrigger className="dropdown-menu__item sub-trigger">
-                        {categoryName}
-
-                        <div className="dropdown-icon">
-                            <FontAwesomeIcon icon={faAngleDown} />
-                        </div>
-                    </DropdownMenu.SubTrigger>
-
-                    <DropdownMenu.Portal>
-                        <DropdownMenu.SubContent
-                            className="dropdown-menu"
-                            sideOffset={12.5}
-                        >
-                            <DropdownMenu.Item
-                                className="dropdown-menu__item"
-                                onClick={() => {
-                                    setSelectedCategory(categoryName);
-                                    setBlogDetails((prev) => {
-                                        return {
-                                            ...prev,
-                                            category: categoryId,
-                                        };
-                                    });
-                                }}
-                            >
-                                {categoryName}
-                            </DropdownMenu.Item>
-
-                            {subCategories.map((item) =>
-                                handleCategories(item)
-                            )}
-                        </DropdownMenu.SubContent>
-                    </DropdownMenu.Portal>
-                </DropdownMenu.Sub>
-            );
-        }
-
-        return (
-            <DropdownMenu.Item
-                className="dropdown-menu__item"
-                key={categoryId}
-                onClick={() => {
-                    setSelectedCategory(categoryName);
-                    setBlogDetails((prev) => {
-                        return {
-                            ...prev,
-                            category: categoryId,
-                        };
-                    });
-                }}
-            >
-                {categoryName}
-            </DropdownMenu.Item>
-        );
-    };
-
-    console.log(projectMetadata);
-
     return (
         <div className={styles.details}>
             <form className={styles.form} onSubmit={handleSubmit}>
-                <div className={styles.input}>
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        placeholder="Title for the blog..."
-                        value={blogDetails.title}
-                        onChange={handleInputChange}
-                        name="title"
-                        id="title"
-                        required
-                        disabled={creating}
-                    />
-                </div>
+                <Input
+                    name="title"
+                    value={blogDetails.title}
+                    onChange={(val) => handleValueChange("title", val)}
+                    label="Title"
+                    placeholder="Title for the blog..."
+                    isRequired
+                    isReadOnly={creating}
+                />
+
+                <Input
+                    name="author"
+                    value={blogDetails.author}
+                    onChange={(val) => handleValueChange("author", val)}
+                    label="Author"
+                    placeholder="Author for the blog..."
+                    isReadOnly={creating}
+                />
+
+                {categories && (
+                    <ComboBox
+                        label="Category"
+                        name="category"
+                        isDisabled={creating}
+                        value={blogDetails.category}
+                        onChange={(key) => {
+                            const id = String(key);
+                            setBlogDetails((prev) => ({
+                                ...prev,
+                                category: id,
+                            }));
+                        }}
+                    >
+                        <ComboBoxTrigger placeholder="Select Category" />
+
+                        <ComboBoxPopover>
+                            <SelectList items={flattenedCategories}>
+                                {(item) => (
+                                    <SelectItem
+                                        key={item.categoryId}
+                                        id={item.categoryId}
+                                        label={item.categoryName}
+                                    />
+                                )}
+                            </SelectList>
+                        </ComboBoxPopover>
+                    </ComboBox>
+                )}
+
+                <TextArea
+                    name="summary"
+                    value={blogDetails.summary}
+                    onChange={(val) => handleValueChange("summary", val)}
+                    placeholder="Summary for the blog..."
+                    label="Summary"
+                    isReadOnly={creating}
+                    rows={5}
+                />
 
                 <div className={styles.input}>
-                    <label htmlFor="author">Author</label>
-                    <input
-                        type="text"
-                        placeholder="Author for the blog..."
-                        value={blogDetails.author}
-                        onChange={handleInputChange}
-                        name="author"
-                        id="author"
-                        disabled={creating}
-                    />
-                </div>
+                    <span>Cover Image</span>
+                    <div className={styles["logo-preview"]}>
+                        {!blogDetails.cover && (
+                            <FileTrigger
+                                acceptedFileTypes={["image/*"]}
+                                onSelect={(files) => {
+                                    if (!files) return;
+                                    if (files.length < 1) return;
 
-                <div className={styles.input}>
-                    <label htmlFor="category">Category</label>
+                                    const file = files.item(0);
+                                    if (!file) return;
 
-                    <DropdownMenu.Root>
-                        <DropdownMenu.Trigger asChild>
-                            <button
-                                className={styles.menuTrigger}
-                                aria-label="Customise options"
-                                data-type="button"
-                                data-variant="select"
+                                    setBlogDetails((prev) => ({
+                                        ...prev,
+                                        cover: file,
+                                    }));
+                                }}
                             >
-                                {selectedCategory}
-                            </button>
-                        </DropdownMenu.Trigger>
-
-                        <DropdownMenu.Portal>
-                            <DropdownMenu.Content
-                                className="dropdown-menu"
-                                sideOffset={5}
-                            >
-                                <DropdownMenu.Item
-                                    className="dropdown-menu__item"
-                                    onClick={() => {
-                                        setSelectedCategory("default");
-                                        setBlogDetails((prev) => {
-                                            return {
-                                                ...prev,
-                                                category: params.projectId,
-                                            };
-                                        });
-                                    }}
+                                <Button
+                                    color="text"
+                                    isDisabled={creating}
+                                    icon={ImagePlus}
+                                    className={styles["logo-selection"]}
                                 >
-                                    default
-                                </DropdownMenu.Item>
+                                    Add
+                                </Button>
+                            </FileTrigger>
+                        )}
 
-                                {projectMetadata &&
-                                    projectMetadata.categories.subCategories
-                                        .length > 0 &&
-                                    projectMetadata.categories.subCategories.map(
-                                        (item) => handleCategories(item)
-                                    )}
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Portal>
-                    </DropdownMenu.Root>
-                </div>
+                        {blogDetails.cover && coverUrl && (
+                            <IconButton
+                                icon={Trash2}
+                                color="tonal"
+                                className={styles["logo-remove"]}
+                                onPress={() => {
+                                    setBlogDetails((prev) => ({
+                                        ...prev,
+                                        cover: null,
+                                    }));
+                                }}
+                                isDisabled={creating}
+                            />
+                        )}
 
-                <div className={styles.input}>
-                    <label htmlFor="summary">Summary</label>
-                    <textarea
-                        name="summary"
-                        value={blogDetails.summary}
-                        onChange={handleInputChange}
-                        placeholder="Summary for the blog..."
-                        disabled={creating}
-                        id="summary"
-                    />
-                </div>
-
-                <div className={styles.input}>
-                    <label>Cover Image</label>
-                    <FileInput
-                        setFiles={setCover}
-                        multiple={false}
-                        disabled={creating}
-                        image={blogDetails.cover}
-                        files={cover}
-                    />
+                        {blogDetails.cover && coverUrl && (
+                            <img
+                                src={coverUrl}
+                                alt="Blog cover"
+                                className={styles["logo"]}
+                                height={120}
+                            />
+                        )}
+                    </div>
                 </div>
 
                 <div className={styles.actions}>
-                    <button
-                        data-type="link"
-                        data-variant="secondary"
-                        onClick={() => {
+                    <Button
+                        color="outlined"
+                        onPress={() => {
                             router.back();
                         }}
-                        disabled={creating}
-                        type="button"
+                        isDisabled={creating}
                     >
                         Previous
-                    </button>
+                    </Button>
 
-                    <button
-                        data-type="button"
-                        data-variant="secondary"
+                    <Button
                         type="submit"
-                        disabled={isCreateDisabled || creating}
-                        data-load={creating}
+                        isDisabled={isCreateDisabled || creating}
+                        isPending={creating}
                     >
-                        {creating ? <Loader variant="small" /> : "Create"}
-                    </button>
+                        Create
+                    </Button>
                 </div>
             </form>
         </div>

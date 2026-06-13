@@ -14,6 +14,7 @@ import {
 } from "lexical";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Toolbar } from "@adgytec/adgytec-web-ui-components";
 import { Divider } from "./ToolbarPlugin";
 import { getDOMRangeRect } from "./utils/getDOMRangeRect";
 import { getSelectedNode } from "./utils/getSelectNode";
@@ -151,7 +152,7 @@ function TextFormatFloatingToolbar({
     }, [editor, updateTextFormatFloatingToolbar]);
 
     return (
-        <div
+        <Toolbar
             // style={{
             // 	display: "flex",
             // 	background: "#fff",
@@ -170,6 +171,8 @@ function TextFormatFloatingToolbar({
             // 	willChange: "transform",
             // }}
             className="toolbar floating-toolbar"
+            variant="floating"
+            color="vibrant"
             ref={popupCharStylesEditorRef}
         >
             {editor.isEditable() && (
@@ -308,7 +311,7 @@ function TextFormatFloatingToolbar({
                     </button>
                 </>
             )}
-        </div>
+        </Toolbar>
     );
 }
 

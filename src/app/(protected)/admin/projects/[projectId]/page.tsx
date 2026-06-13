@@ -27,6 +27,9 @@ import Category from "./components/Category/Category";
 import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
 import ServicesComp from "./components/Services/Services";
 import UsersComp from "./components/Users/Users";
+
+export { UsersComp };
+
 import styles from "./project.module.css";
 
 interface ProjectDetailsProps {

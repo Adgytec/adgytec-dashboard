@@ -57,6 +57,7 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import { generateRandomString } from "@/helpers/helpers";
 import type { NewImages } from "../../../create/page";
 import { INSERT_IMAGE_COMMAND } from "../nodes/ImageNode";
+import { Toolbar } from "@adgytec/adgytec-web-ui-components";
 
 const LowPriority = 1;
 
@@ -650,7 +651,7 @@ export default function ToolbarPlugin({
     );
 
     return (
-        <div className="toolbar" ref={toolbarRef}>
+        <Toolbar className="toolbar" ref={toolbarRef}>
             <button
                 disabled={!canUndo}
                 onClick={() => {
@@ -867,6 +868,6 @@ export default function ToolbarPlugin({
                     </button>
                 </>
             )}
-        </div>
+        </Toolbar>
     );
 }

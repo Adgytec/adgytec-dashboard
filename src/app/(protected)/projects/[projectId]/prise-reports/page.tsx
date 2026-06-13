@@ -1,16 +1,25 @@
 "use client";
 
 import {
+    ComboBox,
+    ComboBoxPopover,
+    ComboBoxTrigger,
+    LinkButton,
+    SelectItem,
+    SelectList,
+} from "@adgytec/adgytec-web-ui-components";
+import { BadgePlus } from "lucide-react";
+import Link from "next/link";
+import {
     useParams,
     usePathname,
     useRouter,
     useSearchParams,
 } from "next/navigation";
 import type React from "react";
-import { ReactEventHandler, useContext, useEffect, useMemo } from "react";
-import { UserContext } from "@/components/AuthContext/authContext";
+import { useEffect } from "react";
 import PriseReports from "@/components/PriseReports/PriseReports";
-import styles from "./prise-reports.module.scss";
+import styles from "./prise-reports.module.css";
 import { regions } from "./types";
 
 const PriseReportPage = () => {
@@ -30,11 +39,12 @@ const PriseReportPage = () => {
 
             router.push(`${pathname}?${params.toString()}`);
         }
-    }, [region]);
+    }, [region, pathname, router]);
 
-    const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleRegionChange = (key: React.Key | null) => {
+        if (!key) return;
         const params = new URLSearchParams();
-        params.set("region", e.target.value);
+        params.set("region", String(key));
 
         router.push(`${pathname}?${params.toString()}`);
     };
@@ -42,15 +52,40 @@ const PriseReportPage = () => {
     return (
         <div className={styles["container"]}>
             <div className={styles["select-region"]}>
-                <select onChange={handleRegionChange} defaultValue={region}>
-                    {regions.map((val) => {
-                        return (
-                            <option key={val.value} value={val.value}>
-                                {val.displayValue}
-                            </option>
-                        );
-                    })}
-                </select>
+                <LinkButton
+                    href={`/projects/${params.projectId}/prise-reports/create`}
+                    icon={BadgePlus}
+                    color="tonal"
+                    size="medium"
+                    render={(props) => {
+                        if ("href" in props) {
+                            return <Link {...props} />;
+                        }
+                        return <span {...props} />;
+                    }}
+                >
+                    Add Record
+                </LinkButton>
+
+                <ComboBox
+                    label="Region"
+                    name="region"
+                    value={region}
+                    onChange={handleRegionChange}
+                >
+                    <ComboBoxTrigger placeholder="Select Region" />
+                    <ComboBoxPopover>
+                        <SelectList items={regions}>
+                            {(item) => (
+                                <SelectItem
+                                    key={item.value}
+                                    id={item.value}
+                                    label={item.displayValue}
+                                />
+                            )}
+                        </SelectList>
+                    </ComboBoxPopover>
+                </ComboBox>
             </div>
 
             <PriseReports

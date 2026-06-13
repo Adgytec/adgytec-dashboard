@@ -1,13 +1,17 @@
 import type { CSSProperties } from "react";
 import styles from "./loader.module.css";
 
-const Loader: React.FC<{ size?: number }> = ({ size = 24 }) => {
+const Loader: React.FC<{ size?: number; variant?: string }> = ({
+    size,
+    variant,
+}) => {
+    const loaderSize = size ?? (variant === "small" ? 16 : 24);
     return (
         <span
             className={styles.loader}
             style={
                 {
-                    "--loader-size": size,
+                    "--loader-size": loaderSize,
                 } as CSSProperties
             }
         />
