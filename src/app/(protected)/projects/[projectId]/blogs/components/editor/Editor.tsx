@@ -26,7 +26,7 @@ import NodeChangePlugin from "./plugins/NodeChangePlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import EditorTheme from "./themes/EditorTheme";
 
-import "../../../../../../../styles/abstract/_lexical.scss";
+// import "../../../../../../../styles/abstract/_lexical.scss";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TreeView } from "@lexical/react/LexicalTreeView";
@@ -43,6 +43,13 @@ import {
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import type { BlogDetails, NewImages } from "../../create/page";
 import styles from "./editor.module.scss";
+import { DialogTrigger } from "react-aria-components";
+import {
+    ActionDialog,
+    Button,
+    Modal,
+    ModalOverlay,
+} from "@adgytec/adgytec-web-ui-components";
 
 function Placeholder() {
     return (
@@ -78,6 +85,7 @@ const editorConfig = {
 interface EditorActionsProps {
     setBlogDetails: Dispatch<SetStateAction<BlogDetails>>;
 }
+
 function EditorActions({ setBlogDetails }: EditorActionsProps) {
     const [editor] = useLexicalComposerContext();
     // const isEmpty = useLexicalIsTextContentEmpty(editor);
@@ -108,7 +116,6 @@ function EditorActions({ setBlogDetails }: EditorActionsProps) {
         editor.getEditorState().read(() => {
             const htmlString = $generateHtmlFromNodes(editor, null);
             setPreviewContent(htmlString);
-            previewRef.current?.showModal();
         });
     };
 
@@ -118,47 +125,36 @@ function EditorActions({ setBlogDetails }: EditorActionsProps) {
 
     return (
         <>
-            <dialog
-                ref={previewRef}
-                onClick={lightDismiss}
-                className={styles.preview}
-            >
-                <div className={styles.content}>
-                    <div className={`modal-menu ${styles.menu}`}>
-                        <h2>Blog Preview</h2>
-
-                        <button
-                            data-type="link"
-                            onClick={() => handleModalClose(previewRef)}
-                            title="close"
-                        >
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    </div>
-
-                    <div
-                        dangerouslySetInnerHTML={obj}
-                        className={styles.previewBody}
-                    ></div>
-                </div>
-            </dialog>
             <div className={styles.action}>
-                <button
-                    data-type="link"
-                    // disabled={isEmpty}
-                    onClick={handlePreview}
-                >
-                    Preview
-                </button>
+                <DialogTrigger>
+                    <Button color="text" onPress={handlePreview}>
+                        Preview
+                    </Button>
 
-                <button
-                    data-type="button"
-                    data-variant="secondary"
-                    // disabled={isEmpty}
-                    onClick={handleEditorContent}
-                >
-                    Next
-                </button>
+                    <ModalOverlay>
+                        <Modal>
+                            <ActionDialog
+                                heading="Preview"
+                                style={{
+                                    maxInlineSize:
+                                        "calc(1200 * var(--dp, 1px))",
+                                }}
+                                actions={[
+                                    <Button key="done" slot="close">
+                                        Done
+                                    </Button>,
+                                ]}
+                            >
+                                <div
+                                    dangerouslySetInnerHTML={obj}
+                                    className={styles.previewBody}
+                                ></div>
+                            </ActionDialog>
+                        </Modal>
+                    </ModalOverlay>
+                </DialogTrigger>
+
+                <Button onClick={handleEditorContent}>Next</Button>
             </div>
 
             {/* <TreeView
