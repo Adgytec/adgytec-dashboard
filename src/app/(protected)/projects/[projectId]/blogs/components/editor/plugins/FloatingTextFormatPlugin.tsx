@@ -1,3 +1,4 @@
+import { Toolbar } from "@adgytec/adgytec-web-ui-components";
 import { $isCodeHighlightNode } from "@lexical/code";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -14,7 +15,6 @@ import {
 } from "lexical";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Toolbar } from "@adgytec/adgytec-web-ui-components";
 import { Divider } from "./ToolbarPlugin";
 import { getDOMRangeRect } from "./utils/getDOMRangeRect";
 import { getSelectedNode } from "./utils/getSelectNode";

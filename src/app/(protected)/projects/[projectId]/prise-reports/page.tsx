@@ -64,11 +64,11 @@ const PriseReportPage = () => {
                         return <span {...props} />;
                     }}
                 >
-                    Add Record
+                    Add
                 </LinkButton>
 
                 <ComboBox
-                    label="Region"
+                    aria-label="Region"
                     name="region"
                     value={region}
                     onChange={handleRegionChange}

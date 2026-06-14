@@ -1,3 +1,12 @@
+import {
+    ActionDialog,
+    Button,
+    Modal,
+    ModalOverlay,
+} from "@adgytec/adgytec-web-ui-components";
+// import "../../../../../../../styles/abstract/_lexical.scss";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
@@ -13,24 +22,11 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TreeView } from "@lexical/react/LexicalTreeView";
+import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { $getRoot, $insertNodes } from "lexical";
-import ImageNode from "./nodes/ImageNode";
-import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
-import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
-import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatPlugin";
-import ImagePlugin from "./plugins/ImagePlugin";
-import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
-import NodeChangePlugin from "./plugins/NodeChangePlugin";
-import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import EditorTheme from "./themes/EditorTheme";
-
-// import "../../../../../../../styles/abstract/_lexical.scss";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TreeView } from "@lexical/react/LexicalTreeView";
-import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -40,16 +36,19 @@ import {
     useRef,
     useState,
 } from "react";
+import { DialogTrigger } from "react-aria-components";
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import type { BlogDetails, NewImages } from "../../create/page";
 import styles from "./editor.module.scss";
-import { DialogTrigger } from "react-aria-components";
-import {
-    ActionDialog,
-    Button,
-    Modal,
-    ModalOverlay,
-} from "@adgytec/adgytec-web-ui-components";
+import ImageNode from "./nodes/ImageNode";
+import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatPlugin";
+import ImagePlugin from "./plugins/ImagePlugin";
+import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
+import NodeChangePlugin from "./plugins/NodeChangePlugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import EditorTheme from "./themes/EditorTheme";
 
 function Placeholder() {
     return (

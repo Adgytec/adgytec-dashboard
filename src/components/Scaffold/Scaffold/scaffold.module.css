@@ -85,6 +85,7 @@
 .main {
     flex: 1;
     max-inline-size: var(--md-sys-layout-window-size-extra-large);
+    align-self: flex-start;
 }
 
 .docked-navigation {

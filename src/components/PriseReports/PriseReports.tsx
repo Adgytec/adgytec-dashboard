@@ -20,6 +20,8 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
     const [reportItems, setReportItems] = useState<PriseReportItem[]>([]);
 
     const getPriseReportByRegion = useCallback(async () => {
+        if (!region) return;
+
         const url = `${process.env.NEXT_PUBLIC_API}/services/prise-reports/${projectId}/${region}`;
         const token = await user?.getIdToken();
         const headers = {

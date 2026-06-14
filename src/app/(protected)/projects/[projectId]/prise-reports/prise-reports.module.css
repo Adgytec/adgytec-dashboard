@@ -2,6 +2,10 @@
     margin-block: 1rem;
     display: grid;
     gap: 2rem;
+
+    > * {
+        min-inline-size: 0;
+    }
 }
 
 .select-region {

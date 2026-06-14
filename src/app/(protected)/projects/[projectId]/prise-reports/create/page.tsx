@@ -12,16 +12,16 @@ import {
     useSnackbarQueue,
     validateAndGetFormValues,
 } from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { useContext, useMemo, useState } from "react";
 import { Form, Heading } from "react-aria-components";
 import { useBoolean } from "usehooks-ts";
-import clsx from "clsx";
 import z from "zod";
-import type { ValidationErrors } from "@/helpers/validation";
 import { UserContext } from "@/components/AuthContext/authContext";
+import type { ValidationErrors } from "@/helpers/validation";
 import styles from "../prise-reports.module.css";
-import { regions, priseReportsInputItems } from "../types";
+import { priseReportsInputItems, regions } from "../types";
 
 const CreateReportSchema = z.object({
     region: z.string().min(1, "Region is required"),

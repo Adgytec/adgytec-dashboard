@@ -23,8 +23,8 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import type { ValidationErrors } from "@/helpers/validation";
 import {
     type Category,
-    ProjectMetadataContext,
     flattenCategories,
+    ProjectMetadataContext,
 } from "../../../context/projectMetadataContext";
 import { useBlogActions } from "../../context";
 import styles from "./editBlog.module.css";

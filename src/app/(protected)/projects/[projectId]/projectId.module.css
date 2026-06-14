@@ -1,6 +1,10 @@
 .project {
     display: grid;
     gap: var(--md-sys-layout-spacer);
+
+    > * {
+        min-inline-size: 0;
+    }
 }
 
 .services {

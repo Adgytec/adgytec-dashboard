@@ -96,8 +96,6 @@ const ContactUsPage = () => {
 
     return (
         <div className={styles.contactUs}>
-            <h2>Contact Us Overview</h2>
-
             <div data-empty={items.length === 0} data-load={loading}>
                 {loading ? (
                     <Loader />

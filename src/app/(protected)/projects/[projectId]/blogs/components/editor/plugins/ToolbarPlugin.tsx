@@ -1,3 +1,4 @@
+import { Toolbar } from "@adgytec/adgytec-web-ui-components";
 import {
     $createCodeNode,
     $isCodeNode,
@@ -57,7 +58,6 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import { generateRandomString } from "@/helpers/helpers";
 import type { NewImages } from "../../../create/page";
 import { INSERT_IMAGE_COMMAND } from "../nodes/ImageNode";
-import { Toolbar } from "@adgytec/adgytec-web-ui-components";
 
 const LowPriority = 1;
 

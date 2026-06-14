@@ -1,6 +1,10 @@
 .contactUs {
     display: grid;
     gap: var(--md-sys-layout-space-24);
+
+    > * {
+        min-inline-size: 0;
+    }
 }
 
 .table-container {

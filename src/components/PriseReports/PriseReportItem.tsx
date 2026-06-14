@@ -15,11 +15,11 @@ import {
     useSnackbarQueue,
     validateAndGetFormValues,
 } from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
 import { Edit, EllipsisVertical, Trash2 } from "lucide-react";
 import { type FormEvent, useContext, useId, useMemo, useState } from "react";
 import { Cell, Form, Heading, Row, Text } from "react-aria-components";
 import { useBoolean } from "usehooks-ts";
-import clsx from "clsx";
 import z from "zod";
 import type { ValidationErrors } from "@/helpers/validation";
 import { UserContext } from "../AuthContext/authContext";
