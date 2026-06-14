@@ -12,9 +12,9 @@ const firebaseConfig = {
 };
 
 const firebaseApp =
-    getApps().length == 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-const analytics = isSupported().then((yes) =>
+const _analytics = isSupported().then((yes) =>
     yes ? getAnalytics(firebaseApp) : null
 );
 

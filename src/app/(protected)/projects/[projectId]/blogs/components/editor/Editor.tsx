@@ -6,10 +6,8 @@ import {
 } from "@adgytec/adgytec-web-ui-components";
 
 import "../../../../../../../styles/abstract/_lexical.scss";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
-import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+import { $generateHtmlFromNodes } from "@lexical/html";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { TRANSFORMERS } from "@lexical/markdown";
@@ -23,12 +21,8 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { TreeView } from "@lexical/react/LexicalTreeView";
-import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
-import { $getRoot, $insertNodes } from "lexical";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
     type Dispatch,
@@ -38,7 +32,6 @@ import {
     useState,
 } from "react";
 import { DialogTrigger } from "react-aria-components";
-import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import type { BlogDetails, NewImages } from "../../create/page";
 import styles from "./editor.module.css";
 import ImageNode from "./nodes/ImageNode";
@@ -92,7 +85,7 @@ function EditorActions({ setBlogDetails }: EditorActionsProps) {
     const pathName = usePathname();
     const router = useRouter();
 
-    const previewRef = useRef<HTMLDialogElement | null>(null);
+    const _previewRef = useRef<HTMLDialogElement | null>(null);
     const [previewContent, setPreviewContent] = useState<string>(
         "<p>No content to preview</p>"
     );

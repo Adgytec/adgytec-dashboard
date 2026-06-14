@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import React from "react";
 import Container from "../Container/Container";
 import styles from "./linkheader.module.scss";
 
@@ -28,7 +27,7 @@ const LinkHeader = ({ links }: LinkHeaderProps) => {
                     let tempActive = pathname === link.href;
 
                     if (link.view && link.view.length !== 0) {
-                        temphref += "?view=" + link.view[0];
+                        temphref += `?view=${link.view[0]}`;
                         tempActive = link.view.includes(view ?? "");
                     }
 

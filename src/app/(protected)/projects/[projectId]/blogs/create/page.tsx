@@ -6,7 +6,7 @@ import {
     useRouter,
     useSearchParams,
 } from "next/navigation";
-import React, {
+import {
     useCallback,
     useContext,
     useEffect,

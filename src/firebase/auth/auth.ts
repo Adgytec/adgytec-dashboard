@@ -2,7 +2,6 @@ import type { FirebaseError } from "firebase/app";
 import {
     browserLocalPersistence,
     browserSessionPersistence,
-    connectAuthEmulator,
     getAuth,
     sendEmailVerification,
     sendPasswordResetEmail,

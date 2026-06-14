@@ -14,7 +14,6 @@ import {
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/components/AuthContext/authContext";
-import { Changelog } from "@/components/Changelog/Changelog";
 import Container from "@/components/Container/Container";
 import { userRoles } from "@/helpers/type";
 import styles from "./home.module.scss";

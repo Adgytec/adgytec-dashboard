@@ -1,14 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import React, {
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import { useParams } from "next/navigation";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";

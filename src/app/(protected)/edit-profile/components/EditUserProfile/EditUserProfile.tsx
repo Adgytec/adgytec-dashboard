@@ -25,7 +25,7 @@ export const EditUserProfile = () => {
         setFalse: stopUpdating,
     } = useBoolean();
 
-    const [fieldErr, setFieldErr] = useState<ValidationErrors | undefined>(
+    const [_fieldErr, setFieldErr] = useState<ValidationErrors | undefined>(
         undefined
     );
 

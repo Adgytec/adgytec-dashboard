@@ -38,7 +38,7 @@ class ImageNode extends DecoratorNode<React.JSX.Element> {
         return new ImageNode(src, path, width, height);
     }
 
-    exportDOM(editor: LexicalEditor): DOMExportOutput {
+    exportDOM(_editor: LexicalEditor): DOMExportOutput {
         const img = document.createElement("img");
         img.setAttribute("src", this.__src);
         img.setAttribute("alt", "blog-image");
@@ -126,7 +126,7 @@ class ImageNode extends DecoratorNode<React.JSX.Element> {
         writable.__height = height;
     }
 
-    decorate(editor: LexicalEditor, config: EditorConfig): React.JSX.Element {
+    decorate(_editor: LexicalEditor, _config: EditorConfig): React.JSX.Element {
         // return (
         // 	<img
         // 		src={this.__src}

@@ -37,11 +37,11 @@ const EditBlogSchema = z.object({
     category: z.string(),
 });
 
-const findCategoryName = (cat: Category, id: string): string | null => {
+const _findCategoryName = (cat: Category, id: string): string | null => {
     if (cat.categoryId === id) return cat.categoryName;
 
     for (const sub of cat.subCategories) {
-        const found = findCategoryName(sub, id);
+        const found = _findCategoryName(sub, id);
         if (found) return found;
     }
     return null;

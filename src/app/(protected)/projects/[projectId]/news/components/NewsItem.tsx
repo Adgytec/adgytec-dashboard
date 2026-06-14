@@ -1,6 +1,5 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import type React from "react";
 import { useContext, useRef, useState } from "react";

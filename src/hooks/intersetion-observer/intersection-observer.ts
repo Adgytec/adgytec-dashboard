@@ -30,7 +30,7 @@ export const useIntersection: UseIntersection = (callback, root = null) => {
                 observer.unobserve(elementRef.current);
             }
         };
-    }, [elementRef.current, callback, options]);
+    }, [callback, options]);
 
     return elementRef;
 };

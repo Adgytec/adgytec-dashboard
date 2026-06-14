@@ -1,5 +1,4 @@
 import Link from "next/link";
-import React from "react";
 import type { Users } from "../../page";
 import styles from "./users.module.scss";
 

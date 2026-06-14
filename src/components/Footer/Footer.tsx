@@ -1,4 +1,3 @@
-import React from "react";
 import Container from "../Container/Container";
 import styles from "./footer.module.scss";
 

@@ -6,22 +6,18 @@ import {
     $getNodeByKey,
     $getSelection,
     $isNodeSelection,
-    $setSelection,
     type BaseSelection,
     CLICK_COMMAND,
     COMMAND_PRIORITY_LOW,
-    DRAGSTART_COMMAND,
-    FORMAT_ELEMENT_COMMAND,
     KEY_BACKSPACE_COMMAND,
     KEY_DELETE_COMMAND,
     KEY_ENTER_COMMAND,
-    KEY_ESCAPE_COMMAND,
     type LexicalEditor,
     type NodeSelection,
     type RangeSelection,
     SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { $isImageNode } from "./ImageNode";
 
 interface ImageProps {
@@ -46,7 +42,7 @@ export const Image = ({
     const [isSelected, setSelected, clearSelection] =
         useLexicalNodeSelection(nodeKey);
 
-    const [selection, setSelection] = useState<
+    const [_selection, setSelection] = useState<
         RangeSelection | NodeSelection | null | Selection | BaseSelection
     >(null);
     const activeEditorRef = useRef<LexicalEditor | null>(null);
@@ -67,7 +63,7 @@ export const Image = ({
     );
 
     const onEnter = useCallback(
-        (event: KeyboardEvent) => {
+        (_event: KeyboardEvent) => {
             const latestSelection = $getSelection();
             if (
                 isSelected &&
@@ -141,15 +137,7 @@ export const Image = ({
             isMounted = false;
             unregister();
         };
-    }, [
-        clearSelection,
-        editor,
-        isSelected,
-        nodeKey,
-        onDelete,
-        onEnter,
-        setSelected,
-    ]);
+    }, [clearSelection, editor, isSelected, onDelete, onEnter, setSelected]);
 
     return (
         <img
