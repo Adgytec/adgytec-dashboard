@@ -29,7 +29,7 @@ export interface BlogItem {
 }
 
 import { Pen, PenOff } from "lucide-react";
-import styles from "./blog.module.scss";
+import styles from "./blog.module.css";
 
 const Blog = () => {
     const snackbarQueue = useSnackbarQueue();

@@ -7,7 +7,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import NewsItem from "./components/NewsItem";
-import styles from "./news.module.scss";
+import styles from "./news.module.css";
 
 export interface NewsObj {
     title: string;

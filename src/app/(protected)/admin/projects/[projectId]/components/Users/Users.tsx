@@ -4,7 +4,7 @@ import { UserRoundPen } from "lucide-react";
 import Link from "next/link";
 import { GridList, GridListItem, Text } from "react-aria-components";
 import type { Users } from "../../page";
-import styles from "./users.module.scss";
+import styles from "./users.module.css";
 
 interface AddedUsersProps {
     users: Users[];

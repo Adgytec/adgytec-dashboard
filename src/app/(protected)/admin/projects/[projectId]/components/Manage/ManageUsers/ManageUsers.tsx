@@ -11,10 +11,9 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { GridList, GridListItem, Text } from "react-aria-components";
 
 import { UserContext } from "@/components/AuthContext/authContext";
-import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
 import type { ProjectDetails } from "../../../page";
-import styles from "./manageUsers.module.scss";
+import styles from "./manageUsers.module.css";
 
 export interface UserObj {
     name: string;
@@ -179,7 +178,7 @@ const ManageUsers = ({
     }, [users, addedUsers, search]);
 
     return (
-        <Container className={styles.container}>
+        <div className={styles.container}>
             <div className={styles.header}>
                 <h2>{projectName}</h2>
 
@@ -345,7 +344,7 @@ const ManageUsers = ({
                     )}
                 </div>
             </div>
-        </Container>
+        </div>
     );
 };
 

@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { validateString, validateURL } from "@/helpers/validation";
-import styles from "./create.module.scss";
+import styles from "./create.module.css";
 
 type ValidateInput = (title: string, text: string, link: string) => boolean;
 

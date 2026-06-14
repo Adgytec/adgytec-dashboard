@@ -5,7 +5,7 @@ import {
     ModalOverlay,
 } from "@adgytec/adgytec-web-ui-components";
 
-import "../../../../../../../styles/abstract/_lexical.scss";
+import "../../../../../../../styles/abstract/lexical.css";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { AutoLinkNode, LinkNode } from "@lexical/link";

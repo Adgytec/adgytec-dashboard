@@ -1,0 +1,51 @@
+.users {
+    display: grid;
+    gap: 1em;
+}
+
+.users .action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.users-list {
+    display: grid;
+    gap: 0.5em;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+}
+
+.user {
+    padding-block: 0.75em;
+    padding-inline: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--md-sys-color-secondary-container);
+    border-radius: var(--md-sys-shape-corner-radius-extra-small);
+}
+
+.user[data-focus-visible-within] {
+    --focus-indicator-thickness: 3px;
+    --focus-indicator-offset: 2px;
+    --focus-indicator-color: var(--md-sys-color-secondary);
+
+    outline-width: var(--focus-indicator-thickness);
+    outline-style: solid;
+    outline-offset: var(--focus-indicator-offset);
+    outline-color: var(--focus-indicator-color);
+
+    z-index: 1;
+}
+
+.leading {
+    display: grid;
+}
+
+.name {
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.info {
+    color: var(--md-sys-color-on-secondary-container);
+    opacity: 0.8;
+}

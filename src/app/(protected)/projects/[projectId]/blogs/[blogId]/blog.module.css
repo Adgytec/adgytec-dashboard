@@ -1,0 +1,38 @@
+.blog {
+    display: grid;
+    gap: 1.5em;
+}
+
+.blog .metadata {
+    display: grid;
+    gap: 0.5em;
+}
+
+.blog .metadata h1 {
+    text-align: center;
+    text-wrap: balance;
+}
+
+.blog .metadata img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.blog .metadata .more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    color: var(--text-grey);
+    font-weight: 600;
+}
+
+.blog .action {
+    text-align: center;
+}
+
+.blog .action button {
+    font-weight: 600;
+    font-size: 1.25rem;
+}

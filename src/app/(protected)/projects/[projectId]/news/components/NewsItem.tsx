@@ -7,7 +7,7 @@ import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import { validateString, validateURL } from "@/helpers/validation";
-import styles from "../news.module.scss";
+import styles from "../news.module.css";
 import type { NewsObj } from "../page";
 
 interface NewsItemProps {

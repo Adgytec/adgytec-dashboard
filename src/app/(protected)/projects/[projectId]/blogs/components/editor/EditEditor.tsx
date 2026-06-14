@@ -33,7 +33,7 @@ import NodeChangePlugin from "./plugins/NodeChangePlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import EditorTheme from "./themes/EditorTheme";
 
-import "../../../../../../../styles/abstract/_lexical.scss";
+import "../../../../../../../styles/abstract/lexical.css";
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 import { useParams } from "next/navigation";
 import {

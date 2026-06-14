@@ -15,7 +15,7 @@ import { TagGroup, TagList } from "react-aria-components";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import type { ProjectDetails } from "../../page";
-import styles from "./services.module.scss";
+import styles from "./services.module.css";
 
 interface AddedServicesProps {
     details: ProjectDetails;

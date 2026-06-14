@@ -1,8 +1,6 @@
-import Container from "@/components/Container/Container";
-
 const NotFoundService = () => {
     return (
-        <Container data-empty={true}>
+        <div>
             <h3>
                 This service doesn&apos;t exist or we are working on it. Please
                 contact us at{" "}
@@ -15,7 +13,7 @@ const NotFoundService = () => {
                 </a>{" "}
                 if it&apos;s a valid service.
             </h3>
-        </Container>
+        </div>
     );
 };
 

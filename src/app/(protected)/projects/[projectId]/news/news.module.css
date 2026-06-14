@@ -1,0 +1,29 @@
+.news {
+    padding: clamp(0.75em, 1.5vi, 1.25em);
+    background-color: var(--bg-400);
+    display: grid;
+    gap: 1.5em;
+}
+
+.news .list {
+    display: grid;
+    gap: 1em;
+}
+
+.news .item {
+    background-color: var(--bg-200);
+    padding: 0.5em;
+    display: grid;
+    gap: 1em;
+}
+
+.news .item_action {
+    display: flex;
+    gap: 2em;
+    justify-content: flex-end;
+}
+
+.news .item_details {
+    display: grid;
+    gap: 0.5em;
+}

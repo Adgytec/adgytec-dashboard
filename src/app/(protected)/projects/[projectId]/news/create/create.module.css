@@ -1,0 +1,26 @@
+.create {
+    background-color: var(--bg-400);
+    padding: 1em;
+    display: grid;
+    gap: 1.5em;
+}
+
+.create form {
+    display: grid;
+    gap: 1.5em;
+}
+
+.create form .input {
+    display: grid;
+    gap: 0.5em;
+}
+
+.create form .image_preview {
+    max-height: 20rem;
+}
+
+.create form .image_preview img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+}
