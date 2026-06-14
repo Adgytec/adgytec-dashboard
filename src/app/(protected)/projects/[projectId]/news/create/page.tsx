@@ -1,9 +1,9 @@
 "use client";
 
+import { useSnackbarQueue } from "@adgytec/adgytec-web-ui-components";
 import { useParams, useRouter } from "next/navigation";
 import type React from "react";
 import { useContext, useState } from "react";
-import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { validateString, validateURL } from "@/helpers/validation";
@@ -17,23 +17,24 @@ const CreateNews = () => {
 
     const params = useParams<{ projectId: string }>();
     const router = useRouter();
+    const snackbarQueue = useSnackbarQueue();
 
     const [filePreview, setFilepreview] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
 
     const validateInput: ValidateInput = (title, text, link) => {
         if (!validateString(title, 3)) {
-            toast.error("Invalid title");
+            snackbarQueue.add({ supportingText: "Invalid title" });
             return false;
         }
 
         if (!validateString(text, 3)) {
-            toast.error("Invalid text");
+            snackbarQueue.add({ supportingText: "Invalid text" });
             return false;
         }
 
         if (!validateURL(link)) {
-            toast.error("Invalid link");
+            snackbarQueue.add({ supportingText: "Invalid link" });
             return false;
         }
 
@@ -58,11 +59,14 @@ const CreateNews = () => {
             .then((res) => {
                 if (res.error) throw new Error(res.message);
 
-                toast.success("Successfully created news item");
+                snackbarQueue.add(
+                    { supportingText: "Successfully created news item" },
+                    { timeout: 5000 }
+                );
                 form.reset();
                 setFilepreview(null);
             })
-            .catch((err) => toast.error(err.message))
+            .catch((err) => snackbarQueue.add({ supportingText: err.message }))
             .finally(() => setCreating(false));
     };
 
@@ -72,7 +76,10 @@ const CreateNews = () => {
         const form = e.target;
 
         if (!(form instanceof HTMLFormElement)) {
-            return toast.error("Something is wrong from our end");
+            snackbarQueue.add({
+                supportingText: "Something is wrong from our end",
+            });
+            return;
         }
 
         const formData = new FormData(form);
@@ -89,7 +96,9 @@ const CreateNews = () => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files;
         if (!file) {
-            toast.error("Something went wrong while seleting file");
+            snackbarQueue.add({
+                supportingText: "Something went wrong while selecting file",
+            });
             return;
         }
 
@@ -100,7 +109,11 @@ const CreateNews = () => {
     return (
         <div className={styles.create}>
             <div>
-                <button data-type="link" onClick={() => router.back()}>
+                <button
+                    type="button"
+                    data-type="link"
+                    onClick={() => router.back()}
+                >
                     Back
                 </button>
             </div>
@@ -168,6 +181,7 @@ const CreateNews = () => {
 
                 <div className={styles.action}>
                     <button
+                        type="button"
                         data-type="button"
                         data-variant="primary"
                         disabled={creating}

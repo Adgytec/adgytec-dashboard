@@ -1,5 +1,6 @@
 "use client";
 
+import { useSnackbarQueue } from "@adgytec/adgytec-web-ui-components";
 import {
     useParams,
     usePathname,
@@ -14,7 +15,6 @@ import {
     useRef,
     useState,
 } from "react";
-import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Details from "../components/details/Details";
 import Editor from "../components/editor/Editor";
@@ -35,6 +35,7 @@ export interface NewImages {
 }
 
 const CreateBlog = () => {
+    const snackbarQueue = useSnackbarQueue();
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
@@ -88,9 +89,9 @@ const CreateBlog = () => {
                 }
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             });
-    }, [user]);
+    }, [user, snackbarQueue.add]);
 
     useEffect(() => {
         generateUUID();

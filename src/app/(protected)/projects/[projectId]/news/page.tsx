@@ -1,9 +1,9 @@
 "use client";
 
+import { useSnackbarQueue } from "@adgytec/adgytec-web-ui-components";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import NewsItem from "./components/NewsItem";
@@ -26,6 +26,7 @@ const News = () => {
     );
 
     const params = useParams<{ projectId: string }>();
+    const snackbarQueue = useSnackbarQueue();
     const [loading, setLoading] = useState(true);
     const [news, setNews] = useState<NewsObj[]>([]);
 
@@ -47,10 +48,10 @@ const News = () => {
                 setNews(res.data);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setLoading(false));
-    }, [user, params.projectId]);
+    }, [user, params.projectId, snackbarQueue]);
 
     useEffect(() => {
         getAllNews();

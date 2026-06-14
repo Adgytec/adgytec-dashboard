@@ -3,11 +3,16 @@
 import {
     Input,
     InputButton,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
     typography,
     useSnackbarQueue,
 } from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
-import { Copy } from "lucide-react";
+import { Copy, UsersIcon, Wrench } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
     use,
@@ -18,17 +23,15 @@ import {
     useState,
 } from "react";
 import { Heading } from "react-aria-components";
-import { toast } from "react-toastify";
+
 import { UserContext } from "@/components/AuthContext/authContext";
-import LinkHeader, { type LinkItem } from "@/components/LinkHeader/LinkHeader";
+
 import Loader from "@/components/Loader/Loader";
 import { copyToClipboard } from "@/helpers/helpers";
 import Category from "./components/Category/Category";
 import ManageUsers from "./components/Manage/ManageUsers/ManageUsers";
 import ServicesComp from "./components/Services/Services";
 import UsersComp from "./components/Users/Users";
-
-export { UsersComp };
 
 import styles from "./project.module.css";
 
@@ -75,20 +78,14 @@ const ProjectDetails = (props: ProjectDetailsProps) => {
     const view = searchParams.get("view");
     const manage = searchParams.get("manage");
 
-    const linkProps = useMemo(() => {
-        return [
-            {
-                href: `/admin/projects/${params.projectId}`,
-                text: "Added Users",
-                view: ["users"],
-            },
-            {
-                href: `/admin/projects/${params.projectId}`,
-                text: "Added Services",
-                view: ["services"],
-            },
-        ] as LinkItem[];
-    }, [params.projectId]);
+    const handleSelectionChange = useCallback(
+        (key: React.Key) => {
+            router.push(
+                `/admin/projects/${params.projectId}?view=${key.toString()}`
+            );
+        },
+        [router, params.projectId]
+    );
 
     const getProjectDetail = useCallback(async () => {
         const url = `${process.env.NEXT_PUBLIC_API}/project/${params.projectId}`;
@@ -113,12 +110,15 @@ const ProjectDetails = (props: ProjectDetailsProps) => {
                 setDetails(res.data);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add(
+                    { supportingText: err.message },
+                    { timeout: 5000 }
+                );
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, [user, router, params.projectId]);
+    }, [user, router, params.projectId, snackbarQueue]);
 
     useEffect(() => {
         getProjectDetail();
@@ -151,19 +151,6 @@ const ProjectDetails = (props: ProjectDetailsProps) => {
     }
 
     const createdAt = new Date(details.createdAt);
-
-    const handleInfo = () => {
-        switch (view) {
-            case "users":
-                return <UsersComp users={details.users} />;
-            case "services":
-                return (
-                    <ServicesComp details={details} setDetails={setDetails} />
-                );
-            default:
-                return <h3>Please select an option to view the details.</h3>;
-        }
-    };
 
     return (
         <div className={clsx(styles["container"])}>
@@ -221,9 +208,31 @@ const ProjectDetails = (props: ProjectDetailsProps) => {
             </div>
 
             <div className={styles.metadata}>
-                <LinkHeader links={linkProps} />
+                <Tabs
+                    selectedKey={view || "users"}
+                    onSelectionChange={handleSelectionChange}
+                >
+                    <TabList style={{ scrollbarWidth: "none" }}>
+                        <Tab id="users" label="Added Users" icon={UsersIcon} />
+                        <Tab
+                            id="services"
+                            label="Added Services"
+                            icon={Wrench}
+                        />
+                    </TabList>
 
-                <div className={styles.info}>{handleInfo()}</div>
+                    <TabPanels>
+                        <TabPanel id="users">
+                            <UsersComp users={details.users} />
+                        </TabPanel>
+                        <TabPanel id="services">
+                            <ServicesComp
+                                details={details}
+                                setDetails={setDetails}
+                            />
+                        </TabPanel>
+                    </TabPanels>
+                </Tabs>
             </div>
         </div>
     );

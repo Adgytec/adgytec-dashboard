@@ -1,20 +1,19 @@
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    Button,
+    ModalOverlay,
+    SearchField,
+    SideSheet,
+    SideSheetModal,
+    Tag,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
 import { useParams } from "next/navigation";
 import type React from "react";
-import {
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import { toast } from "react-toastify";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { TagGroup, TagList } from "react-aria-components";
+
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
-import { handleEscModal, handleModalClose } from "@/helpers/modal";
 import type { ProjectDetails } from "../../page";
 import styles from "./services.module.scss";
 
@@ -35,9 +34,10 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
         return userWithRole ? userWithRole.user : null;
     }, [userWithRole]);
 
-    const manageServiceRef = useRef<HTMLDialogElement | null>(null);
+    const [isManageOpen, setIsManageOpen] = useState(false);
     const addedServices = details.services;
     const params = useParams<{ projectId: string }>();
+    const snackbarQueue = useSnackbarQueue();
 
     const [services, setServices] = useState<ServiceObj[]>([]);
     const [loading, setLoading] = useState(true);
@@ -46,8 +46,6 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
     const [removing, setRemoving] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
-
-    const handleManageModalClose = () => handleModalClose(manageServiceRef);
 
     const getAllServices = useCallback(async () => {
         const url = `${process.env.NEXT_PUBLIC_API}/services`;
@@ -62,16 +60,15 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-
                 setServices(res.data);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, [user]);
+    }, [user, snackbarQueue]);
 
     useEffect(() => {
         getAllServices();
@@ -98,13 +95,14 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                // toast.success("successfully removed service from project");
 
-                // remove service from details
-                const service = addedServices.find(
-                    (el) => el.serviceId === serviceId
+                snackbarQueue.add(
+                    {
+                        supportingText:
+                            "successfully removed service from project",
+                    },
+                    { timeout: 5000 }
                 );
-                if (!service) return;
 
                 setDetails((prev) => {
                     if (!prev) return null;
@@ -116,7 +114,6 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
                 });
             })
             .catch((err) => {
-                // toast.error(err.message);
                 setError(err.message);
             })
             .finally(() => setRemoving(""));
@@ -124,7 +121,6 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
 
     const handleAddServices = async () => {
         if (selectedServices.length === 0) {
-            // toast.error("No services selected");
             setError("No services selected");
             return;
         }
@@ -151,10 +147,16 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                // toast.success("successfully added service to project");
+
+                snackbarQueue.add(
+                    {
+                        supportingText: "successfully added service to project",
+                    },
+                    { timeout: 5000 }
+                );
+
                 setSelectedServices([]);
 
-                // add service to details
                 const addedServices = services.filter((service) => {
                     return serviceToAdd.includes(service.serviceId);
                 });
@@ -168,236 +170,215 @@ const AddedServices = ({ setDetails, details }: AddedServicesProps) => {
                 });
             })
             .catch((err) => {
-                // toast.error(err.message);
                 setError(err.message);
             })
             .finally(() => setAdding(false));
     };
 
-    const handleCheckboxChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const serviceId = event.target.dataset.id; // Assuming data-id attribute
-        const isChecked = event.target.checked;
-
-        if (!serviceId) return;
-
-        // Update selectedServices state based on checkbox state
-        if (isChecked) {
-            setSelectedServices([...selectedServices, serviceId]);
-        } else {
-            setSelectedServices(
-                selectedServices.filter((id) => id !== serviceId)
-            );
-        }
-    };
-
-    const servicesToAdd: React.JSX.Element[] = [];
-    services.forEach((service) => {
-        if (addedServices?.some((s) => s.serviceId === service.serviceId)) {
-            return;
-        }
-
-        const { serviceName } = service;
-        const element = (
-            <div key={service.serviceId} className={styles.item}>
-                <input
-                    type="checkbox"
-                    name="service"
-                    data-id={service.serviceId}
-                    onChange={handleCheckboxChange}
-                    checked={selectedServices.includes(service.serviceId)}
-                    id={service.serviceId}
-                    disabled={adding}
-                />
-                <label htmlFor={service.serviceId}>
-                    <img src={service.icon} alt="" width={17} height={17} />
-                    {service.serviceName}
-                </label>
-            </div>
-        );
-
-        if (search.length === 0) {
-            servicesToAdd.push(element);
-            return;
-        }
-
-        if (serviceName.toLowerCase().includes(search.toLowerCase())) {
-            servicesToAdd.push(element);
-            return;
-        }
-    });
+    const filteredServicesToAdd = useMemo(() => {
+        return services.filter((service) => {
+            if (addedServices?.some((s) => s.serviceId === service.serviceId)) {
+                return false;
+            }
+            if (search.length === 0) {
+                return true;
+            }
+            return service.serviceName
+                .toLowerCase()
+                .includes(search.toLowerCase());
+        });
+    }, [services, addedServices, search]);
 
     return (
         <>
-            <dialog
-                ref={manageServiceRef}
-                onKeyDown={handleEscModal}
-                className={styles.modal}
+            <ModalOverlay
+                isOpen={isManageOpen}
+                onOpenChange={setIsManageOpen}
+                isKeyboardDismissDisabled={adding}
             >
-                <div className="modal">
-                    <div className="modal-menu">
-                        <h2>Manage Services</h2>
+                <SideSheetModal>
+                    <SideSheet
+                        headline="Manage Services"
+                        actions={[
+                            <Button
+                                key="add"
+                                isPending={adding}
+                                isDisabled={selectedServices.length === 0}
+                                onPress={handleAddServices}
+                                color="tonal"
+                            >
+                                Add services
+                            </Button>,
+                            <Button
+                                key="cancel"
+                                isDisabled={adding}
+                                onPress={() => setIsManageOpen(false)}
+                                color="text"
+                            >
+                                Cancel
+                            </Button>,
+                        ]}
+                    >
+                        {() => (
+                            <div className={styles.modal_content}>
+                                <div className={styles.added}>
+                                    <div className={styles.title}>
+                                        <h3>Added Services</h3>
+                                    </div>
 
-                        <button
-                            data-type="link"
-                            onClick={handleManageModalClose}
-                            title="close"
-                            // disabled={updating}
-                        >
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    </div>
-
-                    <div className={styles.modal_content}>
-                        <div className={styles.added}>
-                            <div className={styles.title}>
-                                <h3>Added Services</h3>
-                            </div>
-
-                            {!addedServices || addedServices.length === 0 ? (
-                                <div className={styles.empty}>
-                                    <h4>No services added</h4>
-                                </div>
-                            ) : (
-                                <div className={styles.items}>
-                                    {addedServices.map((service) => {
-                                        return (
-                                            <div
-                                                className={styles.item}
-                                                key={service.serviceId}
+                                    {!addedServices ||
+                                    addedServices.length === 0 ? (
+                                        <div className={styles.empty}>
+                                            <h4>No services added</h4>
+                                        </div>
+                                    ) : (
+                                        <TagGroup
+                                            aria-label="Added services"
+                                            onRemove={(keys) => {
+                                                const serviceId = keys
+                                                    .values()
+                                                    .next().value;
+                                                if (
+                                                    typeof serviceId ===
+                                                    "string"
+                                                ) {
+                                                    handleRemoveSerice(
+                                                        serviceId
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <TagList
+                                                className={styles.items}
+                                                items={addedServices}
                                             >
-                                                <img
-                                                    src={service.icon}
-                                                    alt=""
-                                                    width={17}
-                                                    height={17}
-                                                />
-                                                <p>{service.serviceName}</p>
-
-                                                <button
-                                                    data-type="link"
-                                                    data-variant="error"
-                                                    disabled={
-                                                        removing.length > 0
-                                                    }
-                                                    data-load={
-                                                        removing ===
-                                                        service.serviceId
-                                                    }
-                                                    onClick={() =>
-                                                        handleRemoveSerice(
-                                                            service.serviceId
-                                                        )
-                                                    }
-                                                >
-                                                    {removing ===
-                                                    service.serviceId ? (
-                                                        <Loader variant="small" />
-                                                    ) : (
-                                                        <FontAwesomeIcon
-                                                            icon={faCircleXmark}
-                                                        />
-                                                    )}
-                                                </button>
-                                            </div>
-                                        );
-                                    })}
+                                                {(service) => (
+                                                    <Tag
+                                                        id={service.serviceId}
+                                                        label={
+                                                            service.serviceName
+                                                        }
+                                                        isDisabled={
+                                                            removing.length >
+                                                                0 &&
+                                                            removing !==
+                                                                service.serviceId
+                                                        }
+                                                        avatar={
+                                                            <img
+                                                                src={
+                                                                    service.icon
+                                                                }
+                                                                alt=""
+                                                                width={17}
+                                                                height={17}
+                                                            />
+                                                        }
+                                                    />
+                                                )}
+                                            </TagList>
+                                        </TagGroup>
+                                    )}
                                 </div>
-                            )}
-                        </div>
 
-                        <div className={styles.toAdd}>
-                            <div className={styles.title}>
-                                <h3>Add Services</h3>
+                                <div className={styles.toAdd}>
+                                    <div className={styles.title}>
+                                        <h3>Add Services</h3>
 
-                                <input
-                                    type="text"
-                                    placeholder="Type to search..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    disabled={adding}
-                                ></input>
+                                        <SearchField
+                                            placeholder="Search Services"
+                                            value={search}
+                                            onChange={setSearch}
+                                            isDisabled={adding}
+                                        />
+                                    </div>
+
+                                    {loading ? (
+                                        <div className={styles.load}>
+                                            <Loader variant="small" />
+                                        </div>
+                                    ) : filteredServicesToAdd.length === 0 ? (
+                                        <div className={styles.empty}>
+                                            <h4>No services to add</h4>
+                                        </div>
+                                    ) : (
+                                        <TagGroup
+                                            aria-label="Services to add"
+                                            selectionMode="multiple"
+                                            selectedKeys={
+                                                new Set(selectedServices)
+                                            }
+                                            onSelectionChange={(keys) => {
+                                                if (keys === "all") return;
+                                                setSelectedServices(
+                                                    Array.from(keys) as string[]
+                                                );
+                                            }}
+                                        >
+                                            <TagList
+                                                className={styles.items}
+                                                items={filteredServicesToAdd}
+                                            >
+                                                {(service) => (
+                                                    <Tag
+                                                        id={service.serviceId}
+                                                        label={
+                                                            service.serviceName
+                                                        }
+                                                        avatar={
+                                                            <img
+                                                                src={
+                                                                    service.icon
+                                                                }
+                                                                alt=""
+                                                                width={17}
+                                                                height={17}
+                                                            />
+                                                        }
+                                                    />
+                                                )}
+                                            </TagList>
+                                        </TagGroup>
+                                    )}
+                                </div>
+
+                                {error && <p className="error">{error}</p>}
                             </div>
-
-                            {loading ? (
-                                <div className={styles.load}>
-                                    <Loader variant="small" />
-                                </div>
-                            ) : servicesToAdd.length === 0 ? (
-                                <div className={styles.empty}>
-                                    <h4>No services to add</h4>
-                                </div>
-                            ) : (
-                                <div className={styles.items}>
-                                    {servicesToAdd}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {error && <p className="error">{error}</p>}
-
-                    <div className="action">
-                        <button
-                            data-type="link"
-                            // disabled={updating}
-                            onClick={handleManageModalClose}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            data-type="button"
-                            data-variant="secondary"
-                            disabled={adding || selectedServices.length === 0}
-                            data-load={adding}
-                            onClick={handleAddServices}
-                        >
-                            {adding ? (
-                                <Loader variant="small" />
-                            ) : (
-                                "Add services"
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
+                        )}
+                    </SideSheet>
+                </SideSheetModal>
+            </ModalOverlay>
 
             <div className={styles.services}>
                 <div className={styles.action}>
-                    <button
-                        data-variant="primary"
-                        data-type="link"
-                        onClick={() => manageServiceRef.current?.showModal()}
-                    >
+                    <Button color="tonal" onPress={() => setIsManageOpen(true)}>
                         Manage Services
-                    </button>
+                    </Button>
                 </div>
 
                 {addedServices.length === 0 ? (
-                    <div data-empty={true}>
+                    <div data-empty="true">
                         <h3>No services are added</h3>
                     </div>
                 ) : (
-                    <div className={styles.list}>
-                        {addedServices.map((service) => {
-                            return (
-                                <div
-                                    className={styles.item}
-                                    key={service.serviceId}
-                                >
-                                    <img
-                                        width={17}
-                                        height={17}
-                                        src={service.icon}
-                                        alt=""
-                                    />
-                                    {service.serviceName}
-                                </div>
-                            );
-                        })}
-                    </div>
+                    <TagGroup aria-label="Added Services">
+                        <TagList className={styles.list} items={addedServices}>
+                            {(service) => (
+                                <Tag
+                                    id={service.serviceId}
+                                    label={service.serviceName}
+                                    avatar={
+                                        <img
+                                            src={service.icon}
+                                            alt=""
+                                            width={17}
+                                            height={17}
+                                        />
+                                    }
+                                />
+                            )}
+                        </TagList>
+                    </TagGroup>
                 )}
             </div>
         </>

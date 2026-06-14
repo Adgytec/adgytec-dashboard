@@ -1,9 +1,8 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon, useSnackbarQueue } from "@adgytec/adgytec-web-ui-components";
+import { X } from "lucide-react";
 import { useParams } from "next/navigation";
 import type React from "react";
 import { useContext, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import { handleEscModal, handleModalClose } from "@/helpers/modal";
@@ -17,6 +16,7 @@ interface NewsItemProps {
 }
 
 const NewsItem = ({ news, setNews }: NewsItemProps) => {
+    const snackbarQueue = useSnackbarQueue();
     const userWithRole = useContext(UserContext);
     const user = userWithRole ? userWithRole.user : null;
 
@@ -81,7 +81,10 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
                         1
                     );
                 });
-                toast.success("successfully deleted news item");
+                snackbarQueue.add(
+                    { supportingText: "successfully deleted news item" },
+                    { timeout: 5000 }
+                );
             })
             .catch((err) => {
                 setError(err.message);
@@ -93,17 +96,17 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
         const { title, link, text } = input;
 
         if (!validateString(title, 3)) {
-            toast.error("Invalid title");
+            snackbarQueue.add({ supportingText: "Invalid title" });
             return false;
         }
 
         if (!validateString(text, 3)) {
-            toast.error("Invalid text");
+            snackbarQueue.add({ supportingText: "Invalid text" });
             return false;
         }
 
         if (!validateURL(link)) {
-            toast.error("Invalid link");
+            snackbarQueue.add({ supportingText: "Invalid link" });
             return false;
         }
 
@@ -134,11 +137,14 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
             .then((res) => {
                 if (res.error) throw new Error(res.message);
 
-                toast.success("Successfully updated news item");
+                snackbarQueue.add(
+                    { supportingText: "Successfully updated news item" },
+                    { timeout: 5000 }
+                );
                 setEditable(false);
                 setUserShow(input);
             })
-            .catch((err) => toast.error(err.message))
+            .catch((err) => snackbarQueue.add({ supportingText: err.message }))
             .finally(() => setUpdating(false));
     };
 
@@ -159,12 +165,13 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
                         <h2>Confirm Deletion</h2>
 
                         <button
+                            type="button"
                             data-type="link"
                             onClick={handleClose}
                             title="close"
                             disabled={deleting}
                         >
-                            <FontAwesomeIcon icon={faXmark} />
+                            <Icon icon={X} />
                         </button>
                     </div>
 
@@ -181,6 +188,7 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
 
                     <div className="delete-action">
                         <button
+                            type="button"
                             data-type="link"
                             disabled={deleting}
                             onClick={handleClose}
@@ -189,6 +197,7 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
                         </button>
 
                         <button
+                            type="button"
                             data-type="button"
                             className={styles.delete}
                             disabled={deleting}
@@ -265,6 +274,7 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
                 <div className={styles.item_action}>
                     {editable && (
                         <button
+                            type="button"
                             data-type="button"
                             data-variant="secondary"
                             data-load={updating}
@@ -275,6 +285,7 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
                         </button>
                     )}
                     <button
+                        type="button"
                         data-type="link"
                         data-variant="primary"
                         onClick={handleEdit}
@@ -284,6 +295,7 @@ const NewsItem = ({ news, setNews }: NewsItemProps) => {
                     </button>
 
                     <button
+                        type="button"
                         data-type="button"
                         data-variant="error"
                         onClick={() => deleteConfirmRef.current?.showModal()}

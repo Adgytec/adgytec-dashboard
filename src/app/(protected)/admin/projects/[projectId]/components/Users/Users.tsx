@@ -1,4 +1,8 @@
+import { LinkButton, typography } from "@adgytec/adgytec-web-ui-components";
+import clsx from "clsx";
+import { UserRoundPen } from "lucide-react";
 import Link from "next/link";
+import { GridList, GridListItem, Text } from "react-aria-components";
 import type { Users } from "../../page";
 import styles from "./users.module.scss";
 
@@ -7,25 +11,22 @@ interface AddedUsersProps {
 }
 
 const AddedUsers = ({ users }: AddedUsersProps) => {
-    const userItems = users.map((user) => {
-        return (
-            <div className={styles.content} key={user.userId}>
-                <p data-key="Name">{user.name}</p>
-                <p data-key="Email">{user.email}</p>
-            </div>
-        );
-    });
-
     return (
         <div className={styles.users}>
             <div className={styles.action}>
-                <Link
-                    href={`?view=users&manage=true`}
-                    data-variant="primary"
-                    data-type="link"
+                <LinkButton
+                    href="?view=users&manage=true"
+                    icon={UserRoundPen}
+                    color="tonal"
+                    render={(props) => {
+                        if ("href" in props) {
+                            return <Link {...props} />;
+                        }
+                        return <span {...props} />;
+                    }}
                 >
                     Manage Users
-                </Link>
+                </LinkButton>
             </div>
             {users.length === 0 ? (
                 <div data-empty="true">
@@ -33,15 +34,37 @@ const AddedUsers = ({ users }: AddedUsersProps) => {
                 </div>
             ) : (
                 <div className={styles.list}>
-                    <div className={styles.table}>
-                        <div className={styles.heading}>
-                            <h4>Name</h4>
-
-                            <h4>Email ID</h4>
-                        </div>
-
-                        {userItems}
-                    </div>
+                    <GridList
+                        className={clsx(styles["users-list"])}
+                        layout="grid"
+                        items={users}
+                    >
+                        {(user) => (
+                            <GridListItem
+                                className={clsx(styles["user"])}
+                                key={user.userId}
+                            >
+                                <div className={clsx(styles["leading"])}>
+                                    <Text
+                                        className={clsx(
+                                            styles["name"],
+                                            typography.bodyLarge
+                                        )}
+                                    >
+                                        {user.name}
+                                    </Text>
+                                    <Text
+                                        className={clsx(
+                                            styles["info"],
+                                            typography.bodyMedium
+                                        )}
+                                    >
+                                        {user.email}
+                                    </Text>
+                                </div>
+                            </GridListItem>
+                        )}
+                    </GridList>
                 </div>
             )}
         </div>

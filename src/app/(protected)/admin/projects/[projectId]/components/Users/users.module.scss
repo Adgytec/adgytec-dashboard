@@ -8,75 +8,52 @@
     display: flex;
     justify-content: flex-end;
   }
+}
 
-  .list {
-    // max-height: 25rem;
-    // overflow: auto;
+.users-list {
+  display: grid;
+  gap: 0.5em;
 
-    .table {
-      display: grid;
-      grid-template-columns: 2fr 5fr;
-      column-gap: clamp(1em, 5vi, 5em);
-      row-gap: 0.25em;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, 20rem), 1fr)
+  );
+}
 
-      h4,
-      p {
-        font-size: clamp(1rem, 1.5vi, 1.25rem);
-      }
+.user {
+  padding-block: 0.75em;
+  padding-inline: 1em;
 
-      h4 {
-        color: var(--accent-secondary);
-        font-weight: 600;
-      }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-      > :nth-child(odd) {
-        background-color: var(--bg-400);
-      }
+  background-color: var(--md-sys-color-secondary-container);
+  border-radius: var(--md-sys-shape-corner-radius-extra-small);
 
-      >* {
-        display: grid;
-        grid-template-columns: subgrid;
+  &[data-focus-visible-within] {
+    --focus-indicator-thickness: 3px;
+    --focus-indicator-offset: 2px;
+    --focus-indicator-color: var(--md-sys-color-secondary);
 
-        grid-column: span 2;
-        padding: 0.75em 1.25em;
-        border-radius: 0.25em;
+    outline-width: var(--focus-indicator-thickness);
+    outline-style: solid;
+    outline-offset: var(--focus-indicator-offset);
+    outline-color: var(--focus-indicator-color);
 
-        >* {
-          grid-column: span 1;
-        }
-      }
-
-      @include ab.admin-table {
-        grid-template-columns: none;
-        gap: 0.25em;
-
-        .heading {
-          display: none;
-        }
-
-        >* {
-          grid-template-columns: none;
-          background-color: var(--bg-400);
-
-          padding: 1.5em 1em;
-          border-radius: 0.75em;
-          border-bottom: 1.5px solid var(--white);
-          gap: 0.5em;
-
-          p {
-            display: grid;
-            grid-template-columns: 8ch auto;
-
-            word-break: break-all;
-
-            &::before {
-              content: attr(data-key) " ";
-              color: var(--accent-secondary);
-              font-weight: 600;
-            }
-          }
-        }
-      }
-    }
+    z-index: 1;
   }
+}
+
+.leading {
+  display: grid;
+}
+
+.name {
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.info {
+  color: var(--md-sys-color-on-secondary-container);
+  opacity: 0.8;
 }

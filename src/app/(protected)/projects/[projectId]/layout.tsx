@@ -1,12 +1,16 @@
 "use client";
 
-import { Tag, typography } from "@adgytec/adgytec-web-ui-components";
+import {
+    Tag,
+    typography,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
 import clsx from "clsx";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import type React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { TagGroup, TagList, Text } from "react-aria-components";
-import { toast } from "react-toastify";
+
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
 import {
@@ -25,6 +29,7 @@ interface ProjectObj {
 }
 
 const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
+    const snackbarQueue = useSnackbarQueue();
     const userWithRole = useContext(UserContext);
     const user = useMemo(
         () => (userWithRole ? userWithRole.user : null),
@@ -59,10 +64,10 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
                 setProject(res.data);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setLoading(false));
-    }, [user, params.projectId]);
+    }, [user, params.projectId, snackbarQueue]);
 
     useEffect(() => {
         getMetadataByProjectId();

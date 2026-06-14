@@ -1,8 +1,9 @@
 "use client";
 
-import { Button } from "@adgytec/adgytec-web-ui-components";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    ToggleButton,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
 import { useParams } from "next/navigation";
 import {
     useCallback,
@@ -12,12 +13,9 @@ import {
     useRef,
     useState,
 } from "react";
-import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
 import Loader from "@/components/Loader/Loader";
-// import { toast } from "react-toastify";
 import EditEditor from "../components/editor/EditEditor";
-import styles from "./blog.module.scss";
 
 export interface BlogItem {
     blogId: string;
@@ -30,7 +28,11 @@ export interface BlogItem {
     category: string;
 }
 
+import { Pen, PenOff } from "lucide-react";
+import styles from "./blog.module.scss";
+
 const Blog = () => {
+    const snackbarQueue = useSnackbarQueue();
     const userWithRole = useContext(UserContext);
     const user = useMemo(() => {
         return userWithRole ? userWithRole.user : null;
@@ -62,10 +64,10 @@ const Blog = () => {
                 uuidRef.current = res.data.blogId;
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setLoading(false));
-    }, [user, params]);
+    }, [user, params, snackbarQueue]);
 
     useEffect(() => {
         getBlogItem();
@@ -123,18 +125,15 @@ const Blog = () => {
             </div>
 
             <div className={styles.action}>
-                <Button
-                    onPress={() => setIsEdit((prev) => !prev)}
-                    color={isEdit ? "outlined" : "tonal"}
+                <ToggleButton
+                    color="tonal"
+                    isSelected={isEdit}
+                    onChange={setIsEdit}
+                    iconPlacement="end"
+                    icon={isEdit ? PenOff : Pen}
                 >
-                    {isEdit ? (
-                        "Cancel"
-                    ) : (
-                        <>
-                            Edit <FontAwesomeIcon icon={faPenToSquare} />
-                        </>
-                    )}
-                </Button>
+                    {({ isSelected }) => (isSelected ? "Cancel" : "Edit")}
+                </ToggleButton>
             </div>
 
             {!isEdit ? (

@@ -11,7 +11,7 @@ const ViewPort = () => {
         }).observe(document.documentElement);
     }, []);
 
-    return <></>;
+    return null;
 };
 
 export default ViewPort;

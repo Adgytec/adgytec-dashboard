@@ -45,7 +45,7 @@ import {
     useState,
 } from "react";
 import { DialogTrigger } from "react-aria-components";
-import { toast } from "react-toastify";
+
 import { UserContext } from "@/components/AuthContext/authContext";
 import { validateString } from "@/helpers/validation";
 import type { BlogItem } from "../../[blogId]/page";
@@ -193,7 +193,7 @@ function EditorActions({
                 setEdit(false);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setUpdating(false));
     };
@@ -205,7 +205,9 @@ function EditorActions({
             const htmlString = $generateHtmlFromNodes(editor, null);
 
             if (!validateString(htmlString, 200)) {
-                toast.error("blog content too short!");
+                snackbarQueue.add({
+                    supportingText: "blog content too short!",
+                });
                 return;
             }
 
@@ -247,7 +249,7 @@ function EditorActions({
                     updateBlogContent(htmlString);
                 })
                 .catch((err) => {
-                    toast.error(err.message);
+                    snackbarQueue.add({ supportingText: err.message });
                     setUpdating(false);
                 });
         });

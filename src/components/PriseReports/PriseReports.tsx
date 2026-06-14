@@ -5,7 +5,11 @@ import { UserContext } from "../AuthContext/authContext";
 import Loader from "../Loader/Loader";
 import PriseReportItemComp from "./PriseReportItem";
 import styles from "./prise-reports.module.css";
-import type { PriseReportItem, PriseReportsProps } from "./types";
+import type {
+    PriseReportApiResponseItem,
+    PriseReportItem,
+    PriseReportsProps,
+} from "./types";
 
 const PriseReports = ({ region, projectId }: PriseReportsProps) => {
     const snackbarQueue = useSnackbarQueue();
@@ -35,10 +39,12 @@ const PriseReports = ({ region, projectId }: PriseReportsProps) => {
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                const flattendResponse = res.data.map((item: any) => {
-                    const { data, ...rest } = item;
-                    return { ...rest, ...data };
-                });
+                const flattendResponse = res.data.map(
+                    (item: PriseReportApiResponseItem) => {
+                        const { data, ...rest } = item;
+                        return { ...rest, ...data } as PriseReportItem;
+                    }
+                );
 
                 setReportItems(flattendResponse);
             })

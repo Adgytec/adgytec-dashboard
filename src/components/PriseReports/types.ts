@@ -20,6 +20,13 @@ export interface PriseReportItem {
     Longitude: string;
 }
 
+export interface PriseReportApiResponseItem {
+    id: string;
+    createdAt: string;
+    region: string;
+    data: Omit<PriseReportItem, "id" | "createdAt" | "region">;
+}
+
 export interface PriseReportItemCompProps {
     item: PriseReportItem;
     ind: number;

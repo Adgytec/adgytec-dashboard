@@ -8,6 +8,7 @@ import {
     SelectPopover,
     ToggleIconButton,
     Toolbar,
+    useSnackbarQueue,
 } from "@adgytec/adgytec-web-ui-components";
 import {
     AlignCenter,
@@ -104,7 +105,7 @@ import {
 } from "react";
 import { SelectValue } from "react-aria-components";
 import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
+
 import { generateRandomString } from "@/helpers/helpers";
 import type { NewImages } from "../../../create/page";
 import { INSERT_IMAGE_COMMAND } from "../nodes/ImageNode";
@@ -322,6 +323,7 @@ export default function ToolbarPlugin({
     newImagesRef,
 }: ToolbarPluginProps) {
     const params = useParams<{ projectId: string }>();
+    const snackbarQueue = useSnackbarQueue();
 
     const [editor] = useLexicalComposerContext();
     const toolbarRef = useRef<HTMLDivElement | null>(null);
@@ -536,9 +538,10 @@ export default function ToolbarPlugin({
             let extension = files[0].type;
 
             if (!acceptedType.includes(extension)) {
-                toast.error(
-                    "You need to select either '.png', '.jpg / .jpeg', '.webp', '.svg' or '.gif' images"
-                );
+                snackbarQueue.add({
+                    supportingText:
+                        "You need to select either '.png', '.jpg / .jpeg', '.webp', '.svg' or '.gif' images",
+                });
                 return;
             }
             extension = extension.replace(/(.*)\//g, "");
@@ -564,7 +567,7 @@ export default function ToolbarPlugin({
                 isRemoved: false,
             });
         },
-        [editor, newImagesRef, params.projectId, uuidRef]
+        [editor, newImagesRef, params.projectId, uuidRef, snackbarQueue.add]
     );
 
     const _CurrentBlockIcon =

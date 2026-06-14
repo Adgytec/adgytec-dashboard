@@ -1,10 +1,15 @@
-import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    Button,
+    IconButton,
+    SearchField,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
+import { Trash2, UserPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import type React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { GridList, GridListItem, Text } from "react-aria-components";
+
 import { UserContext } from "@/components/AuthContext/authContext";
 import Container from "@/components/Container/Container";
 import Loader from "@/components/Loader/Loader";
@@ -38,6 +43,7 @@ const ManageUsers = ({
 
     const params = useParams<{ projectId: string }>();
     const router = useRouter();
+    const snackbarQueue = useSnackbarQueue();
 
     const [users, setUsers] = useState<UserObj[]>([]);
     const [loading, setLoading] = useState(true);
@@ -63,12 +69,12 @@ const ManageUsers = ({
                 setUsers(res.data);
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, [user]);
+    }, [user, snackbarQueue]);
 
     useEffect(() => {
         getAllUsers();
@@ -94,12 +100,13 @@ const ManageUsers = ({
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                toast.success("successfully removed user from project");
-
-                // remove from project details users[]
-                // and add user to users
-                const user = addedUsers.find((el) => el.userId === userId);
-                if (!user) return;
+                snackbarQueue.add(
+                    {
+                        supportingText:
+                            "successfully removed user from project",
+                    },
+                    { timeout: 5000 }
+                );
 
                 setDetails((prev) => {
                     if (!prev) return null;
@@ -109,7 +116,7 @@ const ManageUsers = ({
                 });
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setRemoving(""));
     };
@@ -134,9 +141,11 @@ const ManageUsers = ({
             .then((res) => res.json())
             .then((res) => {
                 if (res.error) throw new Error(res.message);
-                toast.success("successfully added user to project");
+                snackbarQueue.add(
+                    { supportingText: "successfully added user to project" },
+                    { timeout: 5000 }
+                );
 
-                // add user to project details users[]
                 const user = users.find((el) => el.userId === userId);
                 if (!user) return;
 
@@ -149,63 +158,34 @@ const ManageUsers = ({
                 });
             })
             .catch((err) => {
-                toast.error(err.message);
+                snackbarQueue.add({ supportingText: err.message });
             })
             .finally(() => setAdding(""));
     };
 
-    const usersToAdd: React.JSX.Element[] = [];
-    users.forEach((user) => {
-        if (addedUsers?.some((u) => u.userId === user.userId)) {
-            return;
-        }
-
-        const { email, name } = user;
-        const element = (
-            <div key={user.userId} className={styles.item}>
-                <p data-key="Name">{user.name}</p>
-                <p data-key="Email ID">{user.email}</p>
-
-                <p data-key="Add">
-                    <span>
-                        <button
-                            data-type="link"
-                            data-variant="secondary"
-                            disabled={adding.length > 0}
-                            data-load={adding === user.userId}
-                            onClick={() => handleAddUser(user.userId)}
-                        >
-                            {adding === user.userId ? (
-                                <Loader variant="small" />
-                            ) : (
-                                <FontAwesomeIcon icon={faSquarePlus} />
-                            )}
-                        </button>
-                    </span>
-                </p>
-            </div>
-        );
-
-        if (search.length === 0) {
-            usersToAdd.push(element);
-            return;
-        }
-
-        if (
-            email.toLowerCase().includes(search.toLowerCase()) ||
-            name.toLowerCase().includes(search.toLowerCase())
-        )
-            usersToAdd.push(element);
-    });
+    const filteredUsersToAdd = useMemo(() => {
+        return users.filter((user) => {
+            if (addedUsers?.some((u) => u.userId === user.userId)) {
+                return false;
+            }
+            if (search.length === 0) {
+                return true;
+            }
+            return (
+                user.email.toLowerCase().includes(search.toLowerCase()) ||
+                user.name.toLowerCase().includes(search.toLowerCase())
+            );
+        });
+    }, [users, addedUsers, search]);
 
     return (
         <Container className={styles.container}>
             <div className={styles.header}>
                 <h2>{projectName}</h2>
 
-                <button data-type="link" onClick={() => router.back()}>
+                <Button color="text" onPress={() => router.back()}>
                     Back
-                </button>
+                </Button>
             </div>
 
             <div className={styles.content}>
@@ -219,53 +199,60 @@ const ManageUsers = ({
                             <h4>No users are added.</h4>
                         </div>
                     ) : (
-                        <div className={styles.table}>
-                            <div className={styles.heading}>
+                        <div className={styles.table_wrapper}>
+                            <div className={styles.table_header}>
                                 <h4>Name</h4>
                                 <h4>Email ID</h4>
                                 <h4>Remove</h4>
                             </div>
 
-                            {addedUsers.map((user) => {
-                                return (
-                                    <div
-                                        className={styles.item}
+                            <GridList
+                                className={styles.users_list}
+                                aria-label="Added Users"
+                            >
+                                {addedUsers.map((user) => (
+                                    <GridListItem
                                         key={user.userId}
+                                        className={styles.user_item}
                                     >
-                                        <p data-key="Name">{user.name}</p>
-                                        <p data-key="Email ID">{user.email}</p>
+                                        <Text
+                                            className={styles.user_field}
+                                            data-key="Name"
+                                        >
+                                            {user.name}
+                                        </Text>
+                                        <Text
+                                            className={styles.user_field}
+                                            data-key="Email ID"
+                                        >
+                                            {user.email}
+                                        </Text>
 
-                                        <p data-key="Remove">
-                                            <span>
-                                                <button
-                                                    data-type="link"
-                                                    data-variant="error"
-                                                    disabled={
-                                                        removing.length > 0
-                                                    }
-                                                    data-load={
-                                                        removing === user.userId
-                                                    }
-                                                    onClick={() =>
-                                                        handleRemoveUser(
-                                                            user.userId
-                                                        )
-                                                    }
-                                                >
-                                                    {removing ===
-                                                    user.userId ? (
-                                                        <Loader variant="small" />
-                                                    ) : (
-                                                        <FontAwesomeIcon
-                                                            icon={faTrashCan}
-                                                        />
-                                                    )}
-                                                </button>
-                                            </span>
-                                        </p>
-                                    </div>
-                                );
-                            })}
+                                        <div
+                                            className={styles.user_action}
+                                            data-key="Remove"
+                                        >
+                                            <IconButton
+                                                icon={Trash2}
+                                                color="standard"
+                                                tooltip="Remove User"
+                                                isDisabled={
+                                                    removing.length > 0 &&
+                                                    removing !== user.userId
+                                                }
+                                                isPending={
+                                                    removing === user.userId
+                                                }
+                                                onPress={() =>
+                                                    handleRemoveUser(
+                                                        user.userId
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </GridListItem>
+                                ))}
+                            </GridList>
                         </div>
                     )}
                 </div>
@@ -275,13 +262,12 @@ const ManageUsers = ({
                         <h3>Add Users</h3>
 
                         <div className={styles.search}>
-                            <input
-                                type="text"
-                                placeholder="Type to search..."
+                            <SearchField
+                                placeholder="Search Users"
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                disabled={loading}
-                            ></input>
+                                onChange={setSearch}
+                                isDisabled={loading}
+                            />
                         </div>
                     </div>
 
@@ -289,7 +275,7 @@ const ManageUsers = ({
                         <div data-load="true">
                             <Loader variant="small" />
                         </div>
-                    ) : usersToAdd.length === 0 ? (
+                    ) : filteredUsersToAdd.length === 0 ? (
                         <div className={styles.empty}>
                             {search.length !== 0 ? (
                                 <p>
@@ -303,14 +289,58 @@ const ManageUsers = ({
                             )}
                         </div>
                     ) : (
-                        <div className={styles.table}>
-                            <div className={styles.heading}>
+                        <div className={styles.table_wrapper}>
+                            <div className={styles.table_header}>
                                 <h4>Name</h4>
                                 <h4>Email ID</h4>
                                 <h4>Add</h4>
                             </div>
 
-                            {usersToAdd}
+                            <GridList
+                                className={styles.users_list}
+                                aria-label="Users to Add"
+                            >
+                                {filteredUsersToAdd.map((user) => (
+                                    <GridListItem
+                                        key={user.userId}
+                                        className={styles.user_item}
+                                    >
+                                        <Text
+                                            className={styles.user_field}
+                                            data-key="Name"
+                                        >
+                                            {user.name}
+                                        </Text>
+                                        <Text
+                                            className={styles.user_field}
+                                            data-key="Email ID"
+                                        >
+                                            {user.email}
+                                        </Text>
+
+                                        <div
+                                            className={styles.user_action}
+                                            data-key="Add"
+                                        >
+                                            <IconButton
+                                                icon={UserPlus}
+                                                color="standard"
+                                                tooltip="Add User"
+                                                isDisabled={
+                                                    adding.length > 0 &&
+                                                    adding !== user.userId
+                                                }
+                                                isPending={
+                                                    adding === user.userId
+                                                }
+                                                onPress={() =>
+                                                    handleAddUser(user.userId)
+                                                }
+                                            />
+                                        </div>
+                                    </GridListItem>
+                                ))}
+                            </GridList>
                         </div>
                     )}
                 </div>
