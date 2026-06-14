@@ -78,12 +78,12 @@ const ProjectDetails = (props: ProjectDetailsProps) => {
     const linkProps = useMemo(() => {
         return [
             {
-                href: `/admin/project/${params.projectId}`,
+                href: `/admin/projects/${params.projectId}`,
                 text: "Added Users",
                 view: ["users"],
             },
             {
-                href: `/admin/project/${params.projectId}`,
+                href: `/admin/projects/${params.projectId}`,
                 text: "Added Services",
                 view: ["services"],
             },

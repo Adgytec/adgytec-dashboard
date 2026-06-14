@@ -1,4 +1,9 @@
-import { Toolbar } from "@adgytec/adgytec-web-ui-components";
+import {
+    Divider,
+    IconButton,
+    ToggleIconButton,
+    Toolbar,
+} from "@adgytec/adgytec-web-ui-components";
 import { $isCodeHighlightNode } from "@lexical/code";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -13,9 +18,20 @@ import {
     type LexicalEditor,
     SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+    AlignCenter,
+    AlignJustify,
+    AlignLeft,
+    AlignRight,
+    Bold,
+    Code,
+    Italic,
+    Link,
+    Strikethrough,
+    Underline,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Divider } from "./ToolbarPlugin";
 import { getDOMRangeRect } from "./utils/getDOMRangeRect";
 import { getSelectedNode } from "./utils/getSelectNode";
 import { setFloatingElemPosition } from "./utils/setFloatingElemPosition";
@@ -61,7 +77,7 @@ function TextFormatFloatingToolbar({
             popupCharStylesEditorRef.current.style.pointerEvents = "none";
         }
     }
-    function mouseUpListener(e: MouseEvent) {
+    function mouseUpListener(_e: MouseEvent) {
         if (popupCharStylesEditorRef?.current) {
             popupCharStylesEditorRef.current.style.pointerEvents = "auto";
         }
@@ -77,7 +93,7 @@ function TextFormatFloatingToolbar({
                 document.removeEventListener("mouseup", mouseUpListener);
             };
         }
-    }, [popupCharStylesEditorRef]);
+    }, [mouseUpListener, mouseMoveListener]);
 
     const updateTextFormatFloatingToolbar = useCallback(() => {
         const selection = $getSelection();
@@ -94,8 +110,7 @@ function TextFormatFloatingToolbar({
             selection !== null &&
             nativeSelection !== null &&
             !nativeSelection.isCollapsed &&
-            rootElement !== null &&
-            rootElement.contains(nativeSelection.anchorNode)
+            rootElement?.contains(nativeSelection.anchorNode)
         ) {
             const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
 
@@ -153,162 +168,130 @@ function TextFormatFloatingToolbar({
 
     return (
         <Toolbar
-            // style={{
-            // 	display: "flex",
-            // 	background: "#fff",
-            // 	padding: 4,
-            // 	verticalAlign: "middle",
-            // 	position: "absolute",
-            // 	top: 0,
-            // 	left: 0,
-            // 	zIndex: 10,
-            // 	opacity: 0,
-            // 	backgroundColor: "#fff",
-            // 	boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.3)",
-            // 	borderRadius: 8,
-            // 	transition: "opacity 0.5s",
-            // 	height: 35,
-            // 	willChange: "transform",
-            // }}
-            className="toolbar floating-toolbar"
+            style={{
+                maxInlineSize:
+                    "min(calc(100svb - calc(32 * var(--dp, 1px))), calc(640* var(--dp, 1px)))",
+                overflowX: "auto",
+                scrollbarWidth: "none",
+            }}
             variant="floating"
             color="vibrant"
             ref={popupCharStylesEditorRef}
         >
             {editor.isEditable() && (
                 <>
-                    <button
-                        onClick={() => {
+                    <ToggleIconButton
+                        color="standard"
+                        icon={Bold}
+                        isSelected={isBold}
+                        onChange={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
                         }}
-                        className={
-                            "toolbar-item spaced " + (isBold ? "active" : "")
-                        }
-                        style={{ alignItems: "center" }}
-                        aria-label="Format Bold"
-                    >
-                        <i className="format bold" />
-                    </button>
+                        tooltip="Bold"
+                    />
 
-                    <button
-                        style={{ alignItems: "center" }}
-                        onClick={() => {
+                    <ToggleIconButton
+                        color="standard"
+                        icon={Italic}
+                        isSelected={isItalic}
+                        onChange={() => {
                             editor.dispatchCommand(
                                 FORMAT_TEXT_COMMAND,
                                 "italic"
                             );
                         }}
-                        className={
-                            "toolbar-item spaced " + (isItalic ? "active" : "")
-                        }
-                        aria-label="Format Italics"
-                    >
-                        <i className="format italic" />
-                    </button>
+                        tooltip="Italic"
+                    />
 
-                    <button
-                        style={{ alignItems: "center" }}
-                        onClick={() => {
+                    <ToggleIconButton
+                        color="standard"
+                        icon={Underline}
+                        isSelected={isUnderline}
+                        onChange={() => {
                             editor.dispatchCommand(
                                 FORMAT_TEXT_COMMAND,
                                 "underline"
                             );
                         }}
-                        className={
-                            "toolbar-item spaced " +
-                            (isUnderline ? "active" : "")
-                        }
-                        aria-label="Format Underline"
-                    >
-                        <i className="format underline" />
-                    </button>
+                        tooltip="Underline"
+                    />
 
-                    <button
-                        onClick={() => {
+                    <ToggleIconButton
+                        color="standard"
+                        icon={Strikethrough}
+                        isSelected={isStrikethrough}
+                        onChange={() => {
                             editor.dispatchCommand(
                                 FORMAT_TEXT_COMMAND,
                                 "strikethrough"
                             );
                         }}
-                        className={
-                            "toolbar-item spaced " +
-                            (isStrikethrough ? "active" : "")
-                        }
-                    >
-                        <i className="format strikethrough" />
-                    </button>
+                        tooltip="Strikethrough"
+                    />
 
-                    <button
-                        onClick={() => {
+                    <ToggleIconButton
+                        color="standard"
+                        icon={Code}
+                        isSelected={isCode}
+                        onChange={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
                         }}
-                        className={
-                            "toolbar-item spaced " + (isCode ? "active" : "")
-                        }
-                    >
-                        <i className="format code" />
-                    </button>
+                        tooltip="Code"
+                    />
 
-                    <button
-                        style={{ alignItems: "center" }}
-                        onClick={insertLink}
-                        className={
-                            "toolbar-item spaced " + (isLink ? "active" : "")
-                        }
-                        aria-label="Insert Link"
-                    >
-                        <i className="format link" />
-                    </button>
+                    <ToggleIconButton
+                        color="standard"
+                        icon={Link}
+                        isSelected={isLink}
+                        onChange={insertLink}
+                        tooltip="Link"
+                    />
 
-                    <Divider />
-                    <button
-                        onClick={() => {
+                    <Divider orientation="vertical" />
+                    <IconButton
+                        color="standard"
+                        icon={AlignLeft}
+                        onPress={() => {
                             editor.dispatchCommand(
                                 FORMAT_ELEMENT_COMMAND,
                                 "left"
                             );
                         }}
-                        className="toolbar-item spaced"
-                        aria-label="Left Align"
-                    >
-                        <i className="format left-align" />
-                    </button>
-                    <button
-                        onClick={() => {
+                        tooltip="Left Align"
+                    />
+                    <IconButton
+                        color="standard"
+                        icon={AlignCenter}
+                        onPress={() => {
                             editor.dispatchCommand(
                                 FORMAT_ELEMENT_COMMAND,
                                 "center"
                             );
                         }}
-                        className="toolbar-item spaced"
-                        aria-label="Center Align"
-                    >
-                        <i className="format center-align" />
-                    </button>
-                    <button
-                        onClick={() => {
+                        tooltip="Center Align"
+                    />
+                    <IconButton
+                        color="standard"
+                        icon={AlignRight}
+                        onPress={() => {
                             editor.dispatchCommand(
                                 FORMAT_ELEMENT_COMMAND,
                                 "right"
                             );
                         }}
-                        className="toolbar-item spaced"
-                        aria-label="Right Align"
-                    >
-                        <i className="format right-align" />
-                    </button>
-                    <button
-                        onClick={() => {
+                        tooltip="Right Align"
+                    />
+                    <IconButton
+                        color="standard"
+                        icon={AlignJustify}
+                        onPress={() => {
                             editor.dispatchCommand(
                                 FORMAT_ELEMENT_COMMAND,
                                 "justify"
                             );
                         }}
-                        className="toolbar-item"
-                        aria-label="Justify Align"
-                    >
-                        <i className="format justify-align" />
-                    </button>
+                        tooltip="Justify Align"
+                    />
                 </>
             )}
         </Toolbar>

@@ -23,6 +23,7 @@ import { usePathname } from "next/navigation";
 import { type ReactElement, useContext, useEffect, useState } from "react";
 import { DialogTrigger } from "react-aria-components";
 import { useMediaQuery } from "usehooks-ts";
+import type { ProjectType } from "@/app/(protected)/admin/projects/(projects)/components/Project/types";
 import { signoutUser } from "@/firebase/auth/auth";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 import { UserContext } from "../AuthContext/authContext";
@@ -30,7 +31,7 @@ import { Nav } from "../Nav";
 import { ThemeSelectorModal } from "../ThemeSelectorModal";
 import styles from "./header.module.css";
 
-export const Header = () => {
+export const Header = ({ projects }: { projects?: ProjectType[] }) => {
     const handleSignout = async () => {
         await signoutUser();
     };
@@ -135,7 +136,7 @@ export const Header = () => {
                         <ModalOverlay isDismissable>
                             <SideSheetModal alignment="start">
                                 <SideSheetDialog>
-                                    <Nav />
+                                    <Nav projects={projects} />
                                 </SideSheetDialog>
                             </SideSheetModal>
                         </ModalOverlay>

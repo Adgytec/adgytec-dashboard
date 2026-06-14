@@ -270,13 +270,9 @@
   margin: 0;
   margin-left: 20px;
   font-size: 15px;
-  color: rgb(101, 103, 107);
-  border-left-color: rgb(206, 208, 212);
   border-left-width: 4px;
   border-left-style: solid;
   padding-left: 16px;
-
-  // rohan
   color: var(--md-sys-color-secondary);
   border-left-color: var(--md-sys-color-secondary);
 }
@@ -365,12 +361,12 @@ pre::-webkit-scrollbar-thumb {
 
 .emoji-inner::selection {
   color: transparent;
-  background-color: rgba(150, 150, 150, 0.4);
+  background-color: var(--md-sys-color-secondary-container);
 }
 
 .emoji-inner::moz-selection {
   color: transparent;
-  background-color: rgba(150, 150, 150, 0.4);
+  background-color: var(--md-sys-color-secondary-container);
 }
 
 .emoji.happysmile {
@@ -438,9 +434,6 @@ pre::-webkit-scrollbar-thumb {
 
 // active select bold and others
 .toolbar button.toolbar-item.active {
-  background-color: rgba(223, 232, 250, 0.3);
-
-  // rohan
   background-color: var(--_bg-editor);
 }
 
@@ -450,9 +443,6 @@ pre::-webkit-scrollbar-thumb {
 
 // code select box hover
 .toolbar .toolbar-item:hover:not([disabled]) {
-  background-color: var(--md-sys-color-surface-container);
-
-  // rohan
   background-color: var(--_bg-editor);
 }
 
@@ -478,10 +468,7 @@ pre::-webkit-scrollbar-thumb {
   -moz-appearance: none;
   width: 70px;
   font-size: 14px;
-  color: #777;
   text-overflow: ellipsis;
-
-  // rohan
   background-color: var(--md-sys-color-surface-container-low);
   color: var(--md-sys-color-on-surface);
   border-radius: var(--_radius);
@@ -499,14 +486,11 @@ pre::-webkit-scrollbar-thumb {
   width: 200px;
   vertical-align: middle;
   font-size: 14px;
-  color: #777;
   text-overflow: ellipsis;
   width: 70px;
   overflow: hidden;
   height: 20px;
   text-align: left;
-
-  // rohan
   color: var(--md-sys-color-on-surface);
 }
 
@@ -600,21 +584,16 @@ i.chevron-down {
   z-index: 5;
   display: block;
   position: absolute;
-  box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow: var(--md-sys-elevation-shadow-2);
   border-radius: 8px;
   min-width: 100px;
   min-height: 40px;
-  background-color: var(--md-sys-color-surface);
-
-  // rohan
   background-color: var(--_bg-select);
 }
 
 .dropdown .item {
   margin: 0 8px 0 8px;
   padding: 8px;
-  color: #050505;
   cursor: pointer;
   line-height: 16px;
   font-size: 15px;
@@ -623,12 +602,9 @@ i.chevron-down {
   flex-direction: row;
   flex-shrink: 0;
   justify-content: space-between;
-  background-color: var(--md-sys-color-surface);
   border-radius: 8px;
   border: 0;
   min-width: 268px;
-
-  // rohan
   background-color: var(--_bg-select);
   color: var(--md-sys-color-on-surface);
 }
@@ -650,9 +626,6 @@ i.chevron-down {
 
 // select box hover
 .dropdown .item:hover {
-  background-color: var(--md-sys-color-surface-container);
-
-  // rohan
   background-color: var(--_bg-editor);
 }
 
@@ -683,13 +656,10 @@ i.chevron-down {
   max-width: 300px;
   width: 100%;
   opacity: 0;
-  background-color: var(--md-sys-color-surface);
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   transition: opacity 0.5s;
-
-  // rohan
   background-color: var(--md-sys-color-surface-container-low);
+  box-shadow: var(--md-sys-elevation-shadow-2);
 }
 
 .link-editor .link-input {
@@ -699,15 +669,10 @@ i.chevron-down {
   margin: 8px 12px;
   padding: 8px 12px;
   border-radius: 15px;
-  background-color: var(--md-sys-color-surface-container);
-  font-size: 15px;
-  color: rgb(5, 5, 5);
   border: 0;
   outline: 0;
   position: relative;
   font-family: inherit;
-
-  // rohan
   background-color: var(--_bg-editor);
   color: var(--md-sys-color-on-surface);
 }
@@ -727,15 +692,12 @@ i.chevron-down {
 }
 
 .link-editor .link-input a {
-  color: rgb(33, 111, 219);
   text-decoration: none;
   display: block;
   white-space: nowrap;
   overflow: hidden;
   margin-right: 30px;
   text-overflow: ellipsis;
-
-  // rohan
   color: var(--_link);
 }
 
@@ -864,7 +826,7 @@ i.justify-align {
   left: 0;
   z-index: 10;
   opacity: 0;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--md-sys-elevation-shadow-2);
   border-radius: 8;
   transition: opacity 0.5s;
   height: 35;
@@ -877,8 +839,16 @@ i.justify-align {
   padding: 0.25em;
 
   border: 0;
+
+  inline-size: max-content;
+  max-inline-size: min(100vw - 2rem, 420px);
 }
 
 .toolbar-item {
   // display: none !important;
+}
+
+.block-controls-select {
+  min-width: 150px;
+  max-width: 180px;
 }

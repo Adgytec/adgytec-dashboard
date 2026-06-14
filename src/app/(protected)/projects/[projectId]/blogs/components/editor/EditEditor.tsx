@@ -1,3 +1,10 @@
+import {
+    ActionDialog,
+    Button,
+    Modal,
+    ModalOverlay,
+    useSnackbarQueue,
+} from "@adgytec/adgytec-web-ui-components";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
@@ -27,29 +34,23 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import EditorTheme from "./themes/EditorTheme";
 
 import "../../../../../../../styles/abstract/_lexical.scss";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TreeView } from "@lexical/react/LexicalTreeView";
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 import { useParams } from "next/navigation";
 import {
-    Dispatch,
     type MutableRefObject,
-    SetStateAction,
     useContext,
     useEffect,
     useMemo,
     useRef,
     useState,
 } from "react";
+import { DialogTrigger } from "react-aria-components";
 import { toast } from "react-toastify";
 import { UserContext } from "@/components/AuthContext/authContext";
-import Loader from "@/components/Loader/Loader";
-import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import { validateString } from "@/helpers/validation";
 import type { BlogItem } from "../../[blogId]/page";
-import { BlogDetails, type NewImages } from "../../create/page";
-import styles from "./editor.module.scss";
+import type { NewImages } from "../../create/page";
+import styles from "./editor.module.css";
 
 function Placeholder() {
     return (
@@ -102,10 +103,10 @@ function EditorActions({
     }, [userWithRole]);
 
     const [editor] = useLexicalComposerContext();
-    const isEmpty = useLexicalIsTextContentEmpty(editor);
+    const _isEmpty = useLexicalIsTextContentEmpty(editor);
 
+    const snackbarQueue = useSnackbarQueue();
     const params = useParams<{ projectId: string; blogId: string }>();
-    const previewRef = useRef<HTMLDialogElement | null>(null);
     const initContentRef = useRef<string | null>(null);
     const [previewContent, setPreviewContent] = useState<string>(content);
 
@@ -173,7 +174,14 @@ function EditorActions({
             .then((res) => {
                 if (res.error) throw new Error(res.message);
 
-                toast.success("successfully updated blog content");
+                snackbarQueue.add(
+                    {
+                        supportingText: "Successfully updated blog content",
+                    },
+                    {
+                        timeout: 5000,
+                    }
+                );
                 setBlogItem((prev) => {
                     if (!prev) return prev;
 
@@ -249,7 +257,6 @@ function EditorActions({
         editor.getEditorState().read(() => {
             const htmlString = $generateHtmlFromNodes(editor, null);
             setPreviewContent(htmlString);
-            previewRef.current?.showModal();
         });
     };
 
@@ -259,48 +266,42 @@ function EditorActions({
 
     return (
         <>
-            <dialog
-                ref={previewRef}
-                onClick={lightDismiss}
-                className={styles.preview}
-            >
-                <div className={styles.content}>
-                    <div className={`modal-menu ${styles.menu}`}>
-                        <h2>Blog Preview</h2>
-
-                        <button
-                            data-type="link"
-                            onClick={() => handleModalClose(previewRef)}
-                            title="close"
-                        >
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    </div>
-
-                    <div
-                        dangerouslySetInnerHTML={obj}
-                        className={styles.previewBody}
-                    ></div>
-                </div>
-            </dialog>
             <div className={styles.action}>
-                <button
-                    data-type="link"
-                    disabled={updating}
-                    onClick={handlePreview}
-                >
-                    Preview
-                </button>
+                <DialogTrigger>
+                    <Button color="text" onPress={handlePreview}>
+                        Preview
+                    </Button>
 
-                <button
-                    data-type="button"
-                    data-variant="secondary"
-                    disabled={updating}
+                    <ModalOverlay>
+                        <Modal>
+                            <ActionDialog
+                                heading="Preview"
+                                style={{
+                                    maxInlineSize:
+                                        "calc(1200 * var(--dp, 1px))",
+                                }}
+                                actions={[
+                                    <Button key="done" slot="close">
+                                        Done
+                                    </Button>,
+                                ]}
+                            >
+                                <div
+                                    dangerouslySetInnerHTML={obj}
+                                    className={styles.previewBody}
+                                ></div>
+                            </ActionDialog>
+                        </Modal>
+                    </ModalOverlay>
+                </DialogTrigger>
+
+                <Button
+                    isDisabled={updating}
+                    isPending={updating}
                     onClick={handleEditorContent}
-                    data-load={updating}
                 >
-                    {updating ? <Loader variant="small" /> : "Update"}
-                </button>
+                    Update
+                </Button>
             </div>
 
             {/* <TreeView

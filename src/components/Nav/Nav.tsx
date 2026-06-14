@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
+import type { ProjectType } from "@/app/(protected)/admin/projects/(projects)/components/Project/types";
 import { userRoles } from "@/helpers/type";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 import { UserContext } from "../AuthContext/authContext";
@@ -40,7 +41,7 @@ const NavigationLink: React.FC<
     );
 };
 
-export const Nav = () => {
+export const Nav = ({ projects }: { projects?: ProjectType[] }) => {
     const isNavigationDocked = useNavigationDocked();
 
     const userWithRole = useContext(UserContext);
@@ -59,7 +60,7 @@ export const Nav = () => {
             }}
             isButtonActive={(prefix) => {
                 if (!prefix) return false;
-                return pathName.includes(prefix);
+                return pathName.startsWith(prefix);
             }}
         >
             <NavigationSection>
@@ -139,11 +140,43 @@ export const Nav = () => {
             <NavigationSection>
                 <NavigationSectionLabel>Workspace</NavigationSectionLabel>
 
-                <NavigationLink
-                    href="/projects"
-                    label="My Projects"
-                    icon={Folder}
-                />
+                {projects && projects.length > 0 ? (
+                    <SubNavigationTrigger
+                        stateID="workspace-projects"
+                        label="My Projects"
+                    >
+                        <NavigationButton prefix="/projects" icon={Folder} />
+
+                        <SubNavigation>
+                            <NavigationLink
+                                isActive={
+                                    pathName === "/projects" ||
+                                    pathName === "/projects/"
+                                }
+                                href="/projects"
+                                label="All Projects"
+                            />
+
+                            {projects.map((project) => (
+                                <NavigationLink
+                                    key={project.projectId}
+                                    isActive={pathName.startsWith(
+                                        `/projects/${project.projectId}`
+                                    )}
+                                    href={`/projects/${project.projectId}`}
+                                    label={project.projectName}
+                                />
+                            ))}
+                        </SubNavigation>
+                    </SubNavigationTrigger>
+                ) : (
+                    <NavigationLink
+                        href="/projects"
+                        label="My Projects"
+                        icon={Folder}
+                        isActive={pathName === "/projects"}
+                    />
+                )}
             </NavigationSection>
         </Navigation>
     );

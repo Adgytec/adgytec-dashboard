@@ -4,7 +4,8 @@ import {
     Modal,
     ModalOverlay,
 } from "@adgytec/adgytec-web-ui-components";
-// import "../../../../../../../styles/abstract/_lexical.scss";
+
+import "../../../../../../../styles/abstract/_lexical.scss";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
@@ -39,7 +40,7 @@ import {
 import { DialogTrigger } from "react-aria-components";
 import { handleModalClose, lightDismiss } from "@/helpers/modal";
 import type { BlogDetails, NewImages } from "../../create/page";
-import styles from "./editor.module.scss";
+import styles from "./editor.module.css";
 import ImageNode from "./nodes/ImageNode";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
