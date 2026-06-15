@@ -32,7 +32,13 @@
 
 .tr {
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
-    transition: background-color 0.2s;
+
+    transition: background-color var(--md-sys-motion-expressive-fast-effects)
+        var(--md-sys-motion-expressive-fast-effects-duration);
+
+    @media (prefers-reduced-motion) {
+        transition: none;
+    }
 }
 
 .tr:nth-child(even) {

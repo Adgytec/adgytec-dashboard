@@ -8,6 +8,7 @@ import { Nav } from "@/components/Nav";
 import { useNavigationDocked } from "@/hooks/useNavigationDocked";
 import { ScaffoldContent } from "../ScaffoldContent";
 import styles from "./scaffold.module.css";
+import { Footer } from "@/components/Footer";
 
 export const Scaffold: React.FC<{ children?: ReactNode }> = ({ children }) => {
     const appBarState = useContext(AppBarStateContext);
@@ -69,6 +70,8 @@ export const Scaffold: React.FC<{ children?: ReactNode }> = ({ children }) => {
                 <Header projects={projects} />
 
                 <ScaffoldContent>{children}</ScaffoldContent>
+
+                <Footer />
             </div>
         </div>
     );

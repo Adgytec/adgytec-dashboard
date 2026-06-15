@@ -149,7 +149,7 @@ export const Header = ({ projects }: { projects?: ProjectType[] }) => {
             headline={
                 <AppBarHeadline>
                     <Link className={clsx(styles["link"])} href="/">
-                        Adgytec
+                        ADGYTEC DASHBOARD
                     </Link>
                 </AppBarHeadline>
             }

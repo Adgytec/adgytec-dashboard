@@ -12,6 +12,7 @@ import {
     UsersRound,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/components/AuthContext/authContext";
 import { userRoles } from "@/helpers/type";
@@ -50,18 +51,30 @@ const Home = () => {
         <div className={styles.dashboard}>
             {/* Hero Greeting Section */}
             <div className={styles.heroCard}>
-                <div className={styles.timeGreeting}>
-                    <Sparkles size={16} />
-                    {greeting}
+                <div className={styles.heroContent}>
+                    <div className={styles.timeGreeting}>
+                        <Sparkles size={16} />
+                        {greeting}
+                    </div>
+                    <h1 className={styles.heroTitle}>
+                        Welcome back, {displayName}! 👋
+                    </h1>
+                    <p className={styles.heroSubtitle}>
+                        Manage your workspace, organize projects, and edit
+                        content. Select an option below or use the sidebar
+                        navigation to get started.
+                    </p>
                 </div>
-                <h1 className={styles.heroTitle}>
-                    Welcome back, {displayName}! 👋
-                </h1>
-                <p className={styles.heroSubtitle}>
-                    Manage your workspace, organize projects, and edit content.
-                    Select an option below or use the sidebar navigation to get
-                    started.
-                </p>
+                {/* <div className={styles.heroImageWrapper}> */}
+                {/*     <Image */}
+                {/*         src="/adgytec.jpeg" */}
+                {/*         alt="Adgytec" */}
+                {/*         width={200} */}
+                {/*         height={200} */}
+                {/*         priority */}
+                {/*         className={styles.heroImage} */}
+                {/*     /> */}
+                {/* </div> */}
             </div>
 
             {/* Quick Stats Panel */}
