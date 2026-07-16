@@ -156,68 +156,66 @@ const Details = ({
 
         setCreating(true);
 
-        const newImages = newImagesRef.current.filter((img) => !img.isRemoved);
+        const validNewFiles = newImagesRef.current.filter(
+            (img) => !img.isRemoved
+        );
 
-        const uploadPromises = newImages.map((img) => {
-            const addMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;
+        if (validNewFiles.length === 0) {
+            createBlog();
+            return;
+        }
 
-            const formData = new FormData();
-            formData.append("image", img.file);
-
-            return user?.getIdToken().then((token) => {
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                };
-
-                return fetch(addMediaURL, {
-                    method: "POST",
-                    headers,
-                    body: formData,
-                }).then((res) => res.json());
-            });
+        const formData = new FormData();
+        const metaData = validNewFiles.map(({ path }) => {
+            return { path };
         });
 
-        Promise.all(uploadPromises)
-            .then((results) => {
-                for (const res of results) {
-                    if (res?.error) {
-                        throw new Error(res.message);
-                    }
-                }
+        formData.append("metadata", JSON.stringify(metaData));
+        validNewFiles.forEach(({ file }, index) => {
+            formData.append(`media_${index}`, file);
+        });
+
+        // adding media to blogs
+        const addMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;
+        const token = await user?.getIdToken();
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        fetch(addMediaURL, {
+            method: "POST",
+            headers,
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res.error) throw new Error(res.message);
 
                 if (deletedImages.length > 0) {
                     const deleteMediaURL = `${process.env.NEXT_PUBLIC_API}/services/blogs/${params.projectId}/${uuidRef.current}/media`;
                     const body = JSON.stringify({
-                        urls: deletedImages,
+                        paths: deletedImages,
                     });
 
-                    return user?.getIdToken().then((token) => {
-                        const headers = {
-                            Authorization: `Bearer ${token}`,
-                        };
-
-                        return fetch(deleteMediaURL, {
-                            method: "DELETE",
-                            headers: {
-                                ...headers,
-                                "Content-Type": "application/json",
-                            },
-                            body,
+                    fetch(deleteMediaURL, {
+                        method: "DELETE",
+                        headers: {
+                            ...headers,
+                            "Content-Type": "application/json",
+                        },
+                        body,
+                    })
+                        .then((res) => {
+                            return res.json();
                         })
-                            .then((res) => {
-                                return res.json();
-                            })
-                            .then((res) => {
-                                if (res.error) throw new Error(res.message);
+                        .then((res) => {
+                            if (res.error) throw new Error(res.message);
 
-                                console.log(
-                                    "successfully deleted unused media"
-                                );
-                            })
-                            .catch((err) => {
-                                console.error(err.message);
-                            });
-                    });
+                            console.log("successfully deleted unused media");
+                        })
+                        .catch((err) => {
+                            console.error(err.message);
+                        });
                 }
 
                 createBlog();
